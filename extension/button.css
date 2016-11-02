@@ -1,0 +1,26 @@
+/* Custom */
+.toolicon {
+  margin: 5px;
+  border: 1px solid #f2f2f2;
+  background-color: white;
+  height: 25px;
+}
+
+.toolicon:hover {
+  border: 1px solid black;
+  padding:1px;
+}
+
+.cannedanalyses{
+  align-content: top;
+}
+
+.cannedanalyses-text{
+  background-color: #f2f2f2;
+  vertical-align: center;
+  font-size: small;
+  border-radius: 5px;
+}
+
+
+/* Original */
