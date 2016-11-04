@@ -12,7 +12,9 @@
 }
 
 .cannedanalyses{
-  align-content: top;
+  align-content: center;
+  margin-top: -0.3cm;
+  border: 0px solid blue;
 }
 
 .cannedanalyses-text{
@@ -20,7 +22,5 @@
   vertical-align: center;
   font-size: small;
   border-radius: 5px;
+  font-family: "Arial", Arial, Sans-serif;
 }
-
-
-/* Original */

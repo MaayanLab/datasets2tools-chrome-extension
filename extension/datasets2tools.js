@@ -2,6 +2,8 @@
 //////////////////////////////////////////////////////////////////////
 ///////// 1. Define Main Function ////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
+////////// Author: Denis Torre
+////////// Based on Cite-D-Lite (https://github.com/MaayanLab/Cite-D-Lite).
 
 function main() {
 	// 1.1 Locate Parents
@@ -9,6 +11,8 @@ function main() {
 
 	// 1.2 Load Interface
 	Interface.load($parents);
+
+	// window.alert(Datasets2ToolsAPI.getApiResults());
 };
 
 
@@ -17,43 +21,40 @@ function main() {
 //////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-///// 2.1 DataMedPage //////////////////////////////////////
+///// 2.1 GEOPage //////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-var DataMedPage = {
-	isDataMed: function() {
-		return Boolean(window.location.hostname.match(/datamed.org/));
+var GEOPage = {
+	// Return true if user is on datasets search results page, false otherwise.
+	isGEOSearchResultsPage: function() {
+		if (Boolean(window.location.pathname.match(/\/gds/) && window.location.search.match(/\?term=/))) {
+			// If is on search results page
+			return true;
+		}
+		else if (Boolean(window.location.pathname.match(/\/gds/) && document.getElementById('database')[0].textContent.match('GEO DataSets'))) {
+			// Else if is on subsequent page of search results page
+			return true;
+		}
 	},
 
-	isDataMedSearchResultsPage: function() {
-		return Boolean(window.location.hostname.match(/datamed.org/) && window.location.pathname.match(/\/search.php/));
+	// Return true if user is on GDS browser page, false otherwise. [DATASET]
+	isGDSBrowserPage: function() {
+		return Boolean(window.location.pathname.match(/\/sites\/GDSbrowser/) && window.location.search.match(/\?acc=GDS/));
 	},
-	
-	isDataMedItemPage: function() {
-		return Boolean(window.location.hostname.match(/datamed.org/) && window.location.pathname.match(/\/display-item.php/));
+
+	// Return true if user is on GSE page, false otherwise. [SERIES]
+	isGSEPage: function() {
+		return Boolean(window.location.pathname.match(/\/geo\/query\/acc.cgi/) && window.location.search.match(/\?acc=GSE/));
+	},
+
+	// Return true if user is on GSM page, false otherwise. [SAMPLE]
+	isGSMPage: function() {
+		return Boolean(window.location.pathname.match(/\/geo\/query\/acc.cgi/) && window.location.search.match(/\?acc=GSM/));
 	}
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.2 DataMedPage //////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-var DataMedType = {
-	// Return true if repository is GEO, false otherwise.
-	isGEO: function() {
-		if ((DataMedPage.isDataMedSearchResultsPage()) && ($('.label-repo').find('a').eq(0).text().includes('GEO'))) {
-			// If repository is GEO on search results page
-			return true;
-		}
-		else if ((DataMedPage.isDataMedItemPage()) && ($('.table-striped').find('td').eq(1).text().includes('GEO'))) {
-			// Else if repository is GEO on item page
-			return true;
-		}
-	}
-};
-
-////////////////////////////////////////////////////////////
-///// 2.3 Interface ////////////////////////////////////////
+///// 2.2 Interface ////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var Interface = {
@@ -67,11 +68,8 @@ var Interface = {
 
 	locateParents: function() {
 		var $parents;
-		if (DataMedPage.isDataMedItemPage()) {
-			$parents = $('.heading');
-		}
-		else if (DataMedPage.isDataMedSearchResultsPage()) {
-			$parents = $('.search-result').find('li');
+		if (GEOPage.isGEOSearchResultsPage()) {
+			$parents = $('.rsltcont');
 		}
 		return $parents;
 	},
@@ -86,10 +84,7 @@ var Interface = {
 	load: function($parents) {
 		var self = this;
 		$parents.each(function(i, elem) {
-			var $elem = $(elem), citationlabel;
-			if (DataMedType.isGEO()) {
-				self.addButtons($elem, citationlabel);
-			}
+			self.addButtons($(elem));
 		});
 	},
 
@@ -101,23 +96,46 @@ var Interface = {
 	///// With description and images
 	addButtons: function($parents) {
 		var self = this,
-			iconURL = chrome.extension.getURL("icon_720.png"),
-			buttonHTMLdiv = '<div class="cannedanalyses"><table class="cannedanalyses-table"><td class="cannedanalyses-text"><img alt="Datasets2Tools Icon" src="'+iconURL+'" width="20" height="20"><b>&nbsp Canned Analyses:&nbsp</b></td><td><a href="http://amp.pharm.mssm.edu/g2e/"><img class="toolicon" src="http://amp.pharm.mssm.edu/g2e/static/image/logo-50x50.png"></a><a href="http://amp.pharm.mssm.edu/Enrichr/"><img class="toolicon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"></a><a href="http://amp.pharm.mssm.edu/L1000CDS2/"><img class="toolicon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"></a></td></table></div>';
+		iconURL = chrome.extension.getURL("icon_720.png"),
+		buttonHTMLdiv = '<div class="cannedanalyses"><table class="cannedanalyses-table"><td class="cannedanalyses-text"><img alt="Datasets2Tools Icon" src="'+iconURL+'" width="20" height="20"><b>&nbsp Canned Analyses:&nbsp</b></td><td><a href="http://amp.pharm.mssm.edu/Enrichr/"><img class="toolicon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"></a><a href="http://amp.pharm.mssm.edu/clustergrammer/"><img class="toolicon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png"></a><a href="http://amp.pharm.mssm.edu/L1000CDS2/"><img class="toolicon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"></a></td></table></div>';
 		$parents.each(function(i, elem) {
 			var $elem = $(elem);
-			if (DataMedType.isGEO()) {
-				if ((DataMedPage.isDataMedSearchResultsPage()) && (DataMedType.isGEO())) {
-					$elem.append(buttonHTMLdiv);	
-				}
-				else if ((DataMedPage.isDataMedItemPage()) && (DataMedType.isGEO())) {
-					$elem.after(buttonHTMLdiv);
-				}
+			var seriesId = $elem.find("a:contains('GSE')").text();
+			$elem.append(buttonHTMLdiv);
 			}
-		})
+		)
 	}
 };
 
-//////////////////////////////////////////////////////////////////////
-///////// 3. Run Function ////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+///// 2.3 Datasets2Tools API ///////////////////////////////
+////////////////////////////////////////////////////////////
+
+var Datasets2ToolsAPI = {
+
+	getApiResults: function(){
+
+		$.ajax({
+				url: 'localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2',
+				type: 'GET',
+				success: function(response){
+					window.alert(response)
+				}
+		});
+
+	}
+
+};
+
+
+
+		// xmlhttp = new XMLHttpRequest();
+		// xmlhttp.open('GET', 'http://localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2', false);
+		// xmlhttp.send();
+		// var data = xmlhttp.responseText;
+		// return 'data';
+
+////////////////////////////////////////////////////////////////////
+/////// 3. Run Function ////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
 main();
