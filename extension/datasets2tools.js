@@ -69,7 +69,7 @@ var Interface = {
 	locateParents: function() {
 		var $parents;
 		if (GEOPage.isGEOSearchResultsPage()) {
-			$parents = $('.rsltcont');
+			$parents = $('.rprt');
 		}
 		return $parents;
 	},
@@ -84,26 +84,46 @@ var Interface = {
 	load: function($parents) {
 		var self = this;
 		$parents.each(function(i, elem) {
-			self.addButtons($(elem));
+			var $elem = $(elem);
+			var buttonHTMLdiv = self.prepareToolButton($elem);
+			$elem.after(buttonHTMLdiv);
 		});
 	},
 
 	/////////////////////////////////
-	////// 2.3.2 addButtons
+	////// 2.3.2 prepareToolButton
 	/////////////////////////////////
 
-	///// Adds buttons of class citationstuff
-	///// With description and images
-	addButtons: function($parents) {
-		var self = this,
-		iconURL = chrome.extension.getURL("icon_720.png"),
-		buttonHTMLdiv = '<div class="cannedanalyses"><table class="cannedanalyses-table"><td class="cannedanalyses-text"><img alt="Datasets2Tools Icon" src="'+iconURL+'" width="20" height="20"><b>&nbsp Canned Analyses:&nbsp</b></td><td><a href="http://amp.pharm.mssm.edu/Enrichr/"><img class="toolicon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"></a><a href="http://amp.pharm.mssm.edu/clustergrammer/"><img class="toolicon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png"></a><a href="http://amp.pharm.mssm.edu/L1000CDS2/"><img class="toolicon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"></a></td></table></div>';
-		$parents.each(function(i, elem) {
-			var $elem = $(elem);
-			var seriesId = $elem.find("a:contains('GSE')").text();
-			$elem.append(buttonHTMLdiv);
-			}
-		)
+	///// Prepares button with according
+	///// hover information
+
+			// var seriesId = $elem.find("a:contains('GSE')").text();
+
+
+	prepareToolButton: function($elem){
+		var seriesId = $elem.find("a:contains('GSE')").text(),
+		 	iconURL = chrome.extension.getURL("icon_720.png");
+
+		 	buttonHTMLdiv = `
+							<div class="dropdown" style="float:left;">
+							  <button class="dropbtn">Left</button>
+							  <div class="dropdown-content" style="left:0;">
+							    <a href="#">Link 1</a>
+							    <a href="#">Link 2</a>
+							    <a href="#">Link 3</a>
+							  </div>
+							</div>
+
+							<div class="dropdown" style="float:right;">
+							  <button class="dropbtn">Right</button>
+							  <div class="dropdown-content">
+							    <a href="#">Link 1</a>
+							    <a href="#">Link 2</a>
+							    <a href="#">Link 3</a>
+							  </div>
+							</div>`;
+		// buttonHTMLdiv = '<div class="cannedanalyses"><table class="cannedanalyses-table"><td class="cannedanalyses-text"><img alt="Datasets2Tools Icon" src="'+iconURL+'" width="20" height="20"><b>&nbsp Canned Analyses:&nbsp</b></td><td><a href="http://amp.pharm.mssm.edu/Enrichr/"><img class="toolicon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"></a><a href="http://amp.pharm.mssm.edu/clustergrammer/"><img class="toolicon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png"></a><a href="http://amp.pharm.mssm.edu/L1000CDS2/"><img class="toolicon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"></a></td></table></div>';
+		return buttonHTMLdiv
 	}
 };
 
