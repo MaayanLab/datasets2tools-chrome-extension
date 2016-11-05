@@ -6,13 +6,15 @@
 ////////// Based on Cite-D-Lite (https://github.com/MaayanLab/Cite-D-Lite).
 
 function main() {
-	// 1.1 Locate Parents
-	var $parents = Interface.locateParents();
+	// 1.1 Load Interface
+	Interface.load();
 
-	// 1.2 Load Interface
-	Interface.load($parents);
+	// 1.2 whenClicked Watcher
+	whenClicked.showToolDiv();
 
-	// window.alert(Datasets2ToolsAPI.getApiResults());
+	// 1.3 API Test
+	// Datasets2ToolsAPI.getApiResults('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gds&id=200069129');
+	Datasets2ToolsAPI.getApiResults('http://localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2');
 };
 
 
@@ -21,110 +23,142 @@ function main() {
 //////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-///// 2.1 GEOPage //////////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-var GEOPage = {
-	// Return true if user is on datasets search results page, false otherwise.
-	isGEOSearchResultsPage: function() {
-		if (Boolean(window.location.pathname.match(/\/gds/) && window.location.search.match(/\?term=/))) {
-			// If is on search results page
-			return true;
-		}
-		else if (Boolean(window.location.pathname.match(/\/gds/) && document.getElementById('database')[0].textContent.match('GEO DataSets'))) {
-			// Else if is on subsequent page of search results page
-			return true;
-		}
-	},
-
-	// Return true if user is on GDS browser page, false otherwise. [DATASET]
-	isGDSBrowserPage: function() {
-		return Boolean(window.location.pathname.match(/\/sites\/GDSbrowser/) && window.location.search.match(/\?acc=GDS/));
-	},
-
-	// Return true if user is on GSE page, false otherwise. [SERIES]
-	isGSEPage: function() {
-		return Boolean(window.location.pathname.match(/\/geo\/query\/acc.cgi/) && window.location.search.match(/\?acc=GSE/));
-	},
-
-	// Return true if user is on GSM page, false otherwise. [SAMPLE]
-	isGSMPage: function() {
-		return Boolean(window.location.pathname.match(/\/geo\/query\/acc.cgi/) && window.location.search.match(/\?acc=GSM/));
-	}
-};
-
-////////////////////////////////////////////////////////////
-///// 2.2 Interface ////////////////////////////////////////
+///// 2.1 Interface ////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var Interface = {
 
 	/////////////////////////////////
-	////// 2.3.1 locateParents
-	/////////////////////////////////
-
-	///// Locates elements upon which to append icons
-	///// based on type of page.
-
-	locateParents: function() {
-		var $parents;
-		if (GEOPage.isGEOSearchResultsPage()) {
-			$parents = $('.rprt');
-		}
-		return $parents;
-	},
-
-	/////////////////////////////////
-	////// 2.3.2 load
+	////// 2.1.1 load
 	/////////////////////////////////
 
 	///// Creates citation label and calls
 	///// addButtons method to add the buttons
 
-	load: function($parents) {
+	load: function() {
+
+		// Define self
 		var self = this;
-		$parents.each(function(i, elem) {
-			var $elem = $(elem);
-			var buttonHTMLdiv = self.prepareToolButton($elem);
-			$elem.after(buttonHTMLdiv);
+
+		// Loop through GEO search results elements
+		$('.aux').each(function(i, elem) {
+
+			// Define element, find GSE accession, prepare icon bar
+			var $elem = $(elem),
+			    seriesAccession = $elem.find("a:contains('GSE')").text();
+			    iconHTMLdiv = self.prepareIconBar($elem);
+
+			// Append icon bar
+			$elem.append(iconHTMLdiv);
+		});
+
+		// Loop through icon bars
+		$('.cannedanalysis-icon-bar').each(function(i, elem){
+
+			// Define element
+			var $elem = $(elem),
+			toolHTMLdiv = self.prepareToolDivs($elem);
+
+			// Append
+			$elem.find('tr').append(toolHTMLdiv);
+
 		});
 	},
 
 	/////////////////////////////////
-	////// 2.3.2 prepareToolButton
+	////// 2.1.2 prepareIconBar
 	/////////////////////////////////
 
 	///// Prepares button with according
 	///// hover information
 
-			// var seriesId = $elem.find("a:contains('GSE')").text();
+	prepareIconBar: function($elem){
+		// Get icon URL
+	 	var iconURL = chrome.extension.getURL("icon_720.png");
 
+	 	// Get series accession
+		var seriesAccession = $elem.prev().find("a:contains('GSE')").text();
 
-	prepareToolButton: function($elem){
-		var seriesId = $elem.find("a:contains('GSE')").text(),
-		 	iconURL = chrome.extension.getURL("icon_720.png");
-
-		 	buttonHTMLdiv = `
-							<div class="dropdown" style="float:left;">
-							  <button class="dropbtn">Left</button>
-							  <div class="dropdown-content" style="left:0;">
-							    <a href="#">Link 1</a>
-							    <a href="#">Link 2</a>
-							    <a href="#">Link 3</a>
-							  </div>
-							</div>
-
-							<div class="dropdown" style="float:right;">
-							  <button class="dropbtn">Right</button>
-							  <div class="dropdown-content">
-							    <a href="#">Link 1</a>
-							    <a href="#">Link 2</a>
-							    <a href="#">Link 3</a>
-							  </div>
+	 	// Get icon bar div HTML
+		var iconHTMLdiv = `<div class="cannedanalysis-icon-bar" id="`+seriesAccession+`">
+								<table class="cannedanalysis-table">
+									<tr>
+										<td class="cannedanalysis-text">
+											<img src="`+iconURL+`"><b>&nbsp&nbsp Datasets2Tools:&nbsp&nbsp&nbsp</b>
+										</td>
+										<td>
+											<img id="enrichr-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png">
+											<img id="clustergrammer-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png">
+											<img id="l1000cds2-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png">
+										</td>
+									</tr>
+								</table>
 							</div>`;
-		// buttonHTMLdiv = '<div class="cannedanalyses"><table class="cannedanalyses-table"><td class="cannedanalyses-text"><img alt="Datasets2Tools Icon" src="'+iconURL+'" width="20" height="20"><b>&nbsp Canned Analyses:&nbsp</b></td><td><a href="http://amp.pharm.mssm.edu/Enrichr/"><img class="toolicon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"></a><a href="http://amp.pharm.mssm.edu/clustergrammer/"><img class="toolicon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png"></a><a href="http://amp.pharm.mssm.edu/L1000CDS2/"><img class="toolicon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"></a></td></table></div>';
-		return buttonHTMLdiv
+
+		return iconHTMLdiv;
+	},
+
+	/////////////////////////////////
+	////// 2.1.3 prepareToolDivs
+	/////////////////////////////////
+
+	///// Prepares dropdown menu
+	///// hover information
+
+	prepareToolDivs: function($elem){
+
+		// Define tool array, tool DIV HTML string
+		var toolArray = ['enrichr', 'clustergrammer', 'l1000cds2'],
+			seriesAccession = $elem.attr('id'),
+			toolHTMLdiv = '<td>';
+
+		// Loop through tools
+		for (var i = 0; i < toolArray.length; i++){
+			// Add tool DIV
+			toolHTMLdiv += '<div class="tool-div" id="' + seriesAccession + '-' + toolArray[i] + '""> Canned analyses of ' + seriesAccession + ' and ' + toolArray[i] + '.</div>';
+		};
+
+		// Close Column
+		toolHTMLdiv += '</td>'
+
+		// Return DIV
+		return toolHTMLdiv;
 	}
+
+};
+
+////////////////////////////////////////////////////////////
+///// 2.2 whenClicked //////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var whenClicked = {
+
+	/////////////////////////////////
+	////// 2.2.1 showToolDiv
+	/////////////////////////////////
+
+	///// Shows appropriate tool
+	///// div when clicked
+
+	showToolDiv: function() {
+
+		// JQuery Watcher
+		$('.tool-icon').click(function(event) {
+			// Get Tool Name and Series Accession
+			var $target = $(event.target),
+				toolName = $target.attr('id').split('-')[0],
+				seriesAccession = $target.parent().parent().parent().parent().parent().attr('id'),
+				divToActivateId = '#' + seriesAccession + '-' + toolName,
+				divToInactivateId = '#' + seriesAccession + ' .tool-div:not('+divToActivateId+')';
+
+			// Hide All Others
+			$(divToInactivateId).hide();
+
+			// Toggle
+			$(divToActivateId).toggle();
+		});
+	}
+
 };
 
 ////////////////////////////////////////////////////////////
@@ -133,13 +167,14 @@ var Interface = {
 
 var Datasets2ToolsAPI = {
 
-	getApiResults: function(){
+	getApiResults: function(url){
 
 		$.ajax({
-				url: 'localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2',
+				url: url,//'localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2',
 				type: 'GET',
+				crossDomain: true,
 				success: function(response){
-					window.alert(response)
+					window.alert(new XMLSerializer().serializeToString(response))
 				}
 		});
 

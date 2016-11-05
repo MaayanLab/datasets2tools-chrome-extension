@@ -1,66 +1,44 @@
-/* Custom */
-.toolicon {
-  margin: 5px;
-  border: 1px solid #f2f2f2;
-  background-color: white;
-  height: 25px;
+/* Icon Bar */
+.cannedanalysis-icon-bar {
+  display: flex;
+  align-items: center;
 }
 
-.toolicon:hover {
-  border: 1px solid black;
-  padding:1px;
+/* Table */
+.cannedanalysis-table {
+  vertical-align: baseline;
+  border-collapse: separate;
+  empty-cells: hide;
 }
 
-.cannedanalyses{
-  align-content: center;
-  margin-top: -0.3cm;
-  border: 0px solid blue;
+td .cannedanalysis-text {
+  vertical-align: baseline;
 }
 
-.cannedanalyses-text{
+.cannedanalysis-text {
   background-color: #f2f2f2;
-  vertical-align: center;
   font-size: small;
-  border-radius: 5px;
   font-family: "Arial", Arial, Sans-serif;
 }
 
-.dropbtn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
+.cannedanalysis-text img {
+  height: 25px;
+  padding-left: 5px;
+  vertical-align: middle;
 }
 
-.dropdown {
-    position: relative;
-    display: inline-block;
+/* Tool Icons */
+.tool-icon {
+  margin: 5px;
+  border: 1px solid #f2f2f2;
+  height: 25px;
 }
 
-.dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+.tool-icon:hover {
+  border: 1px solid black;
 }
 
-.dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {background-color: #f1f1f1}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.dropdown:hover .dropbtn {
-    background-color: #3e8e41;
+/* Tool Divs */
+.tool-div {
+  display: none;
 }
