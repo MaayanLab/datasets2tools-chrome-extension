@@ -12,6 +12,7 @@
   border-collapse: separate;
   empty-cells: hide;
   float:left;
+  max-width: 75%;
 }
 
 .cannedanalysis-browse {
@@ -19,10 +20,6 @@
 }
 
 /* First Column - Icon */
-td .datasets2tools-icon {
-  vertical-align: baseline;
-}
-
 .datasets2tools-icon {
   background-color: #f2f2f2;
   font-size: small;
@@ -78,17 +75,17 @@ td .datasets2tools-icon {
 .cannedanalysis-browse-div {
   width: auto;
   float: right;
+  flex-grow: 1;
   text-align: left;
-  max-height: 150px;
+  max-height: 100px;
   overflow-y: scroll;
-  border: 1px solid #f2f2f2;
-  margin-top: 17px;
+  border: 1px solid #e6e6e6;
+  margin-top: 16.5px;
 }
 
 .cannedanalysis-results {
   display: none;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding: 10px;
 }
 
 

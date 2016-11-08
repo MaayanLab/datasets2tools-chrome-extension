@@ -106,7 +106,7 @@ var Interface = {
 								</table>
 
 								<div class="cannedanalysis-browse-div cannedanalysis-browse">
-									hello!
+
 								</div>
 
 							</div>`;
@@ -126,12 +126,13 @@ var Interface = {
 		// Define tool array, tool DIV HTML string
 		var toolArray = ['Enrichr', 'Clustergrammer', 'L1000CDS2'],
 			seriesAccession = $elem.attr('id'),
-			toolHTMLdiv = '';
+			toolHTMLdiv = '',
+			infoIconURL = "https://openclipart.org/image/2400px/svg_to_png/213219/Information-icon.png";
 
 		// Loop through tools
 		for (var i = 0; i < toolArray.length; i++){
 			// Add tool DIV
-			toolHTMLdiv += '<div class="'+toolArray[i]+' cannedanalysis-results"> Canned analyses of ' + seriesAccession + ' and ' + toolArray[i] + '.<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>';
+			toolHTMLdiv += '<div class="'+toolArray[i]+' cannedanalysis-results"> Canned analyses of ' + seriesAccession + ' and ' + toolArray[i] + '<sup><img src="'+infoIconURL+'" style="width:10px;height:10px;"></sup>.<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>';
 		};
 
 		// Return DIV
@@ -178,10 +179,12 @@ var whenClicked = {
 			// Get Variables
 			var $target = $(event.target),
 				$parentDiv = $target.parent().parent().parent().parent().parent(),
-				toolName = $target.attr('id').split('-')[0];
+				toolName = $target.attr('id').split('-')[0],
+				infoIconURL = "https://openclipart.org/image/2400px/svg_to_png/213219/Information-icon.png";
+
 
 			// Selected Tool Icon
-			$parentDiv.find('.datasets2tools-selected-tool-col').html($target.prop('outerHTML') + toolName);
+			$parentDiv.find('.datasets2tools-selected-tool-col').html($target.prop('outerHTML') + toolName + '&nbsp<sup><img src="'+infoIconURL+'" style="height:10px;width:10px;"></sup>' );
 
 			// Toggle Display/Browse
 			$parentDiv.find('.cannedanalysis-display').hide();
