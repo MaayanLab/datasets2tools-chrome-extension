@@ -10,11 +10,12 @@ function main() {
 	Interface.load();
 
 	// 1.2 whenClicked Watcher
-	whenClicked.showToolDiv();
+	whenClicked.showCannedAnalyses();
+	// whenClicked.showToolDiv();
 
 	// 1.3 API Test
 	// Datasets2ToolsAPI.getApiResults('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gds&id=200069129');
-	Datasets2ToolsAPI.getApiResults('http://localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2');
+	// Datasets2ToolsAPI.getApiResults('http://localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2');
 };
 
 
@@ -53,15 +54,14 @@ var Interface = {
 		});
 
 		// Loop through icon bars
-		$('.cannedanalysis-icon-bar').each(function(i, elem){
+		$('.cannedanalysis-bar').each(function(i, elem){
 
 			// Define element
 			var $elem = $(elem),
-			toolHTMLdiv = self.prepareToolDivs($elem);
+				toolHTMLdiv = self.prepareCannedanalysisDivs($elem);
 
 			// Append
-			$elem.find('tr').append(toolHTMLdiv);
-
+			$elem.find('.cannedanalysis-browse-div').html(toolHTMLdiv);
 		});
 	},
 
@@ -80,46 +80,59 @@ var Interface = {
 		var seriesAccession = $elem.prev().find("a:contains('GSE')").text();
 
 	 	// Get icon bar div HTML
-		var iconHTMLdiv = `<div class="cannedanalysis-icon-bar" id="`+seriesAccession+`">
+		var iconHTMLdiv = `<div class="cannedanalysis-bar" id="`+seriesAccession+`">
 								<table class="cannedanalysis-table">
-									<tr>
-										<td class="cannedanalysis-text">
-											<img src="`+iconURL+`"><b>&nbsp&nbsp Datasets2Tools:&nbsp&nbsp&nbsp</b>
+									<tr style="max-height:50px">
+
+										<td class="datasets2tools-icon">
+											<img src="`+iconURL+`"><b class="cannedanalysis-display">&nbsp&nbsp Datasets2Tools:&nbsp&nbsp&nbsp</b>
 										</td>
-										<td>
-											<img id="enrichr-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png">
-											<img id="clustergrammer-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png">
-											<img id="l1000cds2-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png">
+
+										<td class="datasets2tools-goback cannedanalysis-browse">
+											<div class="datasets2tools-goback-div"> v v v </div>
 										</td>
+
+										<td class="cannedanalysis-tool-icons cannedanalysis-display">
+											<img id="Enrichr-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png">
+											<img id="Clustergrammer-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png">
+											<img id="L1000CDS2-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png">
+										</td>
+
+										<td class="datasets2tools-selected-tool-col cannedanalysis-browse">
+											
+										</td>
+
 									</tr>
 								</table>
+
+								<div class="cannedanalysis-browse-div cannedanalysis-browse">
+									hello!
+								</div>
+
 							</div>`;
 
 		return iconHTMLdiv;
 	},
 
 	/////////////////////////////////
-	////// 2.1.3 prepareToolDivs
+	////// 2.1.3 prepareCannedanalysisDivs
 	/////////////////////////////////
 
 	///// Prepares dropdown menu
 	///// hover information
 
-	prepareToolDivs: function($elem){
+	prepareCannedanalysisDivs: function($elem){
 
 		// Define tool array, tool DIV HTML string
-		var toolArray = ['enrichr', 'clustergrammer', 'l1000cds2'],
+		var toolArray = ['Enrichr', 'Clustergrammer', 'L1000CDS2'],
 			seriesAccession = $elem.attr('id'),
-			toolHTMLdiv = '<td>';
+			toolHTMLdiv = '';
 
 		// Loop through tools
 		for (var i = 0; i < toolArray.length; i++){
 			// Add tool DIV
-			toolHTMLdiv += '<div class="tool-div" id="' + seriesAccession + '-' + toolArray[i] + '""> Canned analyses of ' + seriesAccession + ' and ' + toolArray[i] + '.</div>';
+			toolHTMLdiv += '<div class="'+toolArray[i]+' cannedanalysis-results"> Canned analyses of ' + seriesAccession + ' and ' + toolArray[i] + '.<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>';
 		};
-
-		// Close Column
-		toolHTMLdiv += '</td>'
 
 		// Return DIV
 		return toolHTMLdiv;
@@ -140,55 +153,57 @@ var whenClicked = {
 	///// Shows appropriate tool
 	///// div when clicked
 
-	showToolDiv: function() {
+	// showToolDiv: function() {
 
-		// JQuery Watcher
+	// 	// JQuery Watcher
+	// 	$('.tool-icon').click(function(event) {
+	// 		// Get Tool Name and Series Accession
+	// 		var $target = $(event.target),
+	// 			toolName = $target.attr('id').split('-')[0],
+	// 			seriesAccession = $target.parent().parent().parent().parent().parent().attr('id'),
+	// 			divToActivateId = '#' + seriesAccession + '-' + toolName,
+	// 			divToInactivateId = '#' + seriesAccession + ' .cannedanalyses-div:not('+divToActivateId+')';
+
+	// 		// Hide All Others
+	// 		$(divToInactivateId).hide();
+
+	// 		// Toggle
+	// 		$(divToActivateId).toggle();
+	// 	});
+	// },
+
+	showCannedAnalyses: function() {
+		// Browse
 		$('.tool-icon').click(function(event) {
-			// Get Tool Name and Series Accession
+			// Get Variables
 			var $target = $(event.target),
-				toolName = $target.attr('id').split('-')[0],
-				seriesAccession = $target.parent().parent().parent().parent().parent().attr('id'),
-				divToActivateId = '#' + seriesAccession + '-' + toolName,
-				divToInactivateId = '#' + seriesAccession + ' .tool-div:not('+divToActivateId+')';
+				$parentDiv = $target.parent().parent().parent().parent().parent(),
+				toolName = $target.attr('id').split('-')[0];
 
-			// Hide All Others
-			$(divToInactivateId).hide();
+			// Selected Tool Icon
+			$parentDiv.find('.datasets2tools-selected-tool-col').html($target.prop('outerHTML') + toolName);
 
-			// Toggle
-			$(divToActivateId).toggle();
-		});
-	}
+			// Toggle Display/Browse
+			$parentDiv.find('.cannedanalysis-display').hide();
+			$parentDiv.find('.cannedanalysis-browse').show();
 
-};
-
-////////////////////////////////////////////////////////////
-///// 2.3 Datasets2Tools API ///////////////////////////////
-////////////////////////////////////////////////////////////
-
-var Datasets2ToolsAPI = {
-
-	getApiResults: function(url){
-
-		$.ajax({
-				url: url,//'localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2',
-				type: 'GET',
-				crossDomain: true,
-				success: function(response){
-					window.alert(new XMLSerializer().serializeToString(response))
-				}
+			// Canned Analyses
+			$parentDiv.find('.'+toolName).show();
 		});
 
+		// Go Back
+		$('.datasets2tools-goback-div').click(function(event) {
+			// Get Variables
+			var $target = $(event.target),
+				$parentDiv = $target.parent().parent().parent().parent().parent();
+
+			// Toggle Display/Browse
+			$parentDiv.find('.cannedanalysis-display').show();
+			$parentDiv.find('.cannedanalysis-browse').hide();
+			$parentDiv.find('.cannedanalysis-results').hide();
+		})
 	}
-
 };
-
-
-
-		// xmlhttp = new XMLHttpRequest();
-		// xmlhttp.open('GET', 'http://localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2', false);
-		// xmlhttp.send();
-		// var data = xmlhttp.responseText;
-		// return 'data';
 
 ////////////////////////////////////////////////////////////////////
 /////// 3. Run Function ////////////////////////////////////////////

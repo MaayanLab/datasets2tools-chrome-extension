@@ -1,33 +1,54 @@
 /* Icon Bar */
-.cannedanalysis-icon-bar {
+.cannedanalysis-bar {
   display: flex;
-  align-items: center;
+  align-items: top;
+  width: 100%;
 }
 
-/* Table */
+/*/// Table ///*/
+/* General */
 .cannedanalysis-table {
   vertical-align: baseline;
   border-collapse: separate;
   empty-cells: hide;
+  float:left;
 }
 
-td .cannedanalysis-text {
+.cannedanalysis-browse {
+  display:none;
+}
+
+/* First Column - Icon */
+td .datasets2tools-icon {
   vertical-align: baseline;
 }
 
-.cannedanalysis-text {
+.datasets2tools-icon {
   background-color: #f2f2f2;
   font-size: small;
   font-family: "Arial", Arial, Sans-serif;
 }
 
-.cannedanalysis-text img {
+.datasets2tools-icon img {
   height: 25px;
   padding-left: 5px;
+  padding-right: 5px;
   vertical-align: middle;
 }
 
-/* Tool Icons */
+/* Second column - Browse - Go Back */
+.datasets2tools-goback {
+  display: none;
+  background-color: #f2f2f2;
+}
+
+.datasets2tools-goback-div {
+  margin: -5px;
+  transform: rotate(90deg);
+  min-width: 15px;
+}
+
+/* Third Column - Display - Tool Icons */
 .tool-icon {
   margin: 5px;
   border: 1px solid #f2f2f2;
@@ -38,7 +59,36 @@ td .cannedanalysis-text {
   border: 1px solid black;
 }
 
-/* Tool Divs */
-.tool-div {
-  display: none;
+/* Fourth Column - Browse - Selected Tool Icon */
+.datasets2tools-selected-tool-col {
+  /*vertical-align: middle;*/
+  font-weight: bold;
+  font-size: small;
+  padding-right: 7px;
+  padding-left: 5px;
 }
+
+.datasets2tools-selected-tool-col img {
+  vertical-align: middle;
+}
+
+/*/// Canned Analyses Div ///*/
+
+/* Fifth Column - Browse - Canned Analyses */
+.cannedanalysis-browse-div {
+  width: auto;
+  float: right;
+  text-align: left;
+  max-height: 150px;
+  overflow-y: scroll;
+  border: 1px solid #f2f2f2;
+  margin-top: 17px;
+}
+
+.cannedanalysis-results {
+  display: none;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+
