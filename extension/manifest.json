@@ -15,7 +15,7 @@
 	"content_scripts": [
 		{
 			"matches": [
-				"https://www.ncbi.nlm.nih.gov/gds/?term=*"
+				"https://datamed.org/search.php?*"
 			],
 			"css": [
 				"button.css"

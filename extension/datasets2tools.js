@@ -6,207 +6,365 @@
 ////////// Based on Cite-D-Lite (https://github.com/MaayanLab/Cite-D-Lite).
 
 function main() {
-	// 1.1 Load Interface
-	Interface.load();
+	// 1.1 Locate Parents
+	var $parents = Interface.locateParents();
 
-	// 1.2 whenClicked Watcher
-	whenClicked.showCannedAnalyses();
-	// whenClicked.showToolDiv();
+	// 1.2 Prepare Dynamic Interface
+	var preparedInterface = Interface.prepareInteractive($parents);
 
-	// 1.3 API Test
-	// Datasets2ToolsAPI.getApiResults('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gds&id=200069129');
-	// Datasets2ToolsAPI.getApiResults('http://localhost:5000/canned_analyses?dataset_fk=1&tool_fk=2');
+	// 1.3 Load Static Interface
+	Interface.load($parents);
+
+	console.log(preparedInterface);
 };
-
 
 //////////////////////////////////////////////////////////////////////
 ///////// 2. Define Variables ////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-///// 2.1 Interface ////////////////////////////////////////
+///// 2.1 API //////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var API = {
+
+	/////////////////////////////////
+	////// 2.1.1 getDatasetId
+	/////////////////////////////////
+
+	getDatasetId: function(datasetAccession) {
+		return datasetAccession + ' > ID';
+	},
+
+	/////////////////////////////////
+	////// 2.1.2 getCannedAnalysisIds
+	/////////////////////////////////
+
+	getCannedAnalysisIds: function(datasetId) {
+		return datasetId + ' > Canned Analysis IDs';
+	},
+
+	/////////////////////////////////
+	////// 2.1.3 getCannedAnalysisMetadata
+	/////////////////////////////////
+
+	getCannedAnalysisMetadata: function(cannedAnalysisIds) {
+		var obj = {"1":{"10":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"},"11":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"}},"2":{"12":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"},"13":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"}},"3":{"14":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"},"15":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"}}};
+		return obj;
+	},
+
+	/////////////////////////////////
+	////// 2.1.4 getCannedAnalyses
+	/////////////////////////////////
+
+	getCannedAnalyses: function($parents) {
+
+		// Define Canned Analyses empty object
+		var self = this,
+			cannedAnalyses = {};
+
+		// Loop through parents
+		$($parents).each(function(i, elem) {
+
+			// Define element
+			var $elem = $(elem),
+				datasetAccession;
+
+			// Get dataset accession
+			datasetAccession = Interface.getDatasetAccession($elem);
+
+			// Get dataset ID
+			datasetId = self.getDatasetId(datasetAccession);
+
+			// Get Canned Analysis IDs
+			cannedAnalysisIds = self.getCannedAnalysisIds(datasetId);
+
+			// Get Canned Analysis Metadata
+			cannedAnalysisMetadata = self.getCannedAnalysisMetadata(cannedAnalysisIds);
+
+			// Add to object
+			cannedAnalyses[datasetAccession] = cannedAnalysisMetadata;
+		})
+
+		// Return object
+		return cannedAnalyses;
+	},
+
+	/////////////////////////////////
+	////// 2.1.5 getToolMetadata
+	/////////////////////////////////
+
+	getToolMetadata: function(cannedAnalyses) {
+		var obj = {"1":{"tool_name":"Enrichr","tool_icon_url":"http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"},"2":{"tool_name":"Clustergrammer","tool_icon_url":"http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png"},"3":{"tool_name":"L1000CDS2","tool_icon_url":"http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"}};
+		return obj;
+	}
+};
+
+////////////////////////////////////////////////////////////
+///// 2.2 Interface ////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var Interface = {
 
 	/////////////////////////////////
-	////// 2.1.1 load
+	////// 2.2.1 locateParents OK
 	/////////////////////////////////
 
-	///// Creates citation label and calls
-	///// addButtons method to add the buttons
+	locateParents: function() {
 
-	load: function() {
+		// Define variable
+		var $parents;
+
+		// Add parents
+		$parents = $('.search-result li');
+
+		// Return result
+		return $parents;
+	},
+
+	/////////////////////////////////
+	////// 2.2.2 getDatasetAccession
+	/////////////////////////////////
+
+	getDatasetAccession: function($elem) {
+
+		// Get accession
+		datasetAccession = $elem.find(".result-field em:contains('ID:'), em:contains('Accession:')").next().text().replace(/\s+/g, '');
+
+		// Return accession
+		return datasetAccession;
+	},
+
+	/////////////////////////////////
+	////// 2.2.3 prepareInteractive
+	/////////////////////////////////
+
+	prepareInteractive: function($parents) {
+
+		// Define object
+		var preparedInterface = {'canned_analyses': {}, 'tools': {}},
+			datasetAccession;
+
+		// Get Canned Analyses
+		var cannedAnalysisData = API.getCannedAnalyses($parents);
+
+		// Get Tool Metadata
+		var toolMetadata = API.getToolMetadata(cannedAnalysisData);
+
+		// Get Canned Analysis Interface
+		preparedInterface['canned_analyses'] = prepareInterface.cannedAnalyses(cannedAnalysisData, toolMetadata);
+
+		// Get Tool metadata Interface
+		preparedInterface['tools'] = prepareInterface.tools(toolMetadata);
+
+		// Return prepared interface
+		return preparedInterface;
+	},
+
+	/////////////////////////////////
+	////// 2.2.4 prepareStatic
+	/////////////////////////////////
+
+	prepareStatic: function($elem) {
 
 		// Define self
 		var self = this;
 
-		// Loop through GEO search results elements
-		$('.aux').each(function(i, elem) {
+		// Get dataset accession
+		var datasetAccession = self.getDatasetAccession($elem);
 
-			// Define element, find GSE accession, prepare icon bar
-			var $elem = $(elem),
-			    seriesAccession = $elem.find("a:contains('GSE')").text();
-			    iconHTMLdiv = self.prepareIconBar($elem);
+		// Prepare HTML
+		var interfaceHTML, toolbar, searchBar, logoTab, selectedToolTab, toolIconTab, searchTab, browseTable;
 
-			// Append icon bar
-			$elem.append(iconHTMLdiv);
-		});
+		// Datasets2Tools Toolbar
+		toolbar = '<div class="datasets2tools-toolbar" id="' + datasetAccession + '"">';
 
-		// Loop through icon bars
-		$('.cannedanalysis-bar').each(function(i, elem){
+		// Datasets2Tools search bar
+		searchBar = '<div class="datasets2tools-search-bar datasets2tools-compact">';
+
+		// Datasets2Tools logo
+		logoTab = '<div class="datasets2tools-logo-tab"><img src="https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png" style="height:20px;width:20px;""> Datasets2Tools </div>';
+
+		// Selected Tool Tab
+		selectedToolTab = '<div class="datasets2tools-selected-tool-tab datasets2tools-expand"> Selected Tool Info: </div>';
+
+		// Tool Icon Tab
+		toolIconTab = '<div class="datasets2tools-tool-icon-tab datasets2tools-compact"> Tool Icons: </div>';
+
+		// Search Tab
+		searchTab = '<div class="datasets2tools-search-tab datasets2tools-expand"> Search: </div>';
+
+		// Browse table
+		browseTable = '<div class="datasets2tools-browse-table datasets2tools-expand"> Browse table: </div>';
+
+		// Prepare Interface HTML
+		interfaceHTML = toolbar + searchBar + logoTab + selectedToolTab + toolIconTab + searchTab + '</div>' + browseTable + '</div>';
+
+		return interfaceHTML;
+	},
+
+	/////////////////////////////////
+	////// 2.2.5 load
+	/////////////////////////////////
+
+	load: function($parents) {
+
+		// Define variables
+		var self = this,
+			staticInterface;
+
+		// Loop through parents
+		$($parents).each(function(i, elem) {
 
 			// Define element
-			var $elem = $(elem),
-				toolHTMLdiv = self.prepareCannedanalysisDivs($elem);
+			var $elem = $(elem);
+
+			// Prepare static interface
+			staticInterface = self.prepareStatic($elem);
 
 			// Append
-			$elem.find('.cannedanalysis-browse-div').html(toolHTMLdiv);
-		});
-	},
-
-	/////////////////////////////////
-	////// 2.1.2 prepareIconBar
-	/////////////////////////////////
-
-	///// Prepares button with according
-	///// hover information
-
-	prepareIconBar: function($elem){
-		// Get icon URL
-	 	var iconURL = chrome.extension.getURL("icon_720.png");
-
-	 	// Get series accession
-		var seriesAccession = $elem.prev().find("a:contains('GSE')").text();
-
-	 	// Get icon bar div HTML
-		var iconHTMLdiv = `<div class="cannedanalysis-bar" id="`+seriesAccession+`">
-								<table class="cannedanalysis-table">
-									<tr style="max-height:50px">
-
-										<td class="datasets2tools-icon">
-											<img src="`+iconURL+`"><b class="cannedanalysis-display">&nbsp&nbsp Datasets2Tools:&nbsp&nbsp&nbsp</b>
-										</td>
-
-										<td class="datasets2tools-goback cannedanalysis-browse">
-											<div class="datasets2tools-goback-div"> v v v </div>
-										</td>
-
-										<td class="cannedanalysis-tool-icons cannedanalysis-display">
-											<img id="Enrichr-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png">
-											<img id="Clustergrammer-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/clustergrammer/static/icons/graham_cracker_70.png">
-											<img id="L1000CDS2-icon" class="tool-icon" src="http://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png">
-										</td>
-
-										<td class="datasets2tools-selected-tool-col cannedanalysis-browse">
-											
-										</td>
-
-									</tr>
-								</table>
-
-								<div class="cannedanalysis-browse-div cannedanalysis-browse">
-
-								</div>
-
-							</div>`;
-
-		return iconHTMLdiv;
-	},
-
-	/////////////////////////////////
-	////// 2.1.3 prepareCannedanalysisDivs
-	/////////////////////////////////
-
-	///// Prepares dropdown menu
-	///// hover information
-
-	prepareCannedanalysisDivs: function($elem){
-
-		// Define tool array, tool DIV HTML string
-		var toolArray = ['Enrichr', 'Clustergrammer', 'L1000CDS2'],
-			seriesAccession = $elem.attr('id'),
-			toolHTMLdiv = '',
-			infoIconURL = "https://openclipart.org/image/2400px/svg_to_png/213219/Information-icon.png";
-
-		// Loop through tools
-		for (var i = 0; i < toolArray.length; i++){
-			// Add tool DIV
-			toolHTMLdiv += '<div class="'+toolArray[i]+' cannedanalysis-results"> Canned analyses of ' + seriesAccession + ' and ' + toolArray[i] + '<sup><img src="'+infoIconURL+'" style="width:10px;height:10px;"></sup>.<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>';
-		};
-
-		// Return DIV
-		return toolHTMLdiv;
-	}
-
-};
-
-////////////////////////////////////////////////////////////
-///// 2.2 whenClicked //////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-var whenClicked = {
-
-	/////////////////////////////////
-	////// 2.2.1 showToolDiv
-	/////////////////////////////////
-
-	///// Shows appropriate tool
-	///// div when clicked
-
-	// showToolDiv: function() {
-
-	// 	// JQuery Watcher
-	// 	$('.tool-icon').click(function(event) {
-	// 		// Get Tool Name and Series Accession
-	// 		var $target = $(event.target),
-	// 			toolName = $target.attr('id').split('-')[0],
-	// 			seriesAccession = $target.parent().parent().parent().parent().parent().attr('id'),
-	// 			divToActivateId = '#' + seriesAccession + '-' + toolName,
-	// 			divToInactivateId = '#' + seriesAccession + ' .cannedanalyses-div:not('+divToActivateId+')';
-
-	// 		// Hide All Others
-	// 		$(divToInactivateId).hide();
-
-	// 		// Toggle
-	// 		$(divToActivateId).toggle();
-	// 	});
-	// },
-
-	showCannedAnalyses: function() {
-		// Browse
-		$('.tool-icon').click(function(event) {
-			// Get Variables
-			var $target = $(event.target),
-				$parentDiv = $target.parent().parent().parent().parent().parent(),
-				toolName = $target.attr('id').split('-')[0],
-				infoIconURL = "https://openclipart.org/image/2400px/svg_to_png/213219/Information-icon.png";
-
-
-			// Selected Tool Icon
-			$parentDiv.find('.datasets2tools-selected-tool-col').html($target.prop('outerHTML') + toolName + '&nbsp<sup><img src="'+infoIconURL+'" style="height:10px;width:10px;"></sup>' );
-
-			// Toggle Display/Browse
-			$parentDiv.find('.cannedanalysis-display').hide();
-			$parentDiv.find('.cannedanalysis-browse').show();
-
-			// Canned Analyses
-			$parentDiv.find('.'+toolName).show();
-		});
-
-		// Go Back
-		$('.datasets2tools-goback-div').click(function(event) {
-			// Get Variables
-			var $target = $(event.target),
-				$parentDiv = $target.parent().parent().parent().parent().parent();
-
-			// Toggle Display/Browse
-			$parentDiv.find('.cannedanalysis-display').show();
-			$parentDiv.find('.cannedanalysis-browse').hide();
-			$parentDiv.find('.cannedanalysis-results').hide();
+			$elem.append(staticInterface);
 		})
 	}
 };
+
+////////////////////////////////////////////////////////////
+///// 2.3 prepareInterface /////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var prepareInterface = {
+
+	/////////////////////////////////
+	////// 2.3.1 cannedAnalyses
+	/////////////////////////////////
+
+	cannedAnalyses: function(cannedAnalysisData, toolMetadata) {
+
+		// Define interfact object
+		var cannedAnalysisInterface = {},
+			self = this,
+			datasetAccession,
+			cannedAnalysisDataElement;
+
+		// Get dataset number
+		var numberOfDatasets = Object.keys(cannedAnalysisData).length;
+
+		// Loop through datasets in canned analysis object
+		for (i = 0; i < numberOfDatasets; i++) {
+
+			// Get dataset accession
+			datasetAccession = Object.keys(cannedAnalysisData)[i];
+
+			// Get canned analysis object
+			cannedAnalysisDataElement = cannedAnalysisData[datasetAccession];
+
+			// Initialize object
+			cannedAnalysisInterface[datasetAccession] = {};
+			
+			// Add tool-icon-tab interface
+			cannedAnalysisInterface[datasetAccession]['tool_icon_tab'] = self.toolIconTab(cannedAnalysisDataElement, toolMetadata);
+
+			// Add browse-table interface
+			cannedAnalysisInterface[datasetAccession]['browse_table'] = self.browseTable(cannedAnalysisDataElement);
+		}
+
+		// Return prepared interface
+		return cannedAnalysisInterface;
+	},
+
+	/////////////////////////////////
+	////// 2.2.2 toolIconTab
+	/////////////////////////////////
+
+	toolIconTab: function(cannedAnalysisDataElement, toolMetadata) {
+
+		// Define string
+		var toolIconTab = '<div class="datasets2tools-tool-icon-tab datasets2tools-compact">',
+			toolId;
+
+		// Get tool IDs
+		var toolIds = Object.keys(cannedAnalysisDataElement);
+
+		// Add to it
+		for (i = 0; i < toolIds.length; i++) {
+
+			// Get tool icon URL
+			// toolIconURL = toolMetadata[toolIds[i]]['tool_icon_url'];
+
+			// Prepare icon string
+			toolIconTab += 'asd'//'<img src="' + 'asd' + '">';
+		}
+
+		// Close DIV
+		toolIconTab += 'asd' + cannedAnalysisDataElement + '</div>' ;
+
+		// Return HTML string
+		return toolIconTab;
+	},
+
+	/////////////////////////////////
+	////// 2.3.3 browseTable
+	/////////////////////////////////
+
+	browseTable: function(cannedAnalysisDataElement) {
+		return '';
+	},
+
+	/////////////////////////////////
+	////// 2.3.3 selectedToolTab
+	/////////////////////////////////
+
+	selectedToolTab: function(toolMetadataElement) {
+		return '';
+	},
+
+	/////////////////////////////////
+	////// 2.3.4 tools
+	/////////////////////////////////
+
+	tools: function(toolMetadata) {
+
+		// Define interface object
+		var toolInterface = {},
+			self = this;
+
+		// Get tool number
+		var numberOfTools = Object.keys(toolMetadata);
+
+		// Loop through tools in tool metadata object
+		for (i = 0; i < numberOfTools; i++) {
+
+			// Get tool ID
+			toolId = Object.keys(numberOfTools)[i];
+
+			// Add interface
+			toolInterface[toolId] = self.toolIconTab(toolMetadata[toolId]);
+		}
+
+		// Return object
+		return toolInterface;
+	},
+
+};
+
+////////////////////////////////////////////////////////////
+///// 2.4 whenClicked //////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+// var whenClicked = {
+
+// 	/////////////////////////////////
+// 	////// 2.3.1 
+// 	/////////////////////////////////
+
+// 	locateParents: function() {
+// 		window.alert('hello');
+// 	}
+
+
+
+// 	// }
+// };
 
 ////////////////////////////////////////////////////////////////////
 /////// 3. Run Function ////////////////////////////////////////////
