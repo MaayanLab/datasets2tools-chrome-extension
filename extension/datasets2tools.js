@@ -5,6 +5,10 @@
 ////////// Author: Denis Torre
 ////////// Based on Cite-D-Lite (https://github.com/MaayanLab/Cite-D-Lite).
 
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+};
+
 function main() {
 
 	// 1.1 Load Static Interface
@@ -12,8 +16,6 @@ function main() {
 
 	// 1.2 Get Canned Analysis Data
 	var cannedAnalysisData = API.main();
-
-	console.log(cannedAnalysisData);
 
 	// 1.3 Load Dynamic Interface
 	Interface.loadDynamic(cannedAnalysisData);
@@ -50,7 +52,7 @@ var API = {
 	/////////////////////////////////
 
 	getCannedAnalysisMetadata: function(cannedAnalysisIds) {
-		var obj = {"1":{"10":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"},"11":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"}},"2":{"12":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"},"13":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"}},"3":{"14":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"},"15":{"canned_analysis_url":"www.google.com","description":"analysisdescription","tag1":"value1","tag2":"value2"}}};
+		var obj = {"1":{"10":{"canned_analysis_url":"https://www.google.com/","description":"enrichr analysis 1","tag1":"value1","tag2":"value2"},"11":{"canned_analysis_url":"https://www.google.com/","description":"enrichr analysis 2","tag1":"value1","tag2":"value2"}},"2":{"12":{"canned_analysis_url":"https://www.google.com/","description":"geo2enrichr analysis 1","tag1":"value1","tag2":"value2"},"13":{"canned_analysis_url":"https://www.google.com/","description":"geo2enrichr analysis 2","tag1":"value1","tag2":"value2"}},"3":{"14":{"canned_analysis_url":"https://www.google.com/","description":"l1000cds2 analysis 1","tag1":"value1","tag2":"value2"},"15":{"canned_analysis_url":"https://www.google.com/","description":"l1000cds2 analysis 2","tag1":"value1","tag2":"value2"}}};
 		return obj;
 	},
 
@@ -96,7 +98,7 @@ var API = {
 	/////////////////////////////////
 
 	getToolMetadata: function(cannedAnalyses) {
-		var obj = {"1":{"tool_name":"Enrichr","tool_icon_url":"https://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"},"2":{"tool_name":"Clustergrammer","tool_icon_url":"https://amp.pharm.mssm.edu/g2e/static/image/logo-50x50.png"},"3":{"tool_name":"L1000CDS2","tool_icon_url":"https://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"}};
+		var obj = {"1":{"tool_name":"Enrichr","tool_icon_url":"https://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png"},"2":{"tool_name":"GEO2Enrichr","tool_icon_url":"https://amp.pharm.mssm.edu/g2e/static/image/logo-50x50.png"},"3":{"tool_name":"L1000CDS2","tool_icon_url":"https://amp.pharm.mssm.edu/L1000CDS2/CSS/images/sigine.png"}};
 		return obj;
 	},
 
@@ -229,7 +231,7 @@ var staticInterface = {
 	/////////////////////////////////
 
 	toolbar: function(datasetAccession) {
-		return '<div class="datasets2tools-toolbar" id="' + datasetAccession + '"">';
+		return '<div class="datasets2tools-toolbar" id="' + datasetAccession + '">';
 	},
 
 	/////////////////////////////////
@@ -245,7 +247,7 @@ var staticInterface = {
 	/////////////////////////////////
 
 	logoTab: function() {
-		return '<div class="datasets2tools-logo-tab"><img src="https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png" style="height:20px;width:20px;""> Datasets2Tools </div>';
+		return '<div class="datasets2tools-logo-tab"><img class="datasets2tools-logo-img" src="https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png"> Datasets2Tools </div>';
 	},
 
 	/////////////////////////////////
@@ -269,7 +271,7 @@ var staticInterface = {
 	/////////////////////////////////
 
 	searchTab: function() {
-		return '<div class="datasets2tools-search-tab datasets2tools-expand"> Search: </div>';
+		return '<div class="datasets2tools-search-tab datasets2tools-expand"> <div class="datasets2tools-search-label">Search:</div><div class="datasets2tools-search-input"><input class="datasets2tools-search-text-input" type="text" name="datasets2tools-search-query"></div></div>';
 	},
 
 	/////////////////////////////////
@@ -325,7 +327,7 @@ var dynamicInterface = {
 			toolId = toolIds[i];
 
 			// Add Icons
-			toolIconTabHTML += '<div class="datasets2tools-tool-icon" id="' + toolId + '"><img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" style="height:20px;width=20px"></div>'
+			toolIconTabHTML += '<div class="datasets2tools-tool-icon" id="' + toolId + '"><img class="datasets2tools-tool-icon-img" src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '"></div>'
 		}
 
 		// Return Result
@@ -364,16 +366,37 @@ var dynamicInterface = {
 var whenClicked = {
 
 	/////////////////////////////////
-	////// 2.5.1 browseBar
+	////// 2.5.1 compactMode
 	/////////////////////////////////
 
-	browseBar: function($evtTarget, cannedAnalysisData) {
+	compactMode: function($datasets2toolsToolbar) {
+		$datasets2toolsToolbar.find('.datasets2tools-compact').show();
+		$datasets2toolsToolbar.find('.datasets2tools-expand').hide();
+	},
+
+	/////////////////////////////////
+	////// 2.5.2 expandMode
+	/////////////////////////////////
+
+	expandMode: function($datasets2toolsToolbar) {
+		$datasets2toolsToolbar.find('.datasets2tools-compact').hide();
+		$datasets2toolsToolbar.find('.datasets2tools-expand').show();
+	},
+
+	/////////////////////////////////
+	////// 2.5.3 browseBar
+	/////////////////////////////////
+
+	browseBar: function($evtTarget, cannedAnalysisData, searchFilter = false) {
+
+		// Define self
+		var self = this;
 
 		// Get Tool ID
-		var toolID = $evtTarget.parent().attr('id');
+		var toolId = $evtTarget.parent().attr('id');
 
 		// Get Tool Icon URL
-		var toolIconUrl = cannedAnalysisData['tools'][toolID]['tool_icon_url'];
+		var toolIconUrl = cannedAnalysisData['tools'][toolId]['tool_icon_url'];
 
 		// Get Dataset Accession
 		var datasetAccession = $evtTarget.parent().parent().parent().parent().attr('id');
@@ -382,17 +405,23 @@ var whenClicked = {
 		var cannedAnalysisDataElement = cannedAnalysisData['canned_analyses'][datasetAccession][toolId];
 
 		// Check Filter
-		// var cannedAnalysisDataElementFiltered = something.filterCannedAnalyses(cannedAnalysisDataElement);
+		var cannedAnalysisDataElementFiltered = self.filterCannedAnalyses($evtTarget, cannedAnalysisDataElement, searchFilter);
 
 		// Prepare HTML Table
 		var browseBarHTML = dynamicInterface.browseBar(cannedAnalysisDataElement, toolIconUrl);
 
+		// Get Datasets2Tools Toolbar
+		var $datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
+
+		// Toggle Expanded Mode
+		self.expandMode($datasets2toolsToolbar);
+
 		// Add To Webpage
-		$evtTarget.parent().parent().parent().parent().find('.datasets2tools-browse-bar').html(browseBarHTML);
+		$datasets2toolsToolbar.find('.datasets2tools-browse-bar').html(browseBarHTML);
 	},
 
 	/////////////////////////////////
-	////// 2.5.2 toolIconTab
+	////// 2.5.4 toolIconTab
 	/////////////////////////////////
 
 	toolIconTab: function($evtTarget, cannedAnalysisData) {
@@ -400,7 +429,7 @@ var whenClicked = {
 	},
 
 	/////////////////////////////////
-	////// 2.5.3 toolInfoTab
+	////// 2.5.5 toolInfoTab
 	/////////////////////////////////
 
 	toolInfoTab: function($evtTarget, cannedAnalysisData) {
@@ -416,25 +445,62 @@ var whenClicked = {
 	},
 
 	/////////////////////////////////
-	////// 2.5.4 selectedToolTab
+	////// 2.5.6 selectedToolTab
 	/////////////////////////////////
 
 	selectedToolTab: function($evtTarget, cannedAnalysisData) {
 
 		// Get Tool ID
 		var toolId = $evtTarget.parent().attr('id');
-		console.log(toolId);
-		console.log(cannedAnalysisData);
 
 		// Define Result HTML
-		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" style="height:20px;width:20px">' + cannedAnalysisData['tools'][toolId]['tool_name'];
+		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '';
 
 		// Add To Webpage
-		$evtTarget.parent().parent().parent().find('.datasets2tools-browse-bar').html(selectedToolTabHTML);
+		$evtTarget.parent().parent().parent().parent().find('.datasets2tools-selected-tool-tab').html(selectedToolTabHTML);
 	},
 
 	/////////////////////////////////
-	////// 2.5.5 main
+	////// 2.5.7 logoTab
+	/////////////////////////////////
+
+	logoTab: function($evtTarget) {
+
+		// Get Datasets2Tools Toolbar
+		var $datasets2toolsToolbar = $evtTarget.parent().parent().parent(),
+			self = this;
+
+		// Add To Webpage
+		self.compactMode($datasets2toolsToolbar);
+	},
+
+	/////////////////////////////////
+	////// 2.5.8 filterCannedAnalyses
+	/////////////////////////////////
+
+	filterCannedAnalyses: function($evtTarget, cannedAnalysisDataElement) {
+
+		// Get Search Object
+
+		// Return Filtered Object
+		return cannedAnalysisDataElement;
+	},
+
+	/////////////////////////////////
+	////// 2.5.9 shareCannedAnalysis
+	/////////////////////////////////
+
+	shareCannedAnalysis: function($evtTarget) {
+
+		// Get Search Object
+		$evtTarget.parent().find('.datasets2tools-share-dropdown').toggle();
+
+		window.alert('hello');
+
+	},
+
+	/////////////////////////////////
+	////// 2.5.10 main
 	/////////////////////////////////
 
 	main: function(cannedAnalysisData) {
@@ -462,13 +528,38 @@ var whenClicked = {
 		});
 
 		// Canned Analysis Search Watcher
-		$('.datasets2tools-search-tab').click(function(evt) {
+		$('.datasets2tools-search-text-input').change(function(evt) {//on('change keyup paste', function(evt) {
 
 			// Toggle Browse Bar
-			self.browseBar($(evt.target), cannedAnalysisData);
+			// self.filterCannedAnalyses($(evt.target), cannedAnalysisData, searchFilter);
+			window.alert($(evt.target).val());
 
 		});
+
+		// Share Watcher
+		$('.datasets2tools-browse-bar').find('img').on('click', function(evt) {
+
+			// Toggle Browse Bar
+			// self.shareCannedAnalysis($(evt.target));
+			window.alert('hello');
+
+		});
+
+		// Datasets2Tools Logo Watcher
+		$('.datasets2tools-logo-tab').click(function(evt) {
+
+			// Toggle Browse Bar
+			self.logoTab($(evt.target));
+
+		});
+	},
+
+
+	hello: function() {
+		window.alert('hello');
 	}
+
+
 };
 
 ////////////////////////////////////////////////////////////
@@ -482,7 +573,7 @@ var browseTable = {
 	/////////////////////////////////
 
 	getLinkHTML: function(cannedAnalysisObj, toolIconUrl) {
-		return '<a href="' + cannedAnalysisObj['canned_analysis_url'] + '"><img src="' + toolIconUrl + '" style="height:15px;"></a>';
+		return '<td><a href="' + cannedAnalysisObj['canned_analysis_url'] + '"><img class="datasets2tools-cannedanalysis-link-img" src="' + toolIconUrl + '"></a></td>';
 	},
 
 	/////////////////////////////////
@@ -490,7 +581,7 @@ var browseTable = {
 	/////////////////////////////////
 
 	getDescriptionHTML: function(cannedAnalysisObj) {
-		return cannedAnalysisObj['description'];
+		return '<td>' + cannedAnalysisObj['description'] + '</td>';
 	},
 
 	/////////////////////////////////
@@ -498,7 +589,7 @@ var browseTable = {
 	/////////////////////////////////
 
 	getMetadataHTML: function(cannedAnalysisObj) {
-		return 'Metadata';
+		return '<td class="asd"><img class="datasets2tools-metadata-buttons-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png">&nbsp&nbsp&nbsp<img class="datasets2tools-metadata-buttons-img" src="http://www.drodd.com/images12/icon-download7.png"></td>';
 	},
 
 	/////////////////////////////////
@@ -506,7 +597,17 @@ var browseTable = {
 	/////////////////////////////////
 
 	getShareHTML: function(cannedAnalysisObj) {
-		return 'Share';
+
+		// Define HTML String
+		var shareHTML = '<td>';
+
+		shareHTML += '<img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png">';
+
+		shareHTML += '<div class="datasets2tools-share-dropdown">' + cannedAnalysisObj['canned_analysis_url'] + '</div>';
+
+		shareHTML += '</td>';
+
+		return shareHTML; 
 	},
 
 	/////////////////////////////////
@@ -514,7 +615,7 @@ var browseTable = {
 	/////////////////////////////////
 
 	getRowHTML: function(linkHTML, descriptionHTML, metadataHTML, shareHTML) {
-		return '<tr><td>' + [linkHTML, descriptionHTML, metadataHTML, shareHTML].join('</td><td>') + '</td></tr>';
+		return '<tr>' + [linkHTML, descriptionHTML, metadataHTML, shareHTML].join('') + '</tr>';
 	},
 
 	/////////////////////////////////
@@ -525,7 +626,7 @@ var browseTable = {
 
 		// Define variables
 		var self = this,
-			browseTableHTML = '<table class="datasets2tools-browse-table"><tr><th>Link</th><th>Description</th><th>Metadata</th><th>Share</th></tr>',
+			browseTableHTML = '<table class="datasets2tools-browse-table"><tr><th class="datasets2tools-link-col">Link</th><th class="datasets2tools-description-col">Description</th><th class="datasets2tools-metadata-col">Metadata</th><th class="datasets2tools-share-col">Share</th></tr>',
 			cannedAnalysisObj;
 
 		// Get Canned Analysis IDs
@@ -552,4 +653,5 @@ var browseTable = {
 ////////////////////////////////////////////////////////////////////
 /////// 3. Run Function ////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
+
 main();

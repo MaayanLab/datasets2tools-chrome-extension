@@ -1,91 +1,316 @@
-/* Icon Bar */
-.cannedanalysis-bar {
-  display: flex;
-  align-items: top;
+/**********************************************************************/
+/**********************************************************************/
+/********** 1. CSS Styling ********************************************/
+/**********************************************************************/
+/**********************************************************************/
+
+/************************************************************/
+/***** 1.1 Toolbar ******************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.1.1 Toolbar **********/
+/******************************/
+
+.datasets2tools-toolbar {
+  padding-top: 5px;
+  padding-bottom: 20px;
+}
+
+/************************************************************/
+/***** 1.2 Bars *********************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.2.1 Search Bar *******/
+/******************************/
+
+.datasets2tools-search-bar {
+  background: aqua;
+  border: solid 1px black;
+  height: 50px;
   width: 100%;
+  line-height: 50px;
 }
 
-/*/// Table ///*/
-/* General */
-.cannedanalysis-table {
-  vertical-align: baseline;
-  border-collapse: separate;
-  empty-cells: hide;
-  float:left;
-  max-width: 75%;
+/******************************/
+/***** 1.23.2 Browse Bar ******/
+/******************************/
+
+
+/************************************************************/
+/***** 1.3 Tabs *********************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.3.1 Logo Tab *********/
+/******************************/
+
+.datasets2tools-logo-tab {
+  float: left;
+  padding-left: 10px;
+  padding-right: 15px;
+  border-right: solid 1px black;
+  height: 49px;
 }
 
-.cannedanalysis-browse {
-  display:none;
+/******************************/
+/***** 1.3.2 Selected Tool Tab /
+/******************************/
+
+.datasets2tools-selected-tool-tab {
+  float: left;
+  border-right: solid 1px black;
+  padding-left: 15px;
+  padding-right: 15px;
+  height: 49px;
 }
 
-/* First Column - Icon */
-.datasets2tools-icon {
-  background-color: #f2f2f2;
-  font-size: small;
-  font-family: "Arial", Arial, Sans-serif;
+/******************************/
+/***** 1.3.3 Tool Icon Tab ****/
+/******************************/
+
+.datasets2tools-tool-icon-tab {
+  float: left;
+  padding-left: 15px;
+  position: relative;
+  top: 20%;
 }
 
-.datasets2tools-icon img {
+/******************************/
+/***** 1.3.4 Logo Tab *********/
+/******************************/
+
+
+/******************************/
+/***** 1.3.5 Search Tab *******/
+/******************************/
+
+.datasets2tools-search-tab {
+  padding-left: 15px;
+  padding-right: 15px;
+  overflow: hidden;
+}
+
+/************************************************************/
+/***** 1.4 Tool Icons ***************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.4.1 Tool Icons *******/
+/******************************/
+
+.datasets2tools-tool-icon {
+  float: left;
+  padding-right: 15px;
+}
+
+/************************************************************/
+/***** 1.5 Images *******************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.5.1 D2T Logo *********/
+/******************************/
+
+.datasets2tools-logo-img {
+  height: 35px;
+  width: 35px;
+}
+
+/******************************/
+/***** 1.5.2 Tool Logos *******/
+/******************************/
+
+.datasets2tools-tool-icon-img {
+  height: 30px;
+  width: 30px;
+  border: solid 1px grey;
+}
+
+/******************************/
+/***** 1.5.3 Selected Tool Logo/
+/******************************/
+
+.datasets2tools-selected-tool-img {
+  height: 30px;
+  width: 30px;
+  border: 0.5px solid grey;
+}
+
+/******************************/
+/***** 1.5.4 URL Link *********/
+/******************************/
+
+.datasets2tools-cannedanalysis-link-img {
   height: 25px;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: middle;
+  width: 25px;
+  border: 0.5px solid grey;
 }
 
-/* Second column - Browse - Go Back */
-.datasets2tools-goback {
-  display: none;
-  background-color: #f2f2f2;
+/******************************/
+/***** 1.5.5 Metadata Buttons */
+/******************************/
+
+.datasets2tools-metadata-buttons-img {
+  height: 20px;
+  width: 20px;
 }
 
-.datasets2tools-goback-div {
-  margin: -5px;
-  transform: rotate(90deg);
-  min-width: 15px;
-}
+/******************************/
+/***** 1.5.5 Share Button *****/
+/******************************/
 
-/* Third Column - Display - Tool Icons */
-.tool-icon {
-  margin: 5px;
-  border: 1px solid #f2f2f2;
+.datasets2tools-share-button-img {
   height: 25px;
+  width: 25px;
 }
 
-.tool-icon:hover {
-  border: 1px solid black;
+/************************************************************/
+/***** 1.6 Browse Table *************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.6.1 Browse Table *****/
+/******************************/
+
+.datasets2tools-browse-table {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  /*border-collapse: collapse;*/
 }
 
-/* Fourth Column - Browse - Selected Tool Icon */
-.datasets2tools-selected-tool-col {
-  /*vertical-align: middle;*/
-  font-weight: bold;
-  font-size: small;
-  padding-right: 7px;
-  padding-left: 5px;
+/******************************/
+/***** 1.6.2 Headers **********/
+/******************************/
+
+.datasets2tools-browse-table th {
+  background-color: #cccccc;
+  border: 0.5px solid #a5a5a5;
+  color: black;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
-.datasets2tools-selected-tool-col img {
-  vertical-align: middle;
+/******************************/
+/***** 1.6.3 Rows *************/
+/******************************/
+
+.datasets2tools-browse-table tr {
+  border: 0.5px solid #a5a5a5;
+  color: black;
 }
 
-/*/// Canned Analyses Div ///*/
+/******************************/
+/***** 1.6.4 Columns **********/
+/******************************/
 
-/* Fifth Column - Browse - Canned Analyses */
-.cannedanalysis-browse-div {
-  width: auto;
-  float: right;
-  flex-grow: 1;
+.datasets2tools-browse-table td {
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+/******************************/
+/***** 1.6.4 Description Col **/
+/******************************/
+
+.datasets2tools-link-col {
+  width: 50px;
+}
+
+/******************************/
+/***** 1.6.5 Description Col **/
+/******************************/
+
+/*.datasets2tools-description-col td {
   text-align: left;
-  max-height: 100px;
-  overflow-y: scroll;
-  border: 1px solid #e6e6e6;
-  margin-top: 16.5px;
+}
+*/
+/******************************/
+/***** 1.6.6 Description Col **/
+/******************************/
+
+.datasets2tools-metadata-col {
+  width: 100px;
 }
 
-.cannedanalysis-results {
+/******************************/
+/***** 1.6.7 Description Col **/
+/******************************/
+
+.datasets2tools-share-col {
+  width: 75px;
+}
+
+/************************************************************/
+/***** 1.7 Search Tab ***************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.7.1 Search 
+/******************************/
+
+.datasets2tools-search-label {
+  float: left;
+  padding-right: 15px;
+}
+
+/******************************/
+/***** 1.7.2 Search Input *****/
+/******************************/
+
+.datasets2tools-search-input {
+  overflow: hidden;
+  padding-top: 12px;
+}
+
+/******************************/
+/***** 1.7.2 Search Text Input /
+/******************************/
+
+.datasets2tools-search-text-input {
+  line-height: 10px;
+  width: 100%;
+  vertical-align: middle;
+}
+
+/************************************************************/
+/***** 1.8 Dropdown Menus ***********************************/
+/************************************************************/
+
+/******************************/
+/***** 1.8.1 Share Dropdown ***/
+/******************************/
+
+.datasets2tools-share-dropdown {
   display: none;
-  padding: 10px;
 }
 
+/******************************/
+/***** 1.8.1 Dropdown Content */
+/******************************/
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+}
+
+/************************************************************/
+/***** 1.9 Display Classes **********************************/
+/************************************************************/
+
+/******************************/
+/***** 1.9.1 Compact **********/
+/******************************/
+
+/******************************/
+/***** 1.9.2 Expanded *********/
+/******************************/
+
+.datasets2tools-expand {
+  display: none;
+}
 
