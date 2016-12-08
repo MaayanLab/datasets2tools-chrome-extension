@@ -5,22 +5,17 @@
 ////////// Author: Denis Torre
 ////////// Based on Cite-D-Lite (https://github.com/MaayanLab/Cite-D-Lite).
 
-function myFunction() {
-    document.getElementById("myDropdown").classList.toggle("show");
-};
-
 function main() {
 
-	// 1.1 Load Static Interface
-	Interface.loadStatic();
+	// 1.1 Locate Parents
+	$parents = Interface.locateParents();
 
 	// 1.2 Get Canned Analysis Data
-	var cannedAnalysisData = API.main();
+	var cannedAnalysisData = API.main($parents);
 
-	// 1.3 Load Dynamic Interface
-	Interface.loadDynamic(cannedAnalysisData);
+	// 1.3 Load Interface
+	Interface.load($parents, cannedAnalysisData);
 
-	console.log(cannedAnalysisData);
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -108,13 +103,10 @@ var API = {
 	////// 2.1.6 main
 	/////////////////////////////////
 
-	main: function() {
+	main: function($parents) {
 		
 		// Define object
 		var cannedAnalysisData = {'canned_analyses': {}, 'tools': {}}
-
-		// Get Parents
-		$parents = Interface.locateParents();
 
 		// Get Canned Analyses
 		cannedAnalysisData['canned_analyses'] = API.getCannedAnalyses($parents);
@@ -166,15 +158,11 @@ var Interface = {
 	////// 2.2.3 loadStatic
 	/////////////////////////////////
 
-	loadStatic: function() {
+	loadStatic: function($parents) {
 
 		// Define variables
-		var self = this,
-			$elem,
+		var $elem,
 			staticInterfaceHTML;
-
-		// Get parents
-		var $parents = self.locateParents();
 
 		// Loop through parents
 		$($parents).each(function(i, elem) {
@@ -191,10 +179,10 @@ var Interface = {
 	},
 
 	/////////////////////////////////
-	////// 2.2.4 loadDynamic
+	////// 2.2.4 loadToolIconTabs
 	/////////////////////////////////	
 
-	loadDynamic: function(cannedAnalysisData) {
+	loadToolIconTabs: function(cannedAnalysisData) {
 
 		// Define Variables
 		var toolIconTabHTML,
@@ -211,14 +199,30 @@ var Interface = {
 			datasetAccession = $datasets2toolsToolbar.attr('id');
 
 			// Prepare Tool Icon Tab HTML
-			toolIconTabHTML = dynamicInterface.toolIconTab(cannedAnalysisData, datasetAccession);
+			toolIconTabHTML = toolIconTab.prepare(cannedAnalysisData, datasetAccession);
 
 			// Append
 			$datasets2toolsToolbar.find('.datasets2tools-tool-icon-tab').html(toolIconTabHTML);
 		});
+	},
 
-		// When Clicked Watcher
-		whenClicked.main(cannedAnalysisData);
+	/////////////////////////////////
+	////// 2.2.5 load
+	/////////////////////////////////	
+
+	load: function($parents, cannedAnalysisData) {
+
+		// Define Self
+		var self = this;
+
+		// Load Static Interface
+		this.loadStatic($parents);
+
+		// Load Dynamic Interface
+		this.loadToolIconTabs(cannedAnalysisData);
+
+		// Event Listener
+		eventListener.main(cannedAnalysisData);
 	}
 };
 
@@ -305,16 +309,16 @@ var staticInterface = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.4 dynamicInterface /////////////////////////////////
+///// 2.4 toolIconTab /////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-var dynamicInterface = {
+var toolIconTab = {
 
 	/////////////////////////////////
 	////// 2.4.1 toolIconTab
 	/////////////////////////////////
 
-	toolIconTab: function(cannedAnalysisData, datasetAccession) {
+	prepare: function(cannedAnalysisData, datasetAccession) {
 
 		// Define variables
 		var toolIconTabHTML = '';
@@ -334,260 +338,17 @@ var dynamicInterface = {
 
 		// Return Result
 		return toolIconTabHTML;
-	},
-	
-	/////////////////////////////////
-	////// 2.4.2 browseBar
-	/////////////////////////////////
-
-	browseBar: function(cannedAnalysisDataElement, toolIconUrl) {
-		return browseTable.prepare(cannedAnalysisDataElement, toolIconUrl);
-	},
-
-	/////////////////////////////////
-	////// 2.4.3 selectedToolTab
-	/////////////////////////////////
-
-	selectedToolTab: function() {
-		return '';
-	},
-	
-	/////////////////////////////////
-	////// 2.4.4 toolInfoTab
-	/////////////////////////////////
-
-	toolInfoTab: function() {
-		return '';
 	}
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.5 whenClicked //////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-var whenClicked = {
-
-	/////////////////////////////////
-	////// 2.5.1 compactMode
-	/////////////////////////////////
-
-	compactMode: function($datasets2toolsToolbar) {
-		$datasets2toolsToolbar.find('.datasets2tools-compact').show();
-		$datasets2toolsToolbar.find('.datasets2tools-expand').hide();
-	},
-
-	/////////////////////////////////
-	////// 2.5.2 expandMode
-	/////////////////////////////////
-
-	expandMode: function($datasets2toolsToolbar) {
-		$datasets2toolsToolbar.find('.datasets2tools-compact').hide();
-		$datasets2toolsToolbar.find('.datasets2tools-expand').show();
-	},
-
-	/////////////////////////////////
-	////// 2.5.3 browseBar
-	/////////////////////////////////
-
-	browseBar: function($evtTarget, cannedAnalysisData, searchFilter = false) {
-
-		// Define self
-		var self = this;
-
-		// Get Tool ID
-		var toolId = $evtTarget.parent().attr('id');
-
-		// Get Tool Icon URL
-		var toolIconUrl = cannedAnalysisData['tools'][toolId]['tool_icon_url'];
-
-		// Get Dataset Accession
-		var datasetAccession = $evtTarget.parent().parent().parent().parent().attr('id');
-
-		// Get Canned Analyses
-		var cannedAnalysisDataElement = cannedAnalysisData['canned_analyses'][datasetAccession][toolId];
-
-		// Check Filter
-		var cannedAnalysisDataElementFiltered = self.filterCannedAnalyses($evtTarget, cannedAnalysisDataElement, searchFilter);
-
-		// Prepare HTML Table
-		var browseBarHTML = dynamicInterface.browseBar(cannedAnalysisDataElement, toolIconUrl);
-
-		// Get Datasets2Tools Toolbar
-		var $datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
-
-		// Toggle Expanded Mode
-		self.expandMode($datasets2toolsToolbar);
-
-		// Add To Webpage
-		$datasets2toolsToolbar.find('.datasets2tools-browse-bar').html(browseBarHTML);
-	},
-
-	/////////////////////////////////
-	////// 2.5.4 toolIconTab
-	/////////////////////////////////
-
-	toolIconTab: function($evtTarget, cannedAnalysisData) {
-		return '';
-	},
-
-	/////////////////////////////////
-	////// 2.5.5 toolInfoTab
-	/////////////////////////////////
-
-	toolInfoTab: function($evtTarget, cannedAnalysisData) {
-
-		// Get Tool ID
-		var toolId = $evtTarget.parent().attr('id');
-
-		// Define Result HTML
-		var toolInfoTabHTML = cannedAnalysisData['tools'][toolId]['tool_name'] + ' Info';
-
-		// Add To Webpage
-		$evtTarget.parent().parent().parent().find('.datasets2tools-tool-info-bar').html(selectedToolTabHTML);
-	},
-
-	/////////////////////////////////
-	////// 2.5.6 selectedToolTab
-	/////////////////////////////////
-
-	selectedToolTab: function($evtTarget, cannedAnalysisData) {
-
-		// Get Tool ID
-		var toolId = $evtTarget.parent().attr('id');
-
-		// Define Result HTML
-		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '';
-
-		// Add To Webpage
-		$evtTarget.parent().parent().parent().parent().find('.datasets2tools-selected-tool-tab').html(selectedToolTabHTML);
-	},
-
-	/////////////////////////////////
-	////// 2.5.7 logoTab
-	/////////////////////////////////
-
-	logoTab: function($evtTarget) {
-
-		// Get Datasets2Tools Toolbar
-		var $datasets2toolsToolbar = $evtTarget.parent().parent().parent(),
-			self = this;
-
-		// Add To Webpage
-		self.compactMode($datasets2toolsToolbar);
-	},
-
-	/////////////////////////////////
-	////// 2.5.8 filterCannedAnalyses
-	/////////////////////////////////
-
-	filterCannedAnalyses: function($evtTarget, cannedAnalysisDataElement) {
-
-		// Get Search Object
-
-		// Return Filtered Object
-		return cannedAnalysisDataElement;
-	},
-
-	/////////////////////////////////
-	////// 2.5.9 shareCannedAnalysis
-	/////////////////////////////////
-
-	shareCannedAnalysis: function($evtTarget) {
-
-		// Get Search Object
-		$evtTarget.parent().find('.datasets2tools-share-dropdown').toggle();
-
-	},
-
-	/////////////////////////////////
-	////// 2.5.10 displayMetadata
-	/////////////////////////////////
-
-	displayMetadata: function($evtTarget) {
-
-		// Get Search Object
-		$evtTarget.next().toggle();
-
-	},
-
-	/////////////////////////////////
-	////// 2.5.11 main
-	/////////////////////////////////
-
-	main: function(cannedAnalysisData) {
-
-		// Define Self
-		var self = this;
-
-		// Tool Icon Watcher
-		$('.datasets2tools-tool-icon').click(function(evt) {
-
-			// Toggle Select Tool Tab
-			self.selectedToolTab($(evt.target), cannedAnalysisData);
-
-			// Toggle Browse Bar
-			self.browseBar($(evt.target), cannedAnalysisData);
-
-		});
-		
-		// Tool Info Watcher
-		$('.datasets2tools-tool-info-icon').click(function(evt) {
-
-			// Toggle Tool Info
-			self.toolInfoTab($(evt.target), cannedAnalysisData);
-
-		});
-
-		// Canned Analysis Search Watcher
-		$('.datasets2tools-search-text-input').change(function(evt) {//on('change keyup paste', function(evt) {
-
-			// Toggle Browse Bar
-			// self.filterCannedAnalyses($(evt.target), cannedAnalysisData, searchFilter);
-			window.alert($(evt.target).val());
-
-		});
-
-		// Metadata Watcher
-		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-img', function(evt) {
-
-			// Toggle Browse Bar
-			self.displayMetadata($(evt.target));
-
-		});
-
-		// Share Watcher
-		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-button-img', function(evt) {
-
-			// Toggle Browse Bar
-			self.shareCannedAnalysis($(evt.target));
-
-		});
-
-		// Datasets2Tools Logo Watcher
-		$('.datasets2tools-logo-tab').click(function(evt) {
-
-			// Toggle Browse Bar
-			self.logoTab($(evt.target));
-
-		});
-	},
-
-
-	hello: function() {
-		window.alert('hello');
-	}
-
-
-};
-
-////////////////////////////////////////////////////////////
-///// 2.6 browseTable //////////////////////////////////////
+///// 2.5 browseTable //////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var browseTable = {
 
 	/////////////////////////////////
-	////// 2.6.1 linkHTML
+	////// 2.5.1 linkHTML
 	/////////////////////////////////
 
 	getLinkHTML: function(cannedAnalysisObj, toolIconUrl) {
@@ -595,7 +356,7 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.6.2 descriptionHTML
+	////// 2.5.2 descriptionHTML
 	/////////////////////////////////
 
 	getDescriptionHTML: function(cannedAnalysisObj) {
@@ -603,7 +364,7 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.6.3 metadataHTML
+	////// 2.5.3 metadataHTML
 	/////////////////////////////////
 
 	getMetadataHTML: function(cannedAnalysisObj) {
@@ -644,7 +405,7 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.6.4 shareHTML
+	////// 2.5.4 shareHTML
 	/////////////////////////////////
 
 	getShareHTML: function(cannedAnalysisObj) {
@@ -662,7 +423,7 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.6.5 rowHTML
+	////// 2.5.5 rowHTML
 	/////////////////////////////////
 
 	getRowHTML: function(linkHTML, descriptionHTML, metadataHTML, shareHTML) {
@@ -670,7 +431,7 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.6.6 prepare
+	////// 2.5.6 prepare
 	/////////////////////////////////
 
 	prepare: function(cannedAnalysisDataElement, toolIconUrl) {
@@ -698,6 +459,152 @@ var browseTable = {
 
 		// Return Table HTML
 		return browseTableHTML;
+	}
+};
+
+////////////////////////////////////////////////////////////
+///// 2.6 Interactive //////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var Interactive = {
+
+	/////////////////////////////////
+	////// 2.6.1 triggerCompactMode
+	/////////////////////////////////
+
+	triggerCompactMode: function($evtTarget) {
+		var self = this,
+			$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
+		$datasets2toolsToolbar.find('.datasets2tools-compact').show();
+		$datasets2toolsToolbar.find('.datasets2tools-expand').hide();
+	},
+
+	/////////////////////////////////
+	////// 2.6.2 triggerExpandMode
+	/////////////////////////////////
+
+	triggerExpandMode: function($evtTarget) {
+		var self = this,
+			$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
+		$datasets2toolsToolbar.find('.datasets2tools-compact').hide();
+		$datasets2toolsToolbar.find('.datasets2tools-expand').show();
+	},
+
+	/////////////////////////////////
+	////// 2.6.3 prepareSelectedToolTab
+	/////////////////////////////////
+
+	prepareSelectedToolTab: function($evtTarget, cannedAnalysisData) {
+		// Get Tool ID
+		var toolId = $evtTarget.parent().attr('id');
+
+		// Get Selected Tool Tab Element
+		var $selectedToolTab = $evtTarget.parent().parent().parent().parent().find('.datasets2tools-selected-tool-tab');
+
+		// Get Result HTML
+		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '';
+
+		// Add HTML
+		$selectedToolTab.html(selectedToolTabHTML);
+	},
+
+	/////////////////////////////////
+	////// 2.6.4 prepareBrowseTable
+	/////////////////////////////////
+
+	prepareBrowseTable: function($evtTarget, cannedAnalysisData, searchFilter = false) {
+		// Get Toolbar
+		var $datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
+
+		// Get Dataset Accession
+		var datasetAccession = $datasets2toolsToolbar.attr('id');
+
+		// Get Tool ID
+		var toolId = $evtTarget.parent().attr('id');
+
+		// Get Tool Icon URL
+		var toolIconUrl = cannedAnalysisData['tools'][toolId]['tool_icon_url'];
+
+		// Get Canned Analyses
+		var cannedAnalysisDataElement = cannedAnalysisData['canned_analyses'][datasetAccession][toolId];
+
+		// Prepare Table HTML
+		var browseTableHTML = browseTable.prepare(cannedAnalysisDataElement, toolIconUrl);
+
+		// Add To Webpage
+		$datasets2toolsToolbar.find('.datasets2tools-browse-bar').html(browseTableHTML);
+	}
+};
+
+////////////////////////////////////////////////////////////
+///// 2.7 eventListener ////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var eventListener = {
+
+	/////////////////////////////////
+	////// 2.7.1 clickLogo
+	/////////////////////////////////
+
+	clickLogo: function() {
+		$('.datasets2tools-logo-img').click(function(evt) {
+			Interactive.triggerCompactMode($(evt.target));
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.2 selectTool
+	/////////////////////////////////
+
+	selectTool: function(cannedAnalysisData) {
+		$('.datasets2tools-tool-icon').click(function(evt) {
+			var $evtTarget = $(evt.target);
+			Interactive.triggerExpandMode($evtTarget);
+			Interactive.prepareSelectedToolTab($evtTarget, cannedAnalysisData);
+			Interactive.prepareBrowseTable($evtTarget, cannedAnalysisData);
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.3 displayMetadata
+	/////////////////////////////////
+
+	displayMetadata: function() {
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-img', function(evt) {
+			$(evt.target).next().toggle();
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.4 shareCannedAnalysis
+	/////////////////////////////////
+
+	shareCannedAnalysis: function() {
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-button-img', function(evt) {
+			$(evt.target).parent().find('.datasets2tools-share-dropdown').toggle();
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.5 main
+	/////////////////////////////////
+
+	main: function(cannedAnalysisData) {
+
+		// Define Self
+		var self = this;
+
+		// Click Logo
+		self.clickLogo();
+
+		// Select Tool
+		self.selectTool(cannedAnalysisData);
+
+		// Display Metadata
+		self.displayMetadata();
+
+		// Share Canned Analysis
+		self.shareCannedAnalysis();
 	}
 };
 

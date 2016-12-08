@@ -33,9 +33,13 @@
 }
 
 /******************************/
-/***** 1.23.2 Browse Bar ******/
+/***** 1.2.2 Browse Bar *******/
 /******************************/
 
+.datasets2tools-browse-bar {
+  max-height: 300px;
+  overflow-y: auto;
+}
 
 /************************************************************/
 /***** 1.3 Tabs *********************************************/
@@ -353,7 +357,7 @@
 
 .datasets2tools-metadata-view-dropdown {
   max-height: 150px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 /******************************/
