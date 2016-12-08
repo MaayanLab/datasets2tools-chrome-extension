@@ -26,11 +26,10 @@
 /******************************/
 
 .datasets2tools-search-bar {
-  background: aqua;
   border: solid 1px black;
   height: 50px;
   width: 100%;
-  line-height: 50px;
+  line-height: 47px;
 }
 
 /******************************/
@@ -49,9 +48,10 @@
 .datasets2tools-logo-tab {
   float: left;
   padding-left: 10px;
-  padding-right: 15px;
+  padding-right: 10px;
   border-right: solid 1px black;
-  height: 49px;
+  height: 48px;
+  background-color: #d3d3d3;
 }
 
 /******************************/
@@ -64,6 +64,7 @@
   padding-left: 15px;
   padding-right: 15px;
   height: 49px;
+  vertical-align: top;
 }
 
 /******************************/
@@ -74,7 +75,8 @@
   float: left;
   padding-left: 15px;
   position: relative;
-  top: 20%;
+  top: 17%;
+  background-color: white;
 }
 
 /******************************/
@@ -123,9 +125,11 @@
 /******************************/
 
 .datasets2tools-tool-icon-img {
-  height: 30px;
-  width: 30px;
+  height: 33px;
+  width: 33px;
   border: solid 1px grey;
+  background-color: white;
+  padding: 1px;
 }
 
 /******************************/
@@ -133,8 +137,9 @@
 /******************************/
 
 .datasets2tools-selected-tool-img {
-  height: 30px;
-  width: 30px;
+  height: 33px;
+  width: 33px;
+  padding: 1px;
   border: 0.5px solid grey;
 }
 
@@ -149,16 +154,25 @@
 }
 
 /******************************/
-/***** 1.5.5 Metadata Buttons */
+/***** 1.5.5 View Metadata ****/
 /******************************/
 
-.datasets2tools-metadata-buttons-img {
+.datasets2tools-view-metadata-img {
   height: 20px;
   width: 20px;
 }
 
 /******************************/
-/***** 1.5.5 Share Button *****/
+/***** 1.5.6 Metadata Buttons */
+/******************************/
+
+.datasets2tools-download-metadata-img {
+  height: 20px;
+  width: 20px;
+}
+
+/******************************/
+/***** 1.5.7 Share Button *****/
 /******************************/
 
 .datasets2tools-share-button-img {
@@ -246,11 +260,48 @@
 }
 
 /************************************************************/
-/***** 1.7 Search Tab ***************************************/
+/***** 1.7 Buttons ******************************************/
 /************************************************************/
 
 /******************************/
-/***** 1.7.1 Search 
+/***** 1.7.1 Metadata View ****/
+/******************************/
+
+/*.datasets2tools-view-metadata-button {
+  background-image: url('https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png');
+  background-size: 30px 30px;
+  height: 30px;
+  width: 30px;
+}*/
+
+/******************************/
+/***** 1.7.2 Metadata Download / 
+/******************************/
+
+/*.datasets2tools-download-metadata-button {
+  background-image: url('http://www.drodd.com/images12/icon-download7.png');
+  background-size: 30px 30px;
+  height: 30px;
+  width: 30px;
+}*/
+
+/******************************/
+/***** 1.7.3 Share ************/ 
+/******************************/
+
+/*.datasets2tools-share-button {
+  background-image: url('https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png');
+  background-size: 30px 30px;
+  height: 30px;
+  width: 30px;
+}*/
+
+/************************************************************/
+/***** 1.8 Search Tab ***************************************/
+/************************************************************/
+
+/******************************/
+/***** 1.8.1 Search ***********/
 /******************************/
 
 .datasets2tools-search-label {
@@ -259,7 +310,7 @@
 }
 
 /******************************/
-/***** 1.7.2 Search Input *****/
+/***** 1.8.2 Search Input *****/
 /******************************/
 
 .datasets2tools-search-input {
@@ -268,7 +319,7 @@
 }
 
 /******************************/
-/***** 1.7.2 Search Text Input /
+/***** 1.8.2 Search Text Input /
 /******************************/
 
 .datasets2tools-search-text-input {
@@ -278,36 +329,58 @@
 }
 
 /************************************************************/
-/***** 1.8 Dropdown Menus ***********************************/
+/***** 1.9 Dropdown Menus ***********************************/
 /************************************************************/
 
 /******************************/
-/***** 1.8.1 Share Dropdown ***/
+/***** 1.9.2 Dropdown *********/
+/******************************/
+
+.datasets2tools-dropdown {
+  display: none;
+  position: absolute;
+  background-color: white;
+  border: 0.5px solid grey;
+  z-index: 100;
+  padding: 10px;
+  font-size: small;
+  text-align: left;
+}
+
+/******************************/
+/***** 1.9.2 View Metadata ****/
+/******************************/
+
+.datasets2tools-metadata-view-dropdown {
+  max-height: 150px;
+  overflow-y: scroll;
+}
+
+/******************************/
+/***** 1.9.3 Download Metadata /
+/******************************/
+
+.datasets2tools-metadata-download-dropdown {
+}
+
+/******************************/
+/***** 1.9.4 Share Dropdown ***/
 /******************************/
 
 .datasets2tools-share-dropdown {
-  display: none;
-}
-
-/******************************/
-/***** 1.8.1 Dropdown Content */
-/******************************/
-
-.dropdown-content {
-  display: none;
-  position: absolute;
+  /*right: -100px;*/
 }
 
 /************************************************************/
-/***** 1.9 Display Classes **********************************/
+/***** 1.10 Display Classes **********************************/
 /************************************************************/
 
 /******************************/
-/***** 1.9.1 Compact **********/
+/***** 1.10.1 Compact **********/
 /******************************/
 
 /******************************/
-/***** 1.9.2 Expanded *********/
+/***** 1.10.2 Expanded *********/
 /******************************/
 
 .datasets2tools-expand {

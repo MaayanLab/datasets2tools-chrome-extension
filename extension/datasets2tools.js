@@ -19,6 +19,8 @@ function main() {
 
 	// 1.3 Load Dynamic Interface
 	Interface.loadDynamic(cannedAnalysisData);
+
+	console.log(cannedAnalysisData);
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -247,7 +249,7 @@ var staticInterface = {
 	/////////////////////////////////
 
 	logoTab: function() {
-		return '<div class="datasets2tools-logo-tab"><img class="datasets2tools-logo-img" src="https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png"> Datasets2Tools </div>';
+		return '<div class="datasets2tools-logo-tab"><img class="datasets2tools-logo-img" src="https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png"><span style="font-size:xx-small">&nbsp</span><span class="datasets2tools-compact">Datasets2Tools</span> </div>';
 	},
 
 	/////////////////////////////////
@@ -321,7 +323,7 @@ var dynamicInterface = {
 		var toolIds = Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession]);
 
 		// Loop Through Tools
-		for (i = 0; i < toolIds.length; i++) {
+		for (var i = 0; i < toolIds.length; i++) {
 
 			// Get Tool ID
 			toolId = toolIds[i];
@@ -495,12 +497,21 @@ var whenClicked = {
 		// Get Search Object
 		$evtTarget.parent().find('.datasets2tools-share-dropdown').toggle();
 
-		window.alert('hello');
+	},
+
+	/////////////////////////////////
+	////// 2.5.10 displayMetadata
+	/////////////////////////////////
+
+	displayMetadata: function($evtTarget) {
+
+		// Get Search Object
+		$evtTarget.next().toggle();
 
 	},
 
 	/////////////////////////////////
-	////// 2.5.10 main
+	////// 2.5.11 main
 	/////////////////////////////////
 
 	main: function(cannedAnalysisData) {
@@ -536,12 +547,19 @@ var whenClicked = {
 
 		});
 
-		// Share Watcher
-		$('.datasets2tools-browse-bar').find('img').on('click', function(evt) {
+		// Metadata Watcher
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-img', function(evt) {
 
 			// Toggle Browse Bar
-			// self.shareCannedAnalysis($(evt.target));
-			window.alert('hello');
+			self.displayMetadata($(evt.target));
+
+		});
+
+		// Share Watcher
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-button-img', function(evt) {
+
+			// Toggle Browse Bar
+			self.shareCannedAnalysis($(evt.target));
 
 		});
 
@@ -589,7 +607,40 @@ var browseTable = {
 	/////////////////////////////////
 
 	getMetadataHTML: function(cannedAnalysisObj) {
-		return '<td class="asd"><img class="datasets2tools-metadata-buttons-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png">&nbsp&nbsp&nbsp<img class="datasets2tools-metadata-buttons-img" src="http://www.drodd.com/images12/icon-download7.png"></td>';
+
+		// Metadata String
+		var metadataString = '<b>Metadata:</b><br>';
+
+		// Keys
+		var metadataKeys = Object.keys(cannedAnalysisObj),
+			metadataKey;
+
+		// Loop through tags
+		for (var j = 0; j < metadataKeys.length; j++) {
+			metadataKey = metadataKeys[j];
+
+			if (!(['canned_analysis_url', 'description'].indexOf(metadataKey) >= 0)) {
+				metadataString += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
+			}
+
+		};
+
+		// Define HTML String
+		var metadataHTML = '<td>';
+
+		metadataHTML += '<img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png">';
+		
+		metadataHTML += '<div class="datasets2tools-metadata-view-dropdown datasets2tools-dropdown">' + metadataString + '</div>';
+		
+		metadataHTML += '&nbsp&nbsp&nbsp';
+		
+		metadataHTML += '<img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
+
+		metadataHTML += '<div class="datasets2tools-metadata-download-dropdown datasets2tools-dropdown">' + 'Download Metadata:<br><button>TXT</button><br><button>JSON</button><br><button>XML</button>' + '</div>';
+		
+		metadataHTML += '</td>';
+
+		return metadataHTML;
 	},
 
 	/////////////////////////////////
@@ -603,7 +654,7 @@ var browseTable = {
 
 		shareHTML += '<img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png">';
 
-		shareHTML += '<div class="datasets2tools-share-dropdown">' + cannedAnalysisObj['canned_analysis_url'] + '</div>';
+		shareHTML += '<div class="datasets2tools-share-dropdown datasets2tools-dropdown"> Canned Analysis URL: <textarea>' + cannedAnalysisObj['canned_analysis_url'] + '</textarea><br><button>Copy To Clipboard</button><br><br>Embed Icon:<br><textarea rows="3"><a href="' + cannedAnalysisObj['canned_analysis_url'] + '"><img src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png" style="height:50px;width:50px"></a></textarea><button>Copy To Clipboard</button></div>';
 
 		shareHTML += '</td>';
 
@@ -633,7 +684,7 @@ var browseTable = {
 		var cannedAnalysisIds = Object.keys(cannedAnalysisDataElement)
 
 		// Loop Through Canned Analyses
-		for (i = 0; i < cannedAnalysisIds.length; i++) {
+		for (var i = 0; i < cannedAnalysisIds.length; i++) {
 
 			// Get Canned Analysis Object
 			cannedAnalysisObj = cannedAnalysisDataElement[cannedAnalysisIds[i]]
