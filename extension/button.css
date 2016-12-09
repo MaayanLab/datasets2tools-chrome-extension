@@ -84,12 +84,7 @@
 }
 
 /******************************/
-/***** 1.3.4 Logo Tab *********/
-/******************************/
-
-
-/******************************/
-/***** 1.3.5 Search Tab *******/
+/***** 1.3.4 Search Tab *******/
 /******************************/
 
 .datasets2tools-search-tab {
@@ -165,6 +160,9 @@
 .datasets2tools-view-metadata-img {
   height: 20px;
   width: 20px;
+  position: absolute;
+  top: -10px;
+  left: -25px;
 }
 
 /******************************/
@@ -174,6 +172,9 @@
 .datasets2tools-download-metadata-img {
   height: 20px;
   width: 20px;
+  position: absolute;
+  top: -10px;
+  left: 10px;
 }
 
 /******************************/
@@ -183,6 +184,30 @@
 .datasets2tools-share-button-img {
   height: 25px;
   width: 25px;
+  position: absolute;
+  top: -12px;
+  left: -12px;
+}
+
+/******************************/
+/***** 1.5.8 Dropdown Icons */
+/******************************/
+
+.datasets2tools-dropdown-icons-img {
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+}
+
+/******************************/
+/***** 1.5.8 Share Copy Icon **/
+/******************************/
+
+.datasets2tools-dropdown-copy-icon-img {
+  height: 20px;
+  width: 20px;
+  margin-left: -3px;
+  margin-right: 10px;
 }
 
 /************************************************************/
@@ -237,7 +262,7 @@
 /******************************/
 
 .datasets2tools-link-col {
-  width: 50px;
+  width: 58px;
 }
 
 /******************************/
@@ -265,48 +290,11 @@
 }
 
 /************************************************************/
-/***** 1.7 Buttons ******************************************/
+/***** 1.7 Search Tab ***************************************/
 /************************************************************/
 
 /******************************/
-/***** 1.7.1 Metadata View ****/
-/******************************/
-
-/*.datasets2tools-view-metadata-button {
-  background-image: url('https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png');
-  background-size: 30px 30px;
-  height: 30px;
-  width: 30px;
-}*/
-
-/******************************/
-/***** 1.7.2 Metadata Download / 
-/******************************/
-
-/*.datasets2tools-download-metadata-button {
-  background-image: url('http://www.drodd.com/images12/icon-download7.png');
-  background-size: 30px 30px;
-  height: 30px;
-  width: 30px;
-}*/
-
-/******************************/
-/***** 1.7.3 Share ************/ 
-/******************************/
-
-/*.datasets2tools-share-button {
-  background-image: url('https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png');
-  background-size: 30px 30px;
-  height: 30px;
-  width: 30px;
-}*/
-
-/************************************************************/
-/***** 1.8 Search Tab ***************************************/
-/************************************************************/
-
-/******************************/
-/***** 1.8.1 Search ***********/
+/***** 1.7.1 Search ***********/
 /******************************/
 
 .datasets2tools-search-label {
@@ -315,7 +303,7 @@
 }
 
 /******************************/
-/***** 1.8.2 Search Input *****/
+/***** 1.7.2 Search Input *****/
 /******************************/
 
 .datasets2tools-search-input {
@@ -324,7 +312,7 @@
 }
 
 /******************************/
-/***** 1.8.2 Search Text Input /
+/***** 1.7.2 Search Text Input /
 /******************************/
 
 .datasets2tools-search-text-input {
@@ -334,58 +322,126 @@
 }
 
 /************************************************************/
-/***** 1.9 Dropdown Menus ***********************************/
+/***** 1.8 Dropdowns and Tooltips ***************************/
 /************************************************************/
 
 /******************************/
-/***** 1.9.2 Dropdown *********/
+/***** 1.8.1 Interactive DIV **/
 /******************************/
 
-.datasets2tools-dropdown {
-  display: none;
-  position: absolute;
-  background-color: white;
-  border: 0.5px solid grey;
-  z-index: 100;
-  padding: 10px;
-  font-size: small;
-  text-align: left;
+.datasets2tools-interactive-div {
+    display: inline-block;
+    position: absolute;
 }
 
 /******************************/
-/***** 1.9.2 View Metadata ****/
+/***** 1.8.2 Interactive Text */
 /******************************/
 
-.datasets2tools-metadata-view-dropdown {
-  max-height: 150px;
-  overflow-y: auto;
+.datasets2tools-interactive-div-text {
+    visibility: hidden;
+    float: left;
+    text-align: left;
+    background-color: black;
+    color: #fff;
+    border-radius: 6px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    position: absolute;
+    z-index: 100;
 }
 
 /******************************/
-/***** 1.9.3 Download Metadata /
+/***** 1.8.3 Interactive Arrow /
 /******************************/
 
-.datasets2tools-metadata-download-dropdown {
+.datasets2tools-interactive-div .datasets2tools-interactive-div-text::after {
+    content: "";
+    position: absolute;
+    top: 37%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent black transparent transparent;
 }
 
 /******************************/
-/***** 1.9.4 Share Dropdown ***/
+/***** 1.8.4 Interactive Hover /
 /******************************/
 
-.datasets2tools-share-dropdown {
-  /*right: -100px;*/
+.datasets2tools-interactive-div:hover .datasets2tools-interactive-div-text {
+    visibility: visible;
 }
+
+/******************************/
+/***** 1.8.5 View Metadata ****/
+/******************************/
+
+.datasets2tools-metadata-view-tooltip .datasets2tools-metadata-view-tooltip-text {
+    top: -27px;
+    left: 5px;
+    width: 150px;
+}
+
+/******************************/
+/***** 1.8.6 Download Metadata /
+/******************************/
+
+.datasets2tools-metadata-download-dropdown .datasets2tools-metadata-download-dropdown-text {
+    top: -47px;
+    left: 40px;
+}
+
+/******************************/
+/***** 1.8.7 Share Analysis ***/
+/******************************/
+
+.datasets2tools-share-dropdown .datasets2tools-share-dropdown-text {
+    top: -90px;
+    left: 20px;
+    background-color: white;
+    border: 0.5px solid grey;
+    color: black;
+    width: 190px;
+    font-size: small;
+}
+
+.datasets2tools-share-dropdown .datasets2tools-share-dropdown-text::after {
+    top: 40%;
+}
+
+.datasets2tools-textarea {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.datasets2tools-share-button {
+  background-color: #e7e7e7;
+  border: 0.5px solid #afafaf;
+  color: black;
+  padding: 5px 10px;
+}
+
+.datasets2tools-share-button:hover {
+  background-color: #f7f7f7;
+}
+
+
 
 /************************************************************/
-/***** 1.10 Display Classes **********************************/
+/***** 1.9 Display Classes **********************************/
 /************************************************************/
 
 /******************************/
-/***** 1.10.1 Compact **********/
+/***** 1.9 Compact ************/
 /******************************/
 
 /******************************/
-/***** 1.10.2 Expanded *********/
+/***** 1.9 Expanded ***********/
 /******************************/
 
 .datasets2tools-expand {

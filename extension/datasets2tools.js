@@ -389,15 +389,13 @@ var browseTable = {
 		// Define HTML String
 		var metadataHTML = '<td>';
 
-		metadataHTML += '<img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png">';
+		metadataHTML += '<div class="datasets2tools-metadata-view-tooltip datasets2tools-interactive-div"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png">';
 		
-		metadataHTML += '<div class="datasets2tools-metadata-view-dropdown datasets2tools-dropdown">' + metadataString + '</div>';
+		metadataHTML += '<span class="datasets2tools-metadata-view-tooltip-text datasets2tools-interactive-div-text">' + metadataString + '</span></div>';
 		
-		metadataHTML += '&nbsp&nbsp&nbsp';
-		
-		metadataHTML += '<img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
+		metadataHTML += '<div class="datasets2tools-metadata-download-dropdown datasets2tools-interactive-div"><img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
 
-		metadataHTML += '<div class="datasets2tools-metadata-download-dropdown datasets2tools-dropdown">' + 'Download Metadata:<br><button>TXT</button><br><button>JSON</button><br><button>XML</button>' + '</div>';
+		metadataHTML += '<div class="datasets2tools-metadata-download-dropdown-text datasets2tools-interactive-div-text">' + 'Download Metadata:<br><button>TXT</button><br><button>JSON</button><br><button>XML</button>' + '</div></div>';
 		
 		metadataHTML += '</td>';
 
@@ -413,9 +411,9 @@ var browseTable = {
 		// Define HTML String
 		var shareHTML = '<td>';
 
-		shareHTML += '<img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png">';
+		shareHTML += '<div class="datasets2tools-share-dropdown datasets2tools-interactive-div"><img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png">';
 
-		shareHTML += '<div class="datasets2tools-share-dropdown datasets2tools-dropdown"> Canned Analysis URL: <textarea>' + cannedAnalysisObj['canned_analysis_url'] + '</textarea><br><button>Copy To Clipboard</button><br><br>Embed Icon:<br><textarea rows="3"><a href="' + cannedAnalysisObj['canned_analysis_url'] + '"><img src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png" style="height:50px;width:50px"></a></textarea><button>Copy To Clipboard</button></div>';
+		shareHTML += '<div class="datasets2tools-share-dropdown-text datasets2tools-interactive-div-text"> <img class="datasets2tools-dropdown-icons-img" src="http://simpleicon.com/wp-content/uploads/link-2.png"><b>Canned Analysis URL:</b><textarea class="datasets2tools-textarea">' + cannedAnalysisObj['canned_analysis_url'] + '</textarea><br><button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button><br><br><img class="datasets2tools-dropdown-icons-img" src="https://cdn1.iconfinder.com/data/icons/free-98-icons/32/code-128.png"><b>Embed Icon:</b><br><textarea class="datasets2tools-textarea" rows="3"><a href="' + cannedAnalysisObj['canned_analysis_url'] + '"><img src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png" style="height:50px;width:50px"></a></textarea><button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button></div></div>';
 
 		shareHTML += '</td>';
 
