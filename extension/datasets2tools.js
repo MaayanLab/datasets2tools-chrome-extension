@@ -522,16 +522,10 @@ var Interactive = {
 	////// 2.6.4 prepareBrowseTable
 	/////////////////////////////////
 
-	prepareBrowseTable: function($evtTarget, cannedAnalysisData) {
-
-		// Get Toolbar
-		var $datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
+	prepareBrowseTable: function($datasets2toolsToolbar, toolId, cannedAnalysisData) {
 
 		// Get Dataset Accession
 		var datasetAccession = $datasets2toolsToolbar.attr('id');
-
-		// Get Tool ID
-		var toolId = $evtTarget.parent().attr('id');
 
 		// Get Tool Icon URL
 		var toolIconUrl = cannedAnalysisData['tools'][toolId]['tool_icon_url'];
@@ -596,10 +590,12 @@ var eventListener = {
 
 	selectTool: function(cannedAnalysisData) {
 		$('.datasets2tools-tool-icon').click(function(evt) {
-			var $evtTarget = $(evt.target);
+			var $evtTarget = $(evt.target),
+				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent(),
+				toolId = $evtTarget.parent().attr('id');
 			Interactive.triggerExpandMode($evtTarget);
 			Interactive.prepareSelectedToolTab($evtTarget, cannedAnalysisData);
-			Interactive.prepareBrowseTable($evtTarget, cannedAnalysisData);
+			Interactive.prepareBrowseTable($datasets2toolsToolbar, toolId, cannedAnalysisData);
 		});
 	},
 
@@ -631,9 +627,8 @@ var eventListener = {
 		$('.datasets2tools-search-input').on('keyup', function(evt) {//change(function(evt) {//
 			var $evtTarget = $(evt.target),
 				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent(),
-				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id'),
-				$selectedToolIconImg = $datasets2toolsToolbar.find('#'+toolId+'.datasets2tools-tool-icon').find('img');
-			Interactive.prepareBrowseTable($selectedToolIconImg, cannedAnalysisData);
+				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id');
+			Interactive.prepareBrowseTable($datasets2toolsToolbar, toolId, cannedAnalysisData);
 		});
 	},
 
