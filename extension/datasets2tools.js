@@ -309,7 +309,7 @@ var staticInterface = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.4 toolIconTab /////////////////////////////////
+///// 2.4 toolIconTab //////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var toolIconTab = {
@@ -370,7 +370,7 @@ var browseTable = {
 	getMetadataHTML: function(cannedAnalysisObj) {
 
 		// Metadata String
-		var metadataString = '<b>Metadata:</b><br>';
+		var metadataString = '<b>Metadata</b><br>';
 
 		// Keys
 		var metadataKeys = Object.keys(cannedAnalysisObj),
@@ -444,14 +444,24 @@ var browseTable = {
 		// Get Canned Analysis IDs
 		var cannedAnalysisIds = Object.keys(cannedAnalysisDataElement)
 
-		// Loop Through Canned Analyses
-		for (var i = 0; i < cannedAnalysisIds.length; i++) {
+		// Check If More Than A Row
+		if (cannedAnalysisIds.length === 0) {
 
-			// Get Canned Analysis Object
-			cannedAnalysisObj = cannedAnalysisDataElement[cannedAnalysisIds[i]]
+			// Add No Results
+			browseTableHTML += '<tr><td colspan="4">No Results Found.</td></tr>'
 
-			// Add Row HTML
-			browseTableHTML += self.getRowHTML(self.getLinkHTML(cannedAnalysisObj, toolIconUrl), self.getDescriptionHTML(cannedAnalysisObj), self.getMetadataHTML(cannedAnalysisObj), self.getShareHTML(cannedAnalysisObj));
+		} else {
+
+			// Loop Through Canned Analyses
+			for (var i = 0; i < cannedAnalysisIds.length; i++) {
+
+				// Get Canned Analysis Object
+				cannedAnalysisObj = cannedAnalysisDataElement[cannedAnalysisIds[i]]
+
+				// Add Row HTML
+				browseTableHTML += self.getRowHTML(self.getLinkHTML(cannedAnalysisObj, toolIconUrl), self.getDescriptionHTML(cannedAnalysisObj), self.getMetadataHTML(cannedAnalysisObj), self.getShareHTML(cannedAnalysisObj));
+			}
+
 		}
 
 		// Close table
@@ -502,7 +512,7 @@ var Interactive = {
 		var $selectedToolTab = $evtTarget.parent().parent().parent().parent().find('.datasets2tools-selected-tool-tab');
 
 		// Get Result HTML
-		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '';
+		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img" id="' + toolId + '"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '';
 
 		// Add HTML
 		$selectedToolTab.html(selectedToolTabHTML);
@@ -512,7 +522,8 @@ var Interactive = {
 	////// 2.6.4 prepareBrowseTable
 	/////////////////////////////////
 
-	prepareBrowseTable: function($evtTarget, cannedAnalysisData, searchFilter = false) {
+	prepareBrowseTable: function($evtTarget, cannedAnalysisData) {
+
 		// Get Toolbar
 		var $datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
 
@@ -526,8 +537,35 @@ var Interactive = {
 		var toolIconUrl = cannedAnalysisData['tools'][toolId]['tool_icon_url'];
 
 		// Get Canned Analyses
-		var cannedAnalysisDataElement = cannedAnalysisData['canned_analyses'][datasetAccession][toolId];
+		var cannedAnalysisDataElement = jQuery.extend({}, cannedAnalysisData['canned_analyses'][datasetAccession][toolId]);
 
+		// Get Search Filter
+		var searchFilter = $datasets2toolsToolbar.find('.datasets2tools-search-text-input').val();
+
+		// Get Canned Analysis Ids
+		var cannedAnalysisIds = Object.keys(cannedAnalysisDataElement),
+			cannedAnalysisId;
+
+		// Filter, If Specified
+		if (searchFilter.length > 0) {
+
+			// Loop
+			for (var i = 0; i < cannedAnalysisIds.length; i++) {
+
+				// Get ID
+				cannedAnalysisId = cannedAnalysisIds[i];
+
+				// Get description
+				cannedAnalysisDescription = cannedAnalysisDataElement[cannedAnalysisId]['description'];
+
+				// Remove, If Specified
+				if (!(cannedAnalysisDescription.includes(searchFilter))) {
+					delete cannedAnalysisDataElement[cannedAnalysisId];
+				};
+
+			};
+		};
+				
 		// Prepare Table HTML
 		var browseTableHTML = browseTable.prepare(cannedAnalysisDataElement, toolIconUrl);
 
@@ -586,7 +624,21 @@ var eventListener = {
 	},
 
 	/////////////////////////////////
-	////// 2.7.5 main
+	////// 2.7.5 filterCannedAnalyses
+	/////////////////////////////////
+
+	filterCannedAnalyses: function(cannedAnalysisData) {
+		$('.datasets2tools-search-input').on('keyup', function(evt) {//change(function(evt) {//
+			var $evtTarget = $(evt.target),
+				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent(),
+				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id'),
+				$selectedToolIconImg = $datasets2toolsToolbar.find('#'+toolId+'.datasets2tools-tool-icon').find('img');
+			Interactive.prepareBrowseTable($selectedToolIconImg, cannedAnalysisData);
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.6 main
 	/////////////////////////////////
 
 	main: function(cannedAnalysisData) {
@@ -605,6 +657,9 @@ var eventListener = {
 
 		// Share Canned Analysis
 		self.shareCannedAnalysis();
+
+		// Filter Canned Analyses
+		self.filterCannedAnalyses(cannedAnalysisData);
 	}
 };
 
