@@ -411,11 +411,37 @@ var browseTable = {
 		// Define HTML String
 		var shareHTML = '<td>';
 
-		shareHTML += '<div class="datasets2tools-share-dropdown datasets2tools-interactive-div"><img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png">';
+		// Interactive DIV HTML
+		var interactiveDivHTML = '<div class="datasets2tools-share-dropdown datasets2tools-interactive-div">';
 
-		shareHTML += '<div class="datasets2tools-share-dropdown-text datasets2tools-interactive-div-text"> <img class="datasets2tools-dropdown-icons-img" src="http://simpleicon.com/wp-content/uploads/link-2.png"><b>Canned Analysis URL:</b><textarea class="datasets2tools-textarea">' + cannedAnalysisObj['canned_analysis_url'] + '</textarea><br><button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button><br><br><img class="datasets2tools-dropdown-icons-img" src="https://cdn1.iconfinder.com/data/icons/free-98-icons/32/code-128.png"><b>Embed Icon:</b><br><textarea class="datasets2tools-textarea" rows="3"><a href="' + cannedAnalysisObj['canned_analysis_url'] + '"><img src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png" style="height:50px;width:50px"></a></textarea><button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button></div></div>';
+		// Dropdown DIV HTML
+		var dropdownDivHTML = '<div class="datasets2tools-share-dropdown-text datasets2tools-interactive-div-text">';
 
-		shareHTML += '</td>';
+		// Share Image
+		var shareImageHTML = '<img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png">';
+
+		// Link Image
+		var linkImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="http://simpleicon.com/wp-content/uploads/link-2.png"><b>Canned Analysis URL:</b>';
+
+		// Embed Image
+		var embedImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="https://cdn1.iconfinder.com/data/icons/free-98-icons/32/code-128.png"><b>Embed Icon:</b>';
+
+		// Copy Image
+		var copyImageHTML = '<img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">';
+
+		// Get Copy Button HTML
+		var buttonHTML = '<button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
+
+		// Text Area HTML
+		var textAreaHTML = function(content, nRows) {return '<textarea class="datasets2tools-textarea" rows="' + nRows + '">'+content+'</textarea>'};
+
+		// Canned Analysis URL
+		var cannedAnalysisUrl = cannedAnalysisObj['canned_analysis_url'];
+
+		// Embed Code
+		var embedCode = '<a href="' + cannedAnalysisUrl + '"><img src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png" style="height:50px;width:50px"></a>'
+
+		shareHTML += interactiveDivHTML + shareImageHTML + dropdownDivHTML + linkImageHTML + textAreaHTML(cannedAnalysisUrl, 1) + buttonHTML + '<br><br>' + embedImageHTML + textAreaHTML(embedCode, 3) + buttonHTML + '</div></div></td>';
 
 		return shareHTML; 
 	},
@@ -563,6 +589,15 @@ var Interactive = {
 
 		// Add To Webpage
 		$datasets2toolsToolbar.find('.datasets2tools-browse-bar').html(browseTableHTML);
+	},
+
+	/////////////////////////////////
+	////// 2.6.5 copyToClipboard
+	/////////////////////////////////
+
+	copyToClipboard: function($evtTarget) {
+		var text = $evtTarget.prev().val();
+		alert("Copy to clipboard: Ctrl+C, Enter", text);
 	}
 };
 
@@ -598,27 +633,7 @@ var eventListener = {
 	},
 
 	/////////////////////////////////
-	////// 2.7.3 displayMetadata
-	/////////////////////////////////
-
-	displayMetadata: function() {
-		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-img', function(evt) {
-			$(evt.target).next().toggle();
-		});
-	},
-
-	/////////////////////////////////
-	////// 2.7.4 shareCannedAnalysis
-	/////////////////////////////////
-
-	shareCannedAnalysis: function() {
-		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-button-img', function(evt) {
-			$(evt.target).parent().find('.datasets2tools-share-dropdown').toggle();
-		});
-	},
-
-	/////////////////////////////////
-	////// 2.7.5 filterCannedAnalyses
+	////// 2.7.3 filterCannedAnalyses
 	/////////////////////////////////
 
 	filterCannedAnalyses: function(cannedAnalysisData) {
@@ -631,7 +646,17 @@ var eventListener = {
 	},
 
 	/////////////////////////////////
-	////// 2.7.6 main
+	////// 2.7.4 clickCopyButton
+	/////////////////////////////////
+
+	clickCopyButton: function() {
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-dropdown .datasets2tools-share-button', function(evt) {
+			Interactive.copyToClipboard($(evt.target));
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.5 main
 	/////////////////////////////////
 
 	main: function(cannedAnalysisData) {
@@ -645,14 +670,11 @@ var eventListener = {
 		// Select Tool
 		self.selectTool(cannedAnalysisData);
 
-		// Display Metadata
-		self.displayMetadata();
-
-		// Share Canned Analysis
-		self.shareCannedAnalysis();
-
 		// Filter Canned Analyses
 		self.filterCannedAnalyses(cannedAnalysisData);
+
+		// Copy Button
+		self.clickCopyButton();
 	}
 };
 

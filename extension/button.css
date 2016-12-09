@@ -411,12 +411,14 @@
 
 .datasets2tools-share-dropdown .datasets2tools-share-dropdown-text::after {
     top: 40%;
+    color: grey;
 }
 
 .datasets2tools-textarea {
   margin-top: 5px;
   margin-bottom: 5px;
   width: 100%;
+  font-family: monospace;
 }
 
 .datasets2tools-share-button {
@@ -424,6 +426,7 @@
   border: 0.5px solid #afafaf;
   color: black;
   padding: 5px 10px;
+  outline: none;
 }
 
 .datasets2tools-share-button:hover {
