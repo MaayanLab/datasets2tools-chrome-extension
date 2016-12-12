@@ -203,7 +203,7 @@
 /***** 1.5.8 Share Copy Icon **/
 /******************************/
 
-.datasets2tools-dropdown-copy-icon-img {
+.datasets2tools-dropdown-button-img {
   height: 20px;
   width: 20px;
   margin-left: -3px;
@@ -391,8 +391,27 @@
 /******************************/
 
 .datasets2tools-metadata-download-dropdown .datasets2tools-metadata-download-dropdown-text {
-    top: -47px;
-    left: 40px;
+    top: -35px;
+    left: 37px;
+    background-color: white;
+    color: black;
+    font-size: small;
+    width: 190px;
+    border: 0.5px solid grey;
+}
+
+
+.datasets2tools-metadata-download-button {
+  background-color: #e7e7e7;
+  border: 0.5px solid #afafaf;
+  color: black;
+  padding: 5px 10px;
+  margin-top: 3px;
+  outline: none;
+}
+
+.datasets2tools-metadata-download-button:hover {
+  background-color: #f7f7f7;
 }
 
 /******************************/

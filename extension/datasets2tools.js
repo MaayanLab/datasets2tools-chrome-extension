@@ -369,11 +369,22 @@ var browseTable = {
 
 	getMetadataHTML: function(cannedAnalysisObj) {
 
-		// Metadata String
-		var metadataString = '<b>Metadata</b><br>';
-
 		// Keys
-		var metadataKeys = Object.keys(cannedAnalysisObj),
+		var self = this;
+
+		// Return
+		return '<td>' + self.getViewMetadataHTML(cannedAnalysisObj) + self.getDownloadMetadataHTML(cannedAnalysisObj) + '</td>';
+	},
+
+	/////////////////////////////////
+	////// 2.5.4 viewMetadataHTML
+	/////////////////////////////////
+
+	getViewMetadataHTML: function(cannedAnalysisObj) {
+
+		// Define variables
+		var viewMetadataHTML = '<div class="datasets2tools-metadata-view-tooltip datasets2tools-interactive-div"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png"><span class="datasets2tools-metadata-view-tooltip-text datasets2tools-interactive-div-text"><b>Metadata</b><br>',
+			metadataKeys = Object.keys(cannedAnalysisObj),
 			metadataKey;
 
 		// Loop through tags
@@ -381,29 +392,50 @@ var browseTable = {
 			metadataKey = metadataKeys[j];
 
 			if (!(['canned_analysis_url', 'description'].indexOf(metadataKey) >= 0)) {
-				metadataString += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
+				viewMetadataHTML += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
 			}
-
 		};
 
-		// Define HTML String
-		var metadataHTML = '<td>';
+		// Close DIV
+		viewMetadataHTML += '</span></div>';
 
-		metadataHTML += '<div class="datasets2tools-metadata-view-tooltip datasets2tools-interactive-div"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png">';
-		
-		metadataHTML += '<span class="datasets2tools-metadata-view-tooltip-text datasets2tools-interactive-div-text">' + metadataString + '</span></div>';
-		
-		metadataHTML += '<div class="datasets2tools-metadata-download-dropdown datasets2tools-interactive-div"><img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
-
-		metadataHTML += '<div class="datasets2tools-metadata-download-dropdown-text datasets2tools-interactive-div-text">' + 'Download Metadata:<br><button>TXT</button><br><button>JSON</button><br><button>XML</button>' + '</div></div>';
-		
-		metadataHTML += '</td>';
-
-		return metadataHTML;
+		// Return
+		return viewMetadataHTML;
 	},
 
 	/////////////////////////////////
-	////// 2.5.4 shareHTML
+	////// 2.5.5 downloadMetadataHTML
+	/////////////////////////////////
+
+	getDownloadMetadataHTML: function(cannedAnalysisObj) {
+
+		// Define variables
+		var downloadMetadataHTML = '<div class="datasets2tools-metadata-download-dropdown datasets2tools-interactive-div">';
+
+		// Add Stuff
+		downloadMetadataHTML += '<img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
+		
+		// Add Stuff
+		downloadMetadataHTML += '<div class="datasets2tools-metadata-download-dropdown-text datasets2tools-interactive-div-text">';
+
+		// Add functionality
+		downloadMetadataHTML += '<b>Download Metadata:</b><br>';
+
+		// Add TXT Button
+		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getTXT"><img class="datasets2tools-dropdown-button-img" src="https://cdn4.iconfinder.com/data/icons/devine_icons/Black/PNG/File%20Types/Defult%20Text.png">TXT</button><br>';
+
+		// Add JSON Button
+		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getJSON"><img class="datasets2tools-dropdown-button-img" src="http://www.json.org/img/json160.gif">JSON</button><br>';
+		
+		// Close DIV
+		downloadMetadataHTML += '</div></div>';
+
+		// Return
+		return downloadMetadataHTML;
+	},
+
+	/////////////////////////////////
+	////// 2.5.6 shareHTML
 	/////////////////////////////////
 
 	getShareHTML: function(cannedAnalysisObj) {
@@ -427,10 +459,10 @@ var browseTable = {
 		var embedImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="https://cdn1.iconfinder.com/data/icons/free-98-icons/32/code-128.png"><b>Embed Icon:</b>';
 
 		// Copy Image
-		var copyImageHTML = '<img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">';
+		var copyImageHTML = '<img class="datasets2tools-dropdown-button-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">';
 
 		// Get Copy Button HTML
-		var buttonHTML = '<button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-copy-icon-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
+		var buttonHTML = '<button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-button-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
 
 		// Text Area HTML
 		var textAreaHTML = function(content, nRows) {return '<textarea class="datasets2tools-textarea" rows="' + nRows + '">'+content+'</textarea>'};
@@ -447,7 +479,7 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.5.5 rowHTML
+	////// 2.5.7 rowHTML
 	/////////////////////////////////
 
 	getRowHTML: function(linkHTML, descriptionHTML, metadataHTML, shareHTML) {
@@ -455,7 +487,7 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.5.6 prepare
+	////// 2.5.8 prepare
 	/////////////////////////////////
 
 	prepare: function(cannedAnalysisDataElement, toolIconUrl) {
@@ -497,7 +529,72 @@ var browseTable = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.6 Interactive //////////////////////////////////////
+///// 2.6 downloadMetadata /////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var downloadMetadata = {
+
+	/////////////////////////////////
+	////// 2.5.1 getTXT
+	/////////////////////////////////
+
+	getTXT: function(cannedAnalysisObj) {
+
+		// Define variable
+		var txtString = 'Tag\tValue\n',
+			metadataKey;
+
+		// Get Keys
+		var metadataKeys = Object.keys(cannedAnalysisObj);
+
+		// Loop through keys
+		for (var k = 0; k < metadataKeys.length; k++) {
+
+			// Get metadata key
+			metadataKey = metadataKeys[k];
+
+			// Add metadata values
+			txtString += metadataKey + '\t' + cannedAnalysisObj[metadataKey] + '\n';
+		}
+
+		// Return string
+		return txtString;
+	},
+
+	/////////////////////////////////
+	////// 2.5.2 getJSON
+	/////////////////////////////////
+
+	getJSON: function(cannedAnalysisObj) {
+
+		// Return string
+		return JSON.stringify(cannedAnalysisObj);
+	},
+
+	/////////////////////////////////
+	////// 2.5.3 main
+	/////////////////////////////////
+
+	main: function(cannedAnalysisObj, fileFormat) {
+
+		// Switch
+		switch(fileFormat) {
+
+			// Download TXT
+			case 'TXT':
+				alert('Download TXT');
+				break;
+
+			// Download JSON
+			case 'JSON':
+				alert('Download JSON');
+				break;
+		}
+	}
+};
+
+////////////////////////////////////////////////////////////
+///// 2.7 Interactive //////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var Interactive = {
@@ -598,11 +695,25 @@ var Interactive = {
 	copyToClipboard: function($evtTarget) {
 		var text = $evtTarget.prev().val();
 		alert("Copy to clipboard: Ctrl+C, Enter", text);
+	},
+
+	
+	/////////////////////////////////
+	////// 2.6.6 downloadMetadata
+	/////////////////////////////////
+
+	downloadMetadata: function($evtTarget, cannedAnalysisData) {
+		
+		// Get file format
+		var fileFormat = $evtTarget.text();
+
+		// Get file
+		downloadMetadata.main('cannedAnalysisObj', fileFormat)
 	}
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.7 eventListener ////////////////////////////////////
+///// 2.8 eventListener ////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var eventListener = {
@@ -656,6 +767,16 @@ var eventListener = {
 	},
 
 	/////////////////////////////////
+	////// 2.7.5 downloadMetadataButton
+	/////////////////////////////////
+
+	downloadMetadataButton: function(cannedAnalysisData) {
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-download-dropdown-text .datasets2tools-metadata-download-button', function(evt) {
+			Interactive.downloadMetadata($(evt.target), cannedAnalysisData);
+		});
+	},
+
+	/////////////////////////////////
 	////// 2.7.5 main
 	/////////////////////////////////
 
@@ -672,6 +793,9 @@ var eventListener = {
 
 		// Filter Canned Analyses
 		self.filterCannedAnalyses(cannedAnalysisData);
+
+		// Download Metadata
+		self.downloadMetadataButton(cannedAnalysisData);
 
 		// Copy Button
 		self.clickCopyButton();
