@@ -407,7 +407,7 @@ var browseTable = {
 		hoverDescription = '<span>' + cannedAnalysisDescription + '</span>';
 
 		// Return
-		return '<td class="datasets2tools-canned-analysis-description">' + displayedDescription + '</td>';// + 'hoverDescription' +
+		return '<td class="datasets2tools-canned-analysis-description datasets2tools-tooltip" data-tool="' + cannedAnalysisDescription + '">' + displayedDescription + '</td>';// + 'hoverDescription' +
 	},
 
 	/////////////////////////////////
@@ -599,7 +599,7 @@ var browseTable = {
 
 		// Add Browse Arrows, If Necessary
 		browseTableHTML += '<div class="datasets2tools-browse-table-arrow-tab">'
-		browseTableHTML += 'Showing results ' + ((pageNr-1)*pageSize+1) + '-' + Math.min((pageNr*(pageSize)), numberOfCannedAnalyses) + ' of ' + numberOfCannedAnalyses + '.&nbsp&nbsp&nbsp'
+		browseTableHTML += 'Showing results ' + Math.min(((pageNr-1)*pageSize+1), numberOfCannedAnalyses) + '-' + Math.min((pageNr*(pageSize)), numberOfCannedAnalyses) + ' of ' + numberOfCannedAnalyses + '.&nbsp&nbsp&nbsp'
 		browseTableHTML += '<img class="datasets2tools-browse-table-arrow-img datasets2tools-arrow-left ' + leftArrowClass(pageNr) + ' src="https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-left-01-128.png">';
 		browseTableHTML += '<img class="datasets2tools-browse-table-arrow-img datasets2tools-arrow-right ' + rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) + ' src="https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-right-01-128.png">';
 		browseTableHTML += '</div>';
