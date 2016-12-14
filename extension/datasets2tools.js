@@ -360,6 +360,25 @@ var toolIconTab = {
 var browseTable = {
 
 	/////////////////////////////////
+	////// 2.5.0 firstN
+	/////////////////////////////////
+
+	firstN: function (obj, pageNr, pageSize) {
+		if (Object.keys(obj).length > pageSize) {
+		  return Object.keys(obj) //get the keys out
+			    .sort() //this will ensure consistent ordering of what you will get back. If you want something in non-aphabetical order, you will need to supply a custom sorting function
+			    // .slice(0, 4) //get the first N
+			    .slice((pageNr-1)*pageSize+1, pageNr*pageSize+1) //get the first N
+			    .reduce(function(memo, current) { //generate a new object out of them
+			      memo[current] = obj[current]
+			      return memo;
+			    }, {});
+		} else {
+			return obj;
+		}
+	},
+
+	/////////////////////////////////
 	////// 2.5.1 linkHTML
 	/////////////////////////////////
 
@@ -502,16 +521,20 @@ var browseTable = {
 	////// 2.5.8 prepare
 	/////////////////////////////////
 
-	prepare: function(cannedAnalysisDataElement, toolIconUrl) {
+	prepare: function(cannedAnalysisDataElement, toolIconUrl, pageNr, pageSize=5) {
 
 		// Define variables
 		var self = this,
 			browseTableHTML = '<table class="datasets2tools-browse-table"><tr><th class="datasets2tools-link-col">Link</th><th class="datasets2tools-description-col">Description</th><th class="datasets2tools-metadata-col">Metadata</th><th class="datasets2tools-share-col">Share</th></tr>',
+			numberOfCannedAnalyses = Object.keys(cannedAnalysisDataElement).length,
 			cannedAnalysisObj,
 			cannedAnalysisId;
 
+		// Get Subset
+		cannedAnalysisDataElementSubset = self.firstN(cannedAnalysisDataElement, pageNr, pageSize);
+
 		// Get Canned Analysis IDs
-		var cannedAnalysisIds = Object.keys(cannedAnalysisDataElement);
+		var cannedAnalysisIds = Object.keys(cannedAnalysisDataElementSubset);
 
 		// Check If More Than A Row
 		if (cannedAnalysisIds.length === 0) {
@@ -528,7 +551,7 @@ var browseTable = {
 				cannedAnalysisId = cannedAnalysisIds[i];
 
 				// Get Canned Analysis Object
-				cannedAnalysisObj = cannedAnalysisDataElement[cannedAnalysisId];
+				cannedAnalysisObj = cannedAnalysisDataElementSubset[cannedAnalysisId];
 
 				// Add Row HTML
 				browseTableHTML += self.getRowHTML(cannedAnalysisId, self.getLinkHTML(cannedAnalysisObj, toolIconUrl), self.getDescriptionHTML(cannedAnalysisObj), self.getMetadataHTML(cannedAnalysisObj), self.getShareHTML(cannedAnalysisObj));
@@ -537,6 +560,33 @@ var browseTable = {
 
 		// Close table
 		browseTableHTML += '</table>';
+
+		// Get Left Arrow Activity Class
+		function leftArrowClass(pageNr) {
+			if (pageNr > 1) {
+				return 'datasets2tools-arrow-active" id="' + (pageNr-1) + '"';
+			} else {
+				return 'datasets2tools-arrow-inactive"';
+			}
+		};
+
+		// Get Right Arrow Activity Class
+		function rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) {
+			// Get Number of Canned Analyses
+			var followingPageNr = parseInt(pageNr) + 1;
+			if (numberOfCannedAnalyses > pageNr*(pageSize)) {
+				return 'datasets2tools-arrow-active" id="' + followingPageNr + '"';
+			} else {
+				return 'datasets2tools-arrow-inactive"';
+			}
+		};
+
+		// Add Browse Arrows, If Necessary
+		browseTableHTML += '<div class="datasets2tools-browse-table-arrow-tab">'
+		browseTableHTML += 'Showing results ' + ((pageNr-1)*pageSize+1) + '-' + Math.min((pageNr*(pageSize)), numberOfCannedAnalyses) + ' of ' + numberOfCannedAnalyses + '.&nbsp&nbsp&nbsp'
+		browseTableHTML += '<img class="datasets2tools-browse-table-arrow-img datasets2tools-arrow-left ' + leftArrowClass(pageNr) + ' src="https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-left-01-128.png">';
+		browseTableHTML += '<img class="datasets2tools-browse-table-arrow-img datasets2tools-arrow-right ' + rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) + ' src="https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-right-01-128.png">';
+		browseTableHTML += '</div>';
 
 		// Return Table HTML
 		return browseTableHTML;
@@ -661,7 +711,10 @@ var Interactive = {
 	////// 2.6.4 prepareBrowseTable
 	/////////////////////////////////
 
-	prepareBrowseTable: function($datasets2toolsToolbar, toolId, cannedAnalysisData) {
+	prepareBrowseTable: function($datasets2toolsToolbar, toolId, cannedAnalysisData, pageNr=1) {
+
+		// Define Self
+		var self = this;
 
 		// Get Dataset Accession
 		var datasetAccession = $datasets2toolsToolbar.attr('id');
@@ -700,7 +753,7 @@ var Interactive = {
 		};
 				
 		// Prepare Table HTML
-		var browseTableHTML = browseTable.prepare(cannedAnalysisDataElement, toolIconUrl);
+		var browseTableHTML = browseTable.prepare(cannedAnalysisDataElement, toolIconUrl, pageNr);
 
 		// Add To Webpage
 		$datasets2toolsToolbar.find('.datasets2tools-browse-bar').html(browseTableHTML);
@@ -820,6 +873,21 @@ var eventListener = {
 	},
 
 	/////////////////////////////////
+	////// 2.7.5 clickTableArrow
+	/////////////////////////////////
+
+	clickTableArrow: function(cannedAnalysisData) {
+		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-arrow-active', function(evt) {
+			// Interactive.downloadMetadata($(evt.target), cannedAnalysisData);
+			var $evtTarget = $(evt.target),
+				$datasets2toolsToolbar = $evtTarget.parent().parent().parent(),
+				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id'),
+				pageNr = $evtTarget.attr('id');
+			Interactive.prepareBrowseTable($datasets2toolsToolbar, toolId, cannedAnalysisData, pageNr);
+		});
+	},
+
+	/////////////////////////////////
 	////// 2.7.5 main
 	/////////////////////////////////
 
@@ -839,6 +907,9 @@ var eventListener = {
 
 		// Download Metadata
 		self.downloadMetadataButton(cannedAnalysisData);
+
+		// Click Arrow
+		self.clickTableArrow(cannedAnalysisData);
 
 		// Copy Button
 		self.clickCopyButton();

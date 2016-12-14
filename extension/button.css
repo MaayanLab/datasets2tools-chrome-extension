@@ -37,7 +37,7 @@
 /******************************/
 
 .datasets2tools-browse-bar {
-  max-height: 175px;
+  /*max-height: 250px;*/
   overflow-y: auto;
 }
 
@@ -91,6 +91,16 @@
   padding-left: 15px;
   padding-right: 15px;
   overflow: hidden;
+}
+
+/******************************/
+/***** 1.3.5 Arrow Tab ********/
+/******************************/
+
+.datasets2tools-browse-table-arrow-tab {
+  float: right;
+  margin-right: 10px;
+  margin-top: 5px;
 }
 
 /************************************************************/
@@ -149,7 +159,14 @@
 .datasets2tools-cannedanalysis-link-img {
   height: 25px;
   width: 25px;
-  border: 0.5px solid grey;
+  border: 0.5px solid #0645AD;
+  padding: 1px;
+}
+
+.datasets2tools-cannedanalysis-link-img:visited {
+  height: 25px;
+  width: 25px;
+  border: 0.5px solid purple;
   padding: 1px;
 }
 
@@ -208,6 +225,32 @@
   width: 20px;
   margin-left: -3px;
   margin-right: 10px;
+}
+
+/******************************/
+/***** 1.5.8 Arrow Icons ******/
+/******************************/
+
+.datasets2tools-browse-table-arrow-img {
+  height: 20px;
+  width: 20px;
+}
+
+
+/******************************/
+/***** 1.6.8 Active Arrow *****/
+/******************************/
+
+.datasets2tools-arrow-active {
+  border: 1px solid red;
+}
+
+/******************************/
+/***** 1.6.10 Inactive Arrow **/
+/******************************/
+
+.datasets2tools-arrow-inactive {
+  border: 1px solid black;
 }
 
 /************************************************************/
@@ -330,8 +373,9 @@
 
 .datasets2tools-interactive-div {
     display: inline-block;
-    position: relative;
-    float: left;
+    position: absolute;
+    /*float: left;*/
+    overflow: visible;
 }
 
 /******************************/
