@@ -341,12 +341,12 @@ var toolIconTab = {
 				toolId = toolIds[i];
 
 				// Add Icons
-				toolIconTabHTML += '<div class="datasets2tools-tool-icon" id="' + toolId + '"><img class="datasets2tools-tool-icon-img" src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '"></div>'
+				toolIconTabHTML += '<div class="datasets2tools-tool-icon datasets2tools-tooltip-hover datasets2tools-toolicon-tooltip-hover" id="' + toolId + '"><img class="datasets2tools-tool-icon-img" src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '"><div class="datasets2tools-tooltip-text datasets2tools-toolicon-tooltip-text"><b>' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</b><br><i>' + Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession][toolId]).length + ' canned analyses</i><br>' + "cannedAnalysisData['tools'][toolId]['tool_name']" + '</div></div>'
 			}
 		}
 		catch (err) {
 			// No Canned Analyses
-			toolIconTabHTML += 'No Canned Analyses.'
+			toolIconTabHTML += '<div id="datasets2tools-no-cannedanalyses-tab">No Canned Analyses.</div>'
 		}
 
 		// Return Result
@@ -417,7 +417,7 @@ var browseTable = {
 		var self = this;
 
 		// Return
-		return '<td>' + self.getViewMetadataHTML(cannedAnalysisObj) + self.getformatMetadataHTML(cannedAnalysisObj) + '</td>';
+		return '<td>' + self.getViewMetadataHTML(cannedAnalysisObj) + self.getdownloadMetadataHTML(cannedAnalysisObj) + '</td>';
 	},
 
 	/////////////////////////////////
@@ -452,34 +452,34 @@ var browseTable = {
 	},
 
 	/////////////////////////////////
-	////// 2.5.5 formatMetadataHTML
+	////// 2.5.5 downloadMetadataHTML
 	/////////////////////////////////
 
-	getformatMetadataHTML: function(cannedAnalysisObj) {
+	getdownloadMetadataHTML: function(cannedAnalysisObj) {
 
 		// Define variables
-		var formatMetadataHTML = '<div class="datasets2tools-dropdown-hover datasets2tools-metadata-dropdown-hover">';
+		var downloadMetadataHTML = '<div class="datasets2tools-dropdown-hover datasets2tools-metadata-dropdown-hover">';
 
 		// Add Stuff
-		formatMetadataHTML += '<img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
+		downloadMetadataHTML += '<img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
 		
 		// Add Stuff
-		formatMetadataHTML += '<div class="datasets2tools-dropdown-text datasets2tools-metadata-dropdown-text">';
+		downloadMetadataHTML += '<div class="datasets2tools-dropdown-text datasets2tools-metadata-dropdown-text">';
 
 		// Add functionality
-		formatMetadataHTML += '<b>Download Metadata:</b><br>';
+		downloadMetadataHTML += '<b>Download Metadata:</b><br>';
 
 		// Add TXT Button
-		formatMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getTXT">TXT</button>';
+		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getTXT">TXT</button>';
 
 		// Add JSON Button
-		formatMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getJSON">JSON</button>';
+		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getJSON">JSON</button>';
 		
 		// Close DIV
-		formatMetadataHTML += '</div></div>';
+		downloadMetadataHTML += '</div></div>';
 
 		// Return
-		return formatMetadataHTML;
+		return downloadMetadataHTML;
 	},
 
 	/////////////////////////////////
@@ -557,7 +557,7 @@ var browseTable = {
 		if (cannedAnalysisIds.length === 0) {
 
 			// Add No Results
-			browseTableHTML += '<tr><td colspan="4">No Results Found.</td></tr>';
+			browseTableHTML += '<tr><td class="datasets2tools-no-results-tab" colspan="4">No Results Found.</td></tr>';
 
 		} else {
 
@@ -611,10 +611,10 @@ var browseTable = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.6 formatMetadata ///////////////////////////////////
+///// 2.6 downloadMetadata ///////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-var formatMetadata = {
+var downloadMetadata = {
 
 	/////////////////////////////////
 	////// 2.5.1 getTXT
@@ -693,6 +693,7 @@ var Interactive = {
 			$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
 		$datasets2toolsToolbar.find('.datasets2tools-compact').show();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').hide();
+		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'inline-block');
 	},
 
 	/////////////////////////////////
@@ -704,6 +705,7 @@ var Interactive = {
 			$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent();
 		$datasets2toolsToolbar.find('.datasets2tools-compact').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').show();
+		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'block');
 	},
 
 	/////////////////////////////////
@@ -782,16 +784,15 @@ var Interactive = {
 
 	copyToClipboard: function($evtTarget) {
 		var text = $evtTarget.prev().val();
-		console.log(text);
-		alert("Copy to clipboard: Ctrl+C, Enter", text);
+		window.alert(text);
 	},
 
 	
 	/////////////////////////////////
-	////// 2.6.6 formatMetadata
+	////// 2.6.6 downloadMetadata
 	/////////////////////////////////
 
-	formatMetadata: function($evtTarget, cannedAnalysisData) {
+	downloadMetadata: function($evtTarget, cannedAnalysisData) {
 		
 		// Get file format
 		var fileFormat = $evtTarget.text();
@@ -821,7 +822,7 @@ var Interactive = {
 		// cannedAnalysisObj['tool_url'] = cannedAnalysisData['tools'][toolId]['tool_url'];
 
 		// Get file
-		formatMetadata.main(cannedAnalysisObj, fileFormat);
+		downloadMetadata.main(cannedAnalysisObj, fileFormat);
 	}
 };
 
@@ -874,18 +875,18 @@ var eventListener = {
 	/////////////////////////////////
 
 	clickCopyButton: function() {
-		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-dropdown .datasets2tools-share-button', function(evt) {
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-dropdown-hover .datasets2tools-share-button', function(evt) {
 			Interactive.copyToClipboard($(evt.target));
 		});
 	},
 
 	/////////////////////////////////
-	////// 2.7.5 formatMetadataButton
+	////// 2.7.5 downloadMetadataButton
 	/////////////////////////////////
 
-	formatMetadataButton: function(cannedAnalysisData) {
-		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-download-dropdown-text .datasets2tools-metadata-download-button', function(evt) {
-			Interactive.formatMetadata($(evt.target), cannedAnalysisData);
+	downloadMetadataButton: function(cannedAnalysisData) {
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-dropdown-hover .datasets2tools-metadata-download-button', function(evt) {
+			Interactive.downloadMetadata($(evt.target), cannedAnalysisData);
 		});
 	},
 
@@ -895,7 +896,7 @@ var eventListener = {
 
 	clickTableArrow: function(cannedAnalysisData) {
 		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-arrow-active', function(evt) {
-			// Interactive.formatMetadata($(evt.target), cannedAnalysisData);
+			// Interactive.downloadMetadata($(evt.target), cannedAnalysisData);
 			var $evtTarget = $(evt.target),
 				$datasets2toolsToolbar = $evtTarget.parent().parent().parent(),
 				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id'),
@@ -923,7 +924,7 @@ var eventListener = {
 		self.filterCannedAnalyses(cannedAnalysisData);
 
 		// Download Metadata
-		self.formatMetadataButton(cannedAnalysisData);
+		self.downloadMetadataButton(cannedAnalysisData);
 
 		// Click Arrow
 		self.clickTableArrow(cannedAnalysisData);
