@@ -398,16 +398,13 @@ var browseTable = {
 
 		// Prepare Displayed Description
 		if (cannedAnalysisDescription.length > maxLength) {
-			displayedDescription = cannedAnalysisDescription.substring(0, maxLength) + '...';
+			displayedDescription = cannedAnalysisDescription.substring(0, maxLength);// + '...';
 		} else {
 			displayedDescription = cannedAnalysisDescription;
 		}
 
-		// Prepare Hover Description
-		hoverDescription = '<span>' + cannedAnalysisDescription + '</span>';
-
 		// Return
-		return '<td class="datasets2tools-canned-analysis-description datasets2tools-tooltip" data-tool="' + cannedAnalysisDescription + '">' + displayedDescription + '</td>';// + 'hoverDescription' +
+		return '<td class="datasets2tools-canned-analysis-description">' + displayedDescription + '<span class="datasets2tools-tooltip-hover datasets2tools-description-tooltip-hover">...<div class="datasets2tools-tooltip-text datasets2tools-description-tooltip-text">' + cannedAnalysisDescription + '</div></span></td>';// + 'hoverDescription' +
 	},
 
 	/////////////////////////////////
@@ -420,7 +417,7 @@ var browseTable = {
 		var self = this;
 
 		// Return
-		return '<td>' + self.getViewMetadataHTML(cannedAnalysisObj) + self.getDownloadMetadataHTML(cannedAnalysisObj) + '</td>';
+		return '<td>' + self.getViewMetadataHTML(cannedAnalysisObj) + self.getformatMetadataHTML(cannedAnalysisObj) + '</td>';
 	},
 
 	/////////////////////////////////
@@ -430,55 +427,59 @@ var browseTable = {
 	getViewMetadataHTML: function(cannedAnalysisObj) {
 
 		// Define variables
-		var viewMetadataHTML = '<div class="datasets2tools-metadata-view-tooltip datasets2tools-interactive-div"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png"><span class="datasets2tools-metadata-view-tooltip-text datasets2tools-interactive-div-text"><b>Metadata</b><br>',
-			metadataKeys = Object.keys(cannedAnalysisObj),
+		var metadataKeys = Object.keys(cannedAnalysisObj),
+			metadataTooltipString = '', //<b>Metadata</b><br>
+			viewMetadataHTML,
 			metadataKey;
 
 		// Loop through tags
 		for (var j = 0; j < metadataKeys.length; j++) {
+
+			// Get Metadata Key
 			metadataKey = metadataKeys[j];
 
+			// Get Metadata Value
 			if (!(['canned_analysis_url', 'description'].indexOf(metadataKey) >= 0)) {
-				viewMetadataHTML += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
+				metadataTooltipString += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
 			}
 		};
 
 		// Close DIV
-		viewMetadataHTML += '</span></div>';
+		viewMetadataHTML = '<div class="datasets2tools-tooltip-hover datasets2tools-metadata-tooltip-hover"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png"><div class="datasets2tools-tooltip-text datasets2tools-metadata-tooltip-text">'+metadataTooltipString+'</div></div>';
 
 		// Return
 		return viewMetadataHTML;
 	},
 
 	/////////////////////////////////
-	////// 2.5.5 downloadMetadataHTML
+	////// 2.5.5 formatMetadataHTML
 	/////////////////////////////////
 
-	getDownloadMetadataHTML: function(cannedAnalysisObj) {
+	getformatMetadataHTML: function(cannedAnalysisObj) {
 
 		// Define variables
-		var downloadMetadataHTML = '<div class="datasets2tools-metadata-download-dropdown datasets2tools-interactive-div">';
+		var formatMetadataHTML = '<div class="datasets2tools-dropdown-hover datasets2tools-metadata-dropdown-hover">';
 
 		// Add Stuff
-		downloadMetadataHTML += '<img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
+		formatMetadataHTML += '<img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png">';
 		
 		// Add Stuff
-		downloadMetadataHTML += '<div class="datasets2tools-metadata-download-dropdown-text datasets2tools-interactive-div-text">';
+		formatMetadataHTML += '<div class="datasets2tools-dropdown-text datasets2tools-metadata-dropdown-text">';
 
 		// Add functionality
-		downloadMetadataHTML += '<b>Download Metadata:</b><br>';
+		formatMetadataHTML += '<b>Download Metadata:</b><br>';
 
 		// Add TXT Button
-		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getTXT">TXT</button>';
+		formatMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getTXT">TXT</button>';
 
 		// Add JSON Button
-		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getJSON">JSON</button>';
+		formatMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getJSON">JSON</button>';
 		
 		// Close DIV
-		downloadMetadataHTML += '</div></div>';
+		formatMetadataHTML += '</div></div>';
 
 		// Return
-		return downloadMetadataHTML;
+		return formatMetadataHTML;
 	},
 
 	/////////////////////////////////
@@ -491,10 +492,10 @@ var browseTable = {
 		var shareHTML = '<td>';
 
 		// Interactive DIV HTML
-		var interactiveDivHTML = '<div class="datasets2tools-share-dropdown datasets2tools-interactive-div">';
+		var interactiveDivHTML = '<div class="datasets2tools-dropdown-hover datasets2tools-share-dropdown-hover">';
 
 		// Dropdown DIV HTML
-		var dropdownDivHTML = '<div class="datasets2tools-share-dropdown-text datasets2tools-interactive-div-text">';
+		var dropdownDivHTML = '<div class="datasets2tools-dropdown-text datasets2tools-share-dropdown-text">';
 
 		// Share Image
 		var shareImageHTML = '<img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png">';
@@ -610,10 +611,10 @@ var browseTable = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 2.6 downloadMetadata /////////////////////////////////
+///// 2.6 formatMetadata ///////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-var downloadMetadata = {
+var formatMetadata = {
 
 	/////////////////////////////////
 	////// 2.5.1 getTXT
@@ -787,10 +788,10 @@ var Interactive = {
 
 	
 	/////////////////////////////////
-	////// 2.6.6 downloadMetadata
+	////// 2.6.6 formatMetadata
 	/////////////////////////////////
 
-	downloadMetadata: function($evtTarget, cannedAnalysisData) {
+	formatMetadata: function($evtTarget, cannedAnalysisData) {
 		
 		// Get file format
 		var fileFormat = $evtTarget.text();
@@ -820,7 +821,7 @@ var Interactive = {
 		// cannedAnalysisObj['tool_url'] = cannedAnalysisData['tools'][toolId]['tool_url'];
 
 		// Get file
-		downloadMetadata.main(cannedAnalysisObj, fileFormat);
+		formatMetadata.main(cannedAnalysisObj, fileFormat);
 	}
 };
 
@@ -879,12 +880,12 @@ var eventListener = {
 	},
 
 	/////////////////////////////////
-	////// 2.7.5 downloadMetadataButton
+	////// 2.7.5 formatMetadataButton
 	/////////////////////////////////
 
-	downloadMetadataButton: function(cannedAnalysisData) {
+	formatMetadataButton: function(cannedAnalysisData) {
 		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-download-dropdown-text .datasets2tools-metadata-download-button', function(evt) {
-			Interactive.downloadMetadata($(evt.target), cannedAnalysisData);
+			Interactive.formatMetadata($(evt.target), cannedAnalysisData);
 		});
 	},
 
@@ -894,7 +895,7 @@ var eventListener = {
 
 	clickTableArrow: function(cannedAnalysisData) {
 		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-arrow-active', function(evt) {
-			// Interactive.downloadMetadata($(evt.target), cannedAnalysisData);
+			// Interactive.formatMetadata($(evt.target), cannedAnalysisData);
 			var $evtTarget = $(evt.target),
 				$datasets2toolsToolbar = $evtTarget.parent().parent().parent(),
 				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id'),
@@ -922,7 +923,7 @@ var eventListener = {
 		self.filterCannedAnalyses(cannedAnalysisData);
 
 		// Download Metadata
-		self.downloadMetadataButton(cannedAnalysisData);
+		self.formatMetadataButton(cannedAnalysisData);
 
 		// Click Arrow
 		self.clickTableArrow(cannedAnalysisData);
