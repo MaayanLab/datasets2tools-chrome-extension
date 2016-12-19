@@ -341,7 +341,7 @@ var toolIconTab = {
 				toolId = toolIds[i];
 
 				// Add Icons
-				toolIconTabHTML += '<div class="datasets2tools-tool-icon datasets2tools-tooltip-hover datasets2tools-toolicon-tooltip-hover" id="' + toolId + '"><img class="datasets2tools-tool-icon-img" src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '"><div class="datasets2tools-tooltip-text datasets2tools-toolicon-tooltip-text"><b>' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</b><br><i>' + Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession][toolId]).length + ' canned analyses</i><br>' + "cannedAnalysisData['tools'][toolId]['tool_name']" + '</div></div>'
+				toolIconTabHTML += '<div class="datasets2tools-tool-icon datasets2tools-tooltip-hover datasets2tools-toolicon-tooltip-hover" id="' + toolId + '"><img class="datasets2tools-tool-icon-img" src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '"><div class="datasets2tools-tooltip-text datasets2tools-toolicon-tooltip-text"><b>' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</b><p><i>' + Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession][toolId]).length + ' canned analyses</i></p><p>' + "cannedAnalysisData['tools'][toolId]['tool_description']" + '</p></div></div>'
 			}
 		}
 		catch (err) {
@@ -720,7 +720,7 @@ var Interactive = {
 		var $selectedToolTab = $evtTarget.parent().parent().parent().parent().find('.datasets2tools-selected-tool-tab');
 
 		// Get Result HTML
-		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img" id="' + toolId + '"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '';
+		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img" id="' + toolId + '"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '&nbsp<img class="datasets2tools-tool-info-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png">';
 
 		// Add HTML
 		$selectedToolTab.html(selectedToolTabHTML);
@@ -823,7 +823,33 @@ var Interactive = {
 
 		// Get file
 		downloadMetadata.main(cannedAnalysisObj, fileFormat);
+	},
+	
+	/////////////////////////////////
+	////// 2.6.7 displayToolInfo
+	/////////////////////////////////
+
+	displayToolInfo: function($evtTarget, cannedAnalysisData) {
+
+		// Define Variables
+		var toolInfoHTML = '<div class="datasets2tools-tool-info-tab">';
+
+		// Get Tool Description
+		var toolDescriptionHTML = 'Tool Description...';
+
+		// Get Tool Developers
+		var toolDeveloperHTML = 'Tool Developer...';
+
+		// Get Tool Links
+		var toolLinkHTML = 'Links...<button class="datasets2tools-close-tool-info-button">X</button>';
+
+		// Get HTML String
+		toolInfoHTML += '<b>Tool Description</b><br>' + toolDescriptionHTML + '<br><br><b>Tool Developers</b><br>' + toolDeveloperHTML + '<br><br><b>Links</b><br>' + toolLinkHTML + '</div>';
+
+		// Set HTML
+		$('.datasets2tools-browse-bar').html(toolInfoHTML);
 	}
+
 };
 
 ////////////////////////////////////////////////////////////
@@ -847,7 +873,7 @@ var eventListener = {
 	/////////////////////////////////
 
 	selectTool: function(cannedAnalysisData) {
-		$('.datasets2tools-tool-icon').click(function(evt) {
+		$('.datasets2tools-tool-icon').click(function(evt) { // :not(.datasets2tools-tooltip-text)
 			var $evtTarget = $(evt.target),
 				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent(),
 				toolId = $evtTarget.parent().attr('id');
@@ -906,7 +932,31 @@ var eventListener = {
 	},
 
 	/////////////////////////////////
-	////// 2.7.5 main
+	////// 2.7.6 clickToolInfoIcon
+	/////////////////////////////////
+
+	clickToolInfoIcon: function(cannedAnalysisData) {
+		$('.datasets2tools-search-bar').on('click', '.datasets2tools-tool-info-img', function(evt) {
+			Interactive.displayToolInfo($(evt.target), cannedAnalysisData);
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.6 closeToolInfoTab
+	/////////////////////////////////
+
+	closeToolInfoTab: function(cannedAnalysisData) {
+		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-close-tool-info-button', function(evt) {
+			// Interactive.displayToolInfo($(evt.target), cannedAnalysisData);
+			var $evtTarget = $(evt.target),
+				$datasets2toolsToolbar = $evtTarget.parent().parent().parent(),
+				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id');
+				Interactive.prepareBrowseTable($datasets2toolsToolbar, toolId, cannedAnalysisData);
+		});
+	},
+
+	/////////////////////////////////
+	////// 2.7.8 main
 	/////////////////////////////////
 
 	main: function(cannedAnalysisData) {
@@ -928,6 +978,12 @@ var eventListener = {
 
 		// Click Arrow
 		self.clickTableArrow(cannedAnalysisData);
+
+		// Click Tool Info
+		self.clickToolInfoIcon(cannedAnalysisData);
+
+		// Close Tool Info
+		self.closeToolInfoTab(cannedAnalysisData);
 
 		// Copy Button
 		self.clickCopyButton();
