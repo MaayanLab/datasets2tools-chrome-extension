@@ -64,7 +64,7 @@
   float: left;
   border-right: solid 1px black;
   padding-left: 15px;
-  padding-right: 10px;
+  padding-right: 0px;
   height: 49px;
   vertical-align: top;
 }
@@ -75,9 +75,9 @@
 
 .datasets2tools-tool-icon-tab {
   float: left;
-  padding-left: 15px;
+  padding-left: 10px;
   position: relative;
-  top: 8px;
+  top: 5px;
 }
 
 /******************************/
@@ -132,6 +132,7 @@
   padding: 5px 10px;
   max-height: 300px;
   overflow-y: auto;
+  padding: 10px 15px;
 }
 
 /************************************************************/
@@ -305,6 +306,22 @@
   outline: none;
 }
 
+/******************************/
+/***** 1.6.12 Buttons *********/
+/******************************/
+
+.datasets2tools-button {
+  outline: none;
+  background-color: transparent;
+  text-decoration: none;
+  border: none;
+  margin: 0px 0px;
+}
+
+.datasets2tools-button.datasets2tools-browse-table-arrow {
+  border: 1px solid grey;
+  background-color: #e2e2e2;
+}
 
 /************************************************************/
 /***** 1.6 Browse Table *************************************/
@@ -426,6 +443,12 @@
   vertical-align: middle;
 }
 
+.datasets2tools-tool-info-title {
+  display: none;
+  text-align: center;
+  font-size: large;
+}
+
 /************************************************************/
 /***** 1.8 Dropdowns and Tooltips ***************************/
 /************************************************************/
@@ -492,11 +515,12 @@
 /*****/
 
 .datasets2tools-toolicon-tooltip-text {
-  width: 150px;
+  width: 200px;
   top: 40px;
   padding: 7px 7px;
   font-size: x-small;
   line-height: 17px;
+  text-align: left;
 }
 
 .datasets2tools-toolicon-tooltip-hover .datasets2tools-tooltip-text::after {
@@ -513,21 +537,17 @@
 }
 
 .datasets2tools-dropdown-text {
-  visibility: hidden;
+  display: none;
   position: absolute;
   z-index: 100;
   float: left;
   color: black;
   background-color: #fff;
   border: 1px solid grey;
-  /*border-radius: 6px;*/
+  border-radius: 6px;
   margin-top: 15px;
   font-size: small;
   padding: 7px 11px;
-}
-
-.datasets2tools-dropdown-hover:hover .datasets2tools-dropdown-text {
-  visibility: visible;
 }
 
 .datasets2tools-dropdown-hover .datasets2tools-dropdown-text::after {
@@ -540,17 +560,21 @@
   margin-top: -5px;
 }
 
+/*
+.datasets2tools-dropdown-hover:hover .datasets2tools-dropdown-text {
+  visibility: visible;
+}
 /*****/
 
 .datasets2tools-metadata-dropdown-text {
-  width: 175px;
+  width: 172px;
   top: 3px;
-  left: -49px;
+  left: -40px;
   text-align: left;
 }
 
 .datasets2tools-metadata-dropdown-hover .datasets2tools-dropdown-text::after {
-  left: 67px;
+  left: 57px;
 }
 
 
@@ -559,7 +583,7 @@
 .datasets2tools-share-dropdown-text {
   width: 175px;
   top: 5px;
-  left: -137px;
+  left: -130px;
   text-align: left;
 }
 
