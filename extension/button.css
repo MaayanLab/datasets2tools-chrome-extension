@@ -515,7 +515,7 @@
 /*****/
 
 .datasets2tools-toolicon-tooltip-text {
-  width: 200px;
+  width: 250px;
   top: 40px;
   padding: 7px 7px;
   font-size: x-small;
@@ -524,7 +524,7 @@
 }
 
 .datasets2tools-toolicon-tooltip-hover .datasets2tools-tooltip-text::after {
-  left: 13px;
+  left: 17px;
 }
 
 /*****/
