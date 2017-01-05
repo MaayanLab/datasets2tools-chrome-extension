@@ -192,7 +192,7 @@ var eventListener = {
 	/////////////////////////////////
 
 	clickLogo: function() {
-		
+
 		// Listener
 		$('.datasets2tools-logo-img').click(function(evt) {
 
@@ -273,8 +273,18 @@ var eventListener = {
 		// Listener
 		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-dropdown-hover .datasets2tools-share-button', function(evt) {
 
-			// Copy to Clipboard
-			Interactive.copyToClipboard($(evt.target));
+			// Get Element
+			var copyTextArea = $(evt.target).prev()[0];
+
+			// Select Element
+			copyTextArea.select();
+
+			// Copy Text
+			try {
+				var successful = document.execCommand('copy');
+			} catch (err) {
+				console.log('Oops, unable to copy');
+			}
 
 		});
 	},
@@ -801,6 +811,8 @@ var Interactive = {
 	/////////////////////////////////
 
 	copyToClipboard: function($evtTarget) {
+
+		// Get Text
 		var text = $evtTarget.prev().val();
 		window.alert(text);
 	},
@@ -867,6 +879,77 @@ var Interactive = {
 		// Set HTML
 		$datasets2toolsToolbar.find('.datasets2tools-search-form').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-tool-info-title').show();
+	}
+};
+
+////////////////////////////////////////////////////////////
+///// 3.4 downloadMetadata /////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var downloadMetadata = {
+
+	/////////////////////////////////
+	////// 2.5.1 getTXT
+	/////////////////////////////////
+
+	getTXT: function(cannedAnalysisObj) {
+
+		// Define variable
+		var txtString = 'Tag\tValue\n',
+			metadataKey;
+
+		// Get Keys
+		var metadataKeys = Object.keys(cannedAnalysisObj);
+
+		// Loop through keys
+		for (var k = 0; k < metadataKeys.length; k++) {
+
+			// Get metadata key
+			metadataKey = metadataKeys[k];
+
+			// Add metadata values
+			txtString += metadataKey + '\t' + cannedAnalysisObj[metadataKey] + '\n';
+		}
+
+		// Return string
+		return txtString;
+	},
+
+	/////////////////////////////////
+	////// 2.5.2 getJSON
+	/////////////////////////////////
+
+	getJSON: function(cannedAnalysisObj) {
+
+		// Return string
+		return JSON.stringify(cannedAnalysisObj, null, 2);
+	},
+
+	/////////////////////////////////
+	////// 2.5.3 main
+	/////////////////////////////////
+
+	main: function(cannedAnalysisObj, fileFormat) {
+
+		// Define Self
+		var self = this,
+			metadataString;
+
+		// Switch
+		switch(fileFormat) {
+
+			// Download TXT
+			case 'TXT':
+				metadataString = self.getTXT(cannedAnalysisObj);
+				download(metadataString, 'metadata.txt', 'text/plain')
+				break;
+
+			// Download JSON
+			case 'JSON':
+				metadataString = self.getJSON(cannedAnalysisObj);
+				download(metadataString, 'metadata.json', 'text/plain')
+				break;
+		}
 	}
 };
 

@@ -23,7 +23,7 @@
 			],
 			"js": [
 				"jquery.js",
-				"clipboard.min.js",
+				"download.js",
 				"datasets2tools.js"
 			]
 		}
