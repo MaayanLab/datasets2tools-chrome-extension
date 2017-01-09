@@ -16,10 +16,15 @@
 		{
 			"matches": [
 				"https://datamed.org/search.php?*",
-				"https://www.ncbi.nlm.nih.gov/gds/?term=*"
+				"https://www.ncbi.nlm.nih.gov/gds/?term=*",
+				"http://lincsportal.ccs.miami.edu/datasets/*"
 			],
 			"css": [
-				"button.css"
+				"css/style.css",
+				"css/image.css",
+				"css/button.css",
+				"css/tooltip.css",
+				"css/dropdown.css"
 			],
 			"js": [
 				"jquery.js",

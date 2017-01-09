@@ -15,8 +15,6 @@ function main() {
 	// 1.3 Load Interface
 	Interface.load($parents, cannedAnalysisData);
 
-	console.log(cannedAnalysisData);
-
 	// 1.4 Event Listener
 	eventListener.main(cannedAnalysisData);
 };
@@ -40,9 +38,14 @@ var Interface = {
 		// Define variable
 		var $parents;
 
-		// Add parents
-		// $parents = $('.rsltcont');
-		$parents = $('.search-result li');
+		// Get parents
+		if (Page.isDataMed()) {
+			$parents = $('.search-result li');
+		} else if (Page.isGEO()) {
+			$parents = $('.rsltcont');
+		} else {
+			throw 'Could not determine repository location.'
+		}
 
 		// Return result
 		return $parents;
@@ -54,9 +57,17 @@ var Interface = {
 
 	getDatasetAccession: function($elem) {
 
-		// Get Accession
-		// var datasetAccession = $elem.find(".rprtid dt:contains('Accession: ')").next().text();
-		var datasetAccession = $elem.find(".result-field em:contains('ID:'), em:contains('Accession:')").next().text().replace(/\s+/g, '');
+		// Define variable
+		var datasetAccession;
+
+		// Get accession
+		if (Page.isDataMed()) {
+			datasetAccession = $elem.find(".result-field em:contains('ID:'), em:contains('Accession:')").next().text().replace(/\s+/g, '');
+		} else if (Page.isGEO()) {
+			datasetAccession = $elem.find(".rprtid dt:contains('Accession: ')").next().text();
+		} else {
+			throw 'Could not determine repository location.'
+		}
 
 		// Return Result
 		return datasetAccession;
@@ -74,7 +85,7 @@ var Interface = {
 			datasetAccession = self.getDatasetAccession($elem),
 			toolbarHTML = '<div class="datasets2tools-toolbar" id="' + datasetAccession + '">',
 			searchBarHTML = '<div class="datasets2tools-search-bar">',
-			logoTabHTML = '<div class="datasets2tools-logo-tab"><button class="datasets2tools-button"><img class="datasets2tools-logo-img" src="https://cdn0.iconfinder.com/data/icons/jfk/512/chrome-512.png"></button><span style="font-size:xx-small">&nbsp</span><span class="datasets2tools-compact">Datasets2Tools</span></div>',
+			logoTabHTML = '<div class="datasets2tools-logo-tab"><button class="datasets2tools-logo-button datasets2tools-button"></button><span style="font-size:xx-small">&nbsp</span><div class="datasets2tools-title-label">Datasets2Tools</div></div>',
 			toolTabHTML = prepareToolIconTab.main(cannedAnalysisData, datasetAccession),
 			selectedToolTabHTML = '<div class="datasets2tools-selected-tool-tab datasets2tools-expand"></div>',
 			searchTabHTML = '<div class="datasets2tools-search-tab datasets2tools-expand"> <div class="datasets2tools-tool-info-title"> <i>Tool Information</i> </div> <form class="datasets2tools-search-form"> <div class="datasets2tools-search-label">Search:</div><div class="datasets2tools-search-input"><input class="datasets2tools-search-text-input" type="text" name="datasets2tools-search-query"></div></form></div>',
@@ -117,7 +128,17 @@ var Interface = {
 				interfaceHTML = self.prepare($elem, cannedAnalysisData);
 
 				// Add HTML
-				$elem.append(interfaceHTML);
+				// $elem.append(interfaceHTML);
+
+				// Add HTML
+				if (Page.isDataMed()) {
+					$elem.append(interfaceHTML);
+				} else if (Page.isGEO()) {
+					$elem.append(interfaceHTML);
+				} else {
+					throw 'Could not determine repository location.'
+				}
+
 			}
 		})
 	}
@@ -194,14 +215,16 @@ var eventListener = {
 	clickLogo: function() {
 
 		// Listener
-		$('.datasets2tools-logo-img').click(function(evt) {
+		$('.datasets2tools-logo-button').click(function(evt) {
+
+			// Prevent default behaviour
+			evt.preventDefault();
 
 			// Define Variable
 			var $datasets2toolsToolbar = $(evt.target).parents('.datasets2tools-toolbar');
 
 			// Add Interactivity
 			Interactive.triggerCompactMode($datasets2toolsToolbar);
-
 		});
 	},
 
@@ -212,18 +235,25 @@ var eventListener = {
 	selectTool: function(cannedAnalysisData) {
 
 		// Listener
-		$('.datasets2tools-button').on('click', '.datasets2tools-tool-icon-img', function(evt) {
+		$('.datasets2tools-tool-icon-button').click(function(evt) {
+
+			// Prevent default behaviour
+			evt.preventDefault();
 
 			// Define Variables
 			var $evtTarget = $(evt.target),
 				$datasets2toolsToolbar = $evtTarget.parents('.datasets2tools-toolbar'),
-				toolId = $evtTarget.parent().parent().attr('id');
+				toolId = $evtTarget.attr('id');
+
+				console.log($evtTarget);
+				console.log(toolId);
 
 			// Add Interactivity
 			Interactive.triggerExpandMode($datasets2toolsToolbar);
-			Interactive.prepareSelectedToolTab($evtTarget, cannedAnalysisData);
+			Interactive.prepareSelectedToolTab($datasets2toolsToolbar, toolId, cannedAnalysisData);
 			Interactive.prepareBrowseTable($datasets2toolsToolbar, toolId, cannedAnalysisData);
-
+			$datasets2toolsToolbar.find('.datasets2tools-tool-info-title').hide();
+			$datasets2toolsToolbar.find('.datasets2tools-search-form').show();
 		});
 	},
 
@@ -255,6 +285,9 @@ var eventListener = {
 		// Listener
 		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-dropdown-button', function(evt) {
 
+			// Prevent default behaviour
+			evt.preventDefault();
+
 			// Define Variables
 			var $evtTarget = $(evt.target);
 
@@ -273,8 +306,14 @@ var eventListener = {
 		// Listener
 		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-dropdown-hover .datasets2tools-share-button', function(evt) {
 
+			// Prevent default behaviour
+			evt.preventDefault();
+
+			// Get Event Target
+			var $evtTarget = $(evt.target);
+
 			// Get Element
-			var copyTextArea = $(evt.target).prev()[0];
+			var copyTextArea = $evtTarget.prev()[0];
 
 			// Select Element
 			copyTextArea.select();
@@ -285,7 +324,6 @@ var eventListener = {
 			} catch (err) {
 				console.log('Oops, unable to copy');
 			}
-
 		});
 	},
 
@@ -297,6 +335,9 @@ var eventListener = {
 
 		// Listener
 		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-metadata-dropdown-hover .datasets2tools-metadata-download-button', function(evt) {
+
+			// Prevent default behaviour
+			evt.preventDefault();
 
 			// Stuff
 			Interactive.downloadMetadata($(evt.target), cannedAnalysisData);
@@ -312,6 +353,9 @@ var eventListener = {
 
 		// Listener
 		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-browse-table-arrow', function(evt) {
+
+			// Prevent default behaviour
+			evt.preventDefault();
 
 			// Define Variables
 			var $evtTarget = $(evt.target),
@@ -334,6 +378,9 @@ var eventListener = {
 		// Listener
 		$('.datasets2tools-search-bar').on('click', '.datasets2tools-tool-info-img', function(evt) {
 
+			// Prevent default behaviour
+			evt.preventDefault();
+
 			// Define Variables
 			var $evtTarget = $(evt.target),
 				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent(),
@@ -353,6 +400,9 @@ var eventListener = {
 
 		// Listener
 		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-close-tool-info-button', function(evt) {
+
+			// Prevent default behaviour
+			evt.preventDefault();
 
 			// Define Variables
 			var $evtTarget = $(evt.target),
@@ -410,7 +460,39 @@ var eventListener = {
 //////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-///// 3.1 prepareToolIconTab ///////////////////////////////
+///// 3.1 Page /////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+var Page = {
+
+	/////////////////////////////////
+	////// 3.1.1 isGEO
+	/////////////////////////////////
+
+	isGEO: function() {
+		return Boolean(window.location.hostname === 'www.ncbi.nlm.nih.gov');
+	},
+
+	/////////////////////////////////
+	////// 3.1.2 isDataMed
+	/////////////////////////////////
+
+	isDataMed: function() {
+		return Boolean(window.location.hostname === 'datamed.org');
+	},
+
+	/////////////////////////////////
+	////// 3.1.3 isLDP
+	/////////////////////////////////
+
+	isLDP: function() {
+		return Boolean(window.location.hostname === 'lincsportal.ccs.miami.edu');
+	}
+};
+
+
+////////////////////////////////////////////////////////////
+///// 3.2 prepareToolIconTab ///////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var prepareToolIconTab = {
@@ -437,7 +519,7 @@ var prepareToolIconTab = {
 				toolId = toolIds[i];
 
 				// Add Icons
-				toolIconTabHTML += '<div class="datasets2tools-tool-icon datasets2tools-tooltip-hover datasets2tools-toolicon-tooltip-hover" id="' + toolId + '"><button class="datasets2tools-button"><img class="datasets2tools-tool-icon-img" src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '"></button><div class="datasets2tools-tooltip-text datasets2tools-toolicon-tooltip-text"><b>' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</b><p><i>' + Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession][toolId]).length + ' canned analyses</i></p><p>' + cannedAnalysisData['tools'][toolId]['tool_description'] + '</p></div></div>'
+				toolIconTabHTML += '<div class="datasets2tools-tooltip-hover datasets2tools-toolicon-tooltip-hover"><button class="datasets2tools-tool-icon-button datasets2tools-button" id="' + toolId + '" type="button" style="background:url(' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + ') no-repeat;background-size:95%;background-position:center;"></button><div class="datasets2tools-tooltip-text datasets2tools-toolicon-tooltip-text"><b>' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</b><p><i>' + Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession][toolId]).length + ' canned analyses</i></p><p>' + cannedAnalysisData['tools'][toolId]['tool_description'] + '</p></div></div>'
 			}
 		}
 		catch (err) {
@@ -454,7 +536,7 @@ var prepareToolIconTab = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 3.2 prepareBrowseTable ///////////////////////////////
+///// 3.3 prepareBrowseTable ///////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var browseTable = {
@@ -468,7 +550,7 @@ var browseTable = {
 		  return Object.keys(obj) //get the keys out
 			    .sort() //this will ensure consistent ordering of what you will get back. If you want something in non-aphabetical order, you will need to supply a custom sorting function
 			    // .slice(0, 4) //get the first N
-			    .slice((pageNr-1)*pageSize+1, pageNr*pageSize+1) //get the first N
+			    .slice((pageNr-1)*pageSize, pageNr*pageSize) //get the first N
 			    .reduce(function(memo, current) { //generate a new object out of them
 			      memo[current] = obj[current]
 			      return memo;
@@ -606,10 +688,10 @@ var browseTable = {
 		var embedImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="https://cdn1.iconfinder.com/data/icons/free-98-icons/32/code-128.png"><b>Embed Icon:</b>';
 
 		// Copy Image
-		var copyImageHTML = '<img class="datasets2tools-dropdown-button-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">';
+		var copyImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">';
 
 		// Get Copy Button HTML
-		var buttonHTML = '<button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-button-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
+		var buttonHTML = '<button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-icons-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
 
 		// Text Area HTML
 		var textAreaHTML = function(content, nRows) {return '<textarea class="datasets2tools-textarea" rows="' + nRows + '">'+content+'</textarea>'};
@@ -710,42 +792,41 @@ var browseTable = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 3.3 Interactive //////////////////////////////////////
+///// 3.4 Interactive //////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var Interactive = {
 
 	/////////////////////////////////
-	////// 2.6.1 triggerCompactMode
+	////// 3.3. triggerCompactMode
 	/////////////////////////////////
 
 	triggerCompactMode: function($datasets2toolsToolbar) {
 		$datasets2toolsToolbar.find('.datasets2tools-compact').show();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'inline-block');
+		$datasets2toolsToolbar.find('.datasets2tools-logo-img').css('filter', 'grayscale(0%)');
 	},
 
 	/////////////////////////////////
-	////// 2.6.2 triggerExpandMode
+	////// 3.3. triggerExpandMode
 	/////////////////////////////////
 
 	triggerExpandMode: function($datasets2toolsToolbar) {
 		$datasets2toolsToolbar.find('.datasets2tools-compact').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').show();
 		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'block');
+		$datasets2toolsToolbar.find('.datasets2tools-logo-img').css('filter', 'grayscale(100%)');
 	},
 
 	/////////////////////////////////
-	////// 2.6.3 prepareSelectedToolTab
+	////// 3.3. prepareSelectedToolTab
 	/////////////////////////////////
 
-	prepareSelectedToolTab: function($evtTarget, cannedAnalysisData) {
-
-		// Get Tool ID
-		var toolId = $evtTarget.parent().parent().attr('id');
+	prepareSelectedToolTab: function($datasets2toolsToolbar, toolId, cannedAnalysisData) {
 
 		// Get Selected Tool Tab Element
-		var $selectedToolTab = $evtTarget.parents('.datasets2tools-toolbar').find('.datasets2tools-selected-tool-tab');
+		var $selectedToolTab = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-tab');
 
 		// Get Result HTML
 		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img" id="' + toolId + '"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '<button class="datasets2tools-button"><img class="datasets2tools-tool-info-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png"></button>';
@@ -755,7 +836,7 @@ var Interactive = {
 	},
 
 	/////////////////////////////////
-	////// 2.6.4 prepareBrowseTable
+	////// 3.3. prepareBrowseTable
 	/////////////////////////////////
 
 	prepareBrowseTable: function($datasets2toolsToolbar, toolId, cannedAnalysisData, pageNr=1) {
@@ -807,19 +888,7 @@ var Interactive = {
 	},
 
 	/////////////////////////////////
-	////// 2.6.5 copyToClipboard
-	/////////////////////////////////
-
-	copyToClipboard: function($evtTarget) {
-
-		// Get Text
-		var text = $evtTarget.prev().val();
-		window.alert(text);
-	},
-
-	
-	/////////////////////////////////
-	////// 2.6.6 downloadMetadata
+	////// 3.3. downloadMetadata
 	/////////////////////////////////
 
 	downloadMetadata: function($evtTarget, cannedAnalysisData) {
@@ -856,7 +925,7 @@ var Interactive = {
 	},
 	
 	/////////////////////////////////
-	////// 2.6.7 displayToolInfo
+	////// 3.3. displayToolInfo
 	/////////////////////////////////
 
 	displayToolInfo: function($datasets2toolsToolbar, toolId, cannedAnalysisData) {
@@ -870,8 +939,11 @@ var Interactive = {
 		// Get Tool Links
 		var toolLinkHTML = '<a href="' + cannedAnalysisData['tools'][toolId]['tool_homepage_url'] + '"> Homepage </a>';
 
+		// Get Publication Links
+		var publicationLinkHTML = '<a href="' + cannedAnalysisData['tools'][toolId]['publication_url'] + '"> Reference </a>';
+
 		// Get HTML String
-		toolInfoHTML += '<b><u>Tool Description</b></u><br>' + toolDescriptionHTML + '<br><br><b><u>Links</b></u><br>' + toolLinkHTML + '<button class="datasets2tools-close-tool-info-button">X</button></div>';
+		toolInfoHTML += '<b><u>Tool Description</b></u><br>' + toolDescriptionHTML + '<br><br><b><u>Links</b></u><br>' + toolLinkHTML + '&nbsp' + publicationLinkHTML + '<button class="datasets2tools-close-tool-info-button">X</button></div>';
 
 		// Set HTML
 		$datasets2toolsToolbar.find('.datasets2tools-browse-bar').html(toolInfoHTML);
@@ -883,7 +955,7 @@ var Interactive = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 3.4 downloadMetadata /////////////////////////////////
+///// 3.5 downloadMetadata /////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var downloadMetadata = {
