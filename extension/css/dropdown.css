@@ -41,7 +41,7 @@
 
 .datasets2tools-dropdown-hover .datasets2tools-dropdown-text::after {
   content: "";
-  border-color: transparent transparent black transparent;
+  border-color: transparent transparent grey transparent;
   border-width: 5px;
   border-style: solid;
   position: absolute;
@@ -60,7 +60,7 @@
 .datasets2tools-metadata-dropdown-text {
   width: 172px;
   top: 3px;
-  left: -40px;
+  left: -43px;
   text-align: left;
 }
 
@@ -82,8 +82,8 @@
 
 .datasets2tools-share-dropdown-text {
   width: 175px;
-  top: 5px;
-  left: -130px;
+  top: 15px;
+  left: -120px;
   text-align: left;
 }
 

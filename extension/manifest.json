@@ -4,12 +4,12 @@
 	"description": "Ma'ayan Lab",
 	
 	"icons":{
-		"128": "icon_128.png",
-		"720": "icon_720.png"
+		"128": "icons/icon_128.png",
+		"720": "icons/icon_720.png"
 	},
 	
 	"browser_action": {
-		"default_icon": "icon_720.png"
+		"default_icon": "icons/icon_720.png"
 	},
 		
 	"content_scripts": [
@@ -21,22 +21,31 @@
 			],
 			"css": [
 				"css/style.css",
+				"css/table.css",
 				"css/image.css",
 				"css/button.css",
 				"css/tooltip.css",
 				"css/dropdown.css"
 			],
 			"js": [
-				"jquery.js",
-				"download.js",
+				"lib/jquery.js",
+				"lib/download.js",
 				"datasets2tools.js"
 			]
 		}
 	],
 	
 	"web_accessible_resources": [
-		"icon_128.png",
-		"icon_720.png"
+		"icons/icon_128.png",
+		"icons/icon_720.png",
+		"icons/info.png",
+		"icons/download.png",
+		"icons/share.png",
+		"icons/arrow-left.png",
+		"icons/arrow-right.png",
+		"icons/link.png",
+		"icons/embed.png",
+		"icons/copy.png"
 	],
 
 	"manifest_version": 2

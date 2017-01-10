@@ -129,7 +129,7 @@
 
 .datasets2tools-metadata-tooltip-text {
   width: 175px;
-  top: 5px;
+  top: 3px;
   left: -50px;
   text-align: left;
   margin-top: 15px;
@@ -141,7 +141,7 @@
 /****************************************/
 
 .datasets2tools-metadata-tooltip-hover .datasets2tools-tooltip-text::after {
-  left: 30px;
+  left: 25px;
 }
 
 /************************************************************/

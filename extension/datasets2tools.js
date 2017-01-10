@@ -43,6 +43,7 @@ var Interface = {
 			$parents = $('.search-result li');
 		} else if (Page.isGEO()) {
 			$parents = $('.rsltcont');
+			// $('.rprt').css('position', 'relative');
 		} else {
 			throw 'Could not determine repository location.'
 		}
@@ -88,7 +89,7 @@ var Interface = {
 			logoTabHTML = '<div class="datasets2tools-logo-tab"><button class="datasets2tools-logo-button datasets2tools-button"></button><span style="font-size:xx-small">&nbsp</span><div class="datasets2tools-title-label">Datasets2Tools</div></div>',
 			toolTabHTML = prepareToolIconTab.main(cannedAnalysisData, datasetAccession),
 			selectedToolTabHTML = '<div class="datasets2tools-selected-tool-tab datasets2tools-expand"></div>',
-			searchTabHTML = '<div class="datasets2tools-search-tab datasets2tools-expand"> <div class="datasets2tools-tool-info-title"> <i>Tool Information</i> </div> <form class="datasets2tools-search-form"> <div class="datasets2tools-search-label">Search:</div><div class="datasets2tools-search-input"><input class="datasets2tools-search-text-input" type="text" name="datasets2tools-search-query"></div></form></div>',
+			searchTabHTML = '<div class="datasets2tools-search-tab datasets2tools-expand"> <div class="datasets2tools-tool-info-label"> <i>Tool Information</i> </div> <form class="datasets2tools-search-form"> <div class="datasets2tools-search-label">Search:</div><div class="datasets2tools-search-input"><input class="datasets2tools-search-text-input" type="text" name="datasets2tools-search-query"></div></form></div>',
 			browseTableHTML = '<div class="datasets2tools-browse-bar datasets2tools-expand"></div>';
 
 
@@ -245,14 +246,11 @@ var eventListener = {
 				$datasets2toolsToolbar = $evtTarget.parents('.datasets2tools-toolbar'),
 				toolId = $evtTarget.attr('id');
 
-				console.log($evtTarget);
-				console.log(toolId);
-
 			// Add Interactivity
 			Interactive.triggerExpandMode($datasets2toolsToolbar);
 			Interactive.prepareSelectedToolTab($datasets2toolsToolbar, toolId, cannedAnalysisData);
 			Interactive.prepareBrowseTable($datasets2toolsToolbar, toolId, cannedAnalysisData);
-			$datasets2toolsToolbar.find('.datasets2tools-tool-info-title').hide();
+			$datasets2toolsToolbar.find('.datasets2tools-selected-tool-title').hide();
 			$datasets2toolsToolbar.find('.datasets2tools-search-form').show();
 		});
 	},
@@ -267,7 +265,7 @@ var eventListener = {
 		$('.datasets2tools-search-input').on('keyup', function(evt) {
 			// Define Variables
 			var $evtTarget = $(evt.target),
-				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent().parent(),
+				$datasets2toolsToolbar = $evtTarget.parents('.datasets2tools-toolbar'),
 				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id');
 
 			// Add Interactivity
@@ -292,7 +290,7 @@ var eventListener = {
 			var $evtTarget = $(evt.target);
 
 			// Add Interactivity
-			$evtTarget.parent().parent().parent().find('.datasets2tools-dropdown-text').toggle();
+			$evtTarget.parent().find('.datasets2tools-dropdown-text').toggle();
 
 		});
 	},
@@ -304,7 +302,7 @@ var eventListener = {
 	clickCopyButton: function() {
 
 		// Listener
-		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-dropdown-hover .datasets2tools-share-button', function(evt) {
+		$('.datasets2tools-browse-bar').on('click', 'table tr .datasets2tools-share-dropdown-hover .datasets2tools-copy-button', function(evt) {
 
 			// Prevent default behaviour
 			evt.preventDefault();
@@ -352,16 +350,16 @@ var eventListener = {
 	clickTableArrow: function(cannedAnalysisData) {
 
 		// Listener
-		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-browse-table-arrow', function(evt) {
+		$('.datasets2tools-browse-bar').on('click', '.datasets2tools-browse-arrow', function(evt) {
 
 			// Prevent default behaviour
 			evt.preventDefault();
 
 			// Define Variables
 			var $evtTarget = $(evt.target),
-				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent(),
+				$datasets2toolsToolbar = $evtTarget.parents('.datasets2tools-toolbar'),
 				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id'),
-				pageNr = $evtTarget.parent().attr('id');
+				pageNr = $evtTarget.attr('id');
 
 			// Add Interactivity
 			Interactive.prepareBrowseTable($datasets2toolsToolbar, toolId, cannedAnalysisData, pageNr);
@@ -376,14 +374,14 @@ var eventListener = {
 	clickToolInfoIcon: function(cannedAnalysisData) {
 
 		// Listener
-		$('.datasets2tools-search-bar').on('click', '.datasets2tools-tool-info-img', function(evt) {
+		$('.datasets2tools-search-bar').on('click', '.datasets2tools-tool-info-button', function(evt) {
 
 			// Prevent default behaviour
 			evt.preventDefault();
 
 			// Define Variables
 			var $evtTarget = $(evt.target),
-				$datasets2toolsToolbar = $evtTarget.parent().parent().parent().parent(),
+				$datasets2toolsToolbar = $evtTarget.parents('.datasets2tools-toolbar'),
 				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id');
 			
 			// Add Interactivity
@@ -406,9 +404,9 @@ var eventListener = {
 
 			// Define Variables
 			var $evtTarget = $(evt.target),
-				$datasets2toolsToolbar = $evtTarget.parent().parent().parent(),
+				$datasets2toolsToolbar = $evtTarget.parents('.datasets2tools-toolbar'),
 				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id');
-				$datasets2toolsToolbar.find('.datasets2tools-tool-info-title').hide();
+				$datasets2toolsToolbar.find('.datasets2tools-selected-tool-label').hide();
 				$datasets2toolsToolbar.find('.datasets2tools-search-form').show();
 
 			// Add Interactivity
@@ -489,7 +487,6 @@ var Page = {
 		return Boolean(window.location.hostname === 'lincsportal.ccs.miami.edu');
 	}
 };
-
 
 ////////////////////////////////////////////////////////////
 ///// 3.2 prepareToolIconTab ///////////////////////////////
@@ -626,7 +623,7 @@ var browseTable = {
 		};
 
 		// Close DIV
-		viewMetadataHTML = '<div class="datasets2tools-tooltip-hover datasets2tools-metadata-tooltip-hover"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png"><div class="datasets2tools-tooltip-text datasets2tools-metadata-tooltip-text">'+metadataTooltipString+'</div></div>';
+		viewMetadataHTML = '<div class="datasets2tools-tooltip-hover datasets2tools-metadata-tooltip-hover"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="' + chrome.extension.getURL("icons/info.png") + '"><div class="datasets2tools-tooltip-text datasets2tools-metadata-tooltip-text">'+metadataTooltipString+'</div></div>';
 
 		// Return
 		return viewMetadataHTML;
@@ -642,7 +639,7 @@ var browseTable = {
 		var downloadMetadataHTML = '<div class="datasets2tools-dropdown-hover datasets2tools-metadata-dropdown-hover">';
 
 		// Add Stuff
-		downloadMetadataHTML += '<button class="datasets2tools-button datasets2tools-dropdown-button"><img class="datasets2tools-download-metadata-img datasets2tools-metadata-img" src="http://www.drodd.com/images12/icon-download7.png"></button>';
+		downloadMetadataHTML += '<button class="datasets2tools-button datasets2tools-dropdown-button datasets2tools-download-metadata-button"></button>';
 		
 		// Add Stuff
 		downloadMetadataHTML += '<div class="datasets2tools-dropdown-text datasets2tools-metadata-dropdown-text">';
@@ -679,19 +676,19 @@ var browseTable = {
 		var dropdownDivHTML = '<div class="datasets2tools-dropdown-text datasets2tools-share-dropdown-text">';
 
 		// Share Image
-		var shareImageHTML = '<button class="datasets2tools-button datasets2tools-dropdown-button"><img class="datasets2tools-share-button-img" src="https://api.icons8.com/download/a5d38503865a8990ff38b46357345debdb740e3d/Android_L/PNG/256/Very_Basic/share-256.png"></button>';
+		var shareImageHTML = '<button class="datasets2tools-button datasets2tools-dropdown-button datasets2tools-share-button"></button>';
 
 		// Link Image
-		var linkImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="http://simpleicon.com/wp-content/uploads/link-2.png"><b>Canned Analysis URL:</b>';
+		var linkImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/link.png") + '"><b>Canned Analysis URL:</b>';
 
 		// Embed Image
-		var embedImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="https://cdn1.iconfinder.com/data/icons/free-98-icons/32/code-128.png"><b>Embed Icon:</b>';
+		var embedImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/embed.png") + '"><b>Embed Icon:</b>';
 
 		// Copy Image
-		var copyImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">';
+		var copyImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/copy.png") + '">';
 
 		// Get Copy Button HTML
-		var buttonHTML = '<button class="datasets2tools-share-button"><img class="datasets2tools-dropdown-icons-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
+		var buttonHTML = '<button class="datasets2tools-copy-button"><img class="datasets2tools-dropdown-icons-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
 
 		// Text Area HTML
 		var textAreaHTML = function(content, nRows) {return '<textarea class="datasets2tools-textarea" rows="' + nRows + '">'+content+'</textarea>'};
@@ -764,7 +761,7 @@ var browseTable = {
 			if (pageNr > 1) {
 				return '" id="' + (pageNr-1) + '"';
 			} else {
-				return 'disabled';
+				return ' datasets2tools-disabled-arrow';
 			}
 		};
 
@@ -775,15 +772,15 @@ var browseTable = {
 			if (numberOfCannedAnalyses > pageNr*(pageSize)) {
 				return '" id="' + followingPageNr + '"';
 			} else {
-				return 'disabled';
+				return ' datasets2tools-disabled-arrow';
 			}
 		};
 
 		// Add Browse Arrows, If Necessary
 		browseTableHTML += '<div class="datasets2tools-browse-table-arrow-tab">'
 		browseTableHTML += 'Showing results ' + Math.min(((pageNr-1)*pageSize+1), numberOfCannedAnalyses) + '-' + Math.min((pageNr*(pageSize)), numberOfCannedAnalyses) + ' of ' + numberOfCannedAnalyses + '.&nbsp&nbsp&nbsp'
-		browseTableHTML += '<button class="datasets2tools-button datasets2tools-browse-table-arrow ' + leftArrowClass(pageNr) + '"><img class="datasets2tools-browse-table-arrow-img datasets2tools-arrow-left ' + leftArrowClass(pageNr) + ' src="https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-left-01-128.png"></button>';
-		browseTableHTML += '<button class="datasets2tools-button datasets2tools-browse-table-arrow ' + rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) + '"><img class="datasets2tools-browse-table-arrow-img datasets2tools-arrow-right ' + rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) + ' src="https://cdn3.iconfinder.com/data/icons/faticons/32/arrow-right-01-128.png"></button>';
+		browseTableHTML += '<button class="datasets2tools-button datasets2tools-browse-arrow datasets2tools-browse-arrow-left' + leftArrowClass(pageNr) + '"></button>';
+		browseTableHTML += '<button class="datasets2tools-button datasets2tools-browse-arrow datasets2tools-browse-arrow-right' + rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) + '"></button>';
 		browseTableHTML += '</div>';
 
 		// Return Table HTML
@@ -829,7 +826,8 @@ var Interactive = {
 		var $selectedToolTab = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-tab');
 
 		// Get Result HTML
-		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img" id="' + toolId + '"> &nbsp' + cannedAnalysisData['tools'][toolId]['tool_name'] + '<button class="datasets2tools-button"><img class="datasets2tools-tool-info-img" src="https://openclipart.org/image/800px/svg_to_png/213219/Information-icon.png"></button>';
+		var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img" id="' + toolId + '"><div class="datasets2tools-selected-tool-label">' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</div><button type="button" class="datasets2tools-tool-info-button datasets2tools-button"></button>';
+		// var selectedToolTabHTML = '<img src="' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + '" class="datasets2tools-selected-tool-img" id="' + toolId + '"><div class="datasets2tools-selected-tool-label">' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</div>';
 
 		// Add HTML
 		$selectedToolTab.html(selectedToolTabHTML);
@@ -937,10 +935,10 @@ var Interactive = {
 		var toolDescriptionHTML = cannedAnalysisData['tools'][toolId]['tool_description'];
 
 		// Get Tool Links
-		var toolLinkHTML = '<a href="' + cannedAnalysisData['tools'][toolId]['tool_homepage_url'] + '"> Homepage </a>';
+		var toolLinkHTML = '<a href="' + cannedAnalysisData['tools'][toolId]['tool_homepage_url'] + '">Homepage</a>';
 
 		// Get Publication Links
-		var publicationLinkHTML = '<a href="' + cannedAnalysisData['tools'][toolId]['publication_url'] + '"> Reference </a>';
+		var publicationLinkHTML = '<a href="' + cannedAnalysisData['tools'][toolId]['publication_url'] + '">Reference</a>';
 
 		// Get HTML String
 		toolInfoHTML += '<b><u>Tool Description</b></u><br>' + toolDescriptionHTML + '<br><br><b><u>Links</b></u><br>' + toolLinkHTML + '&nbsp' + publicationLinkHTML + '<button class="datasets2tools-close-tool-info-button">X</button></div>';
@@ -950,7 +948,7 @@ var Interactive = {
 
 		// Set HTML
 		$datasets2toolsToolbar.find('.datasets2tools-search-form').hide();
-		$datasets2toolsToolbar.find('.datasets2tools-tool-info-title').show();
+		$datasets2toolsToolbar.find('.datasets2tools-tool-info-label').show();
 	}
 };
 
