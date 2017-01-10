@@ -406,7 +406,7 @@ var eventListener = {
 			var $evtTarget = $(evt.target),
 				$datasets2toolsToolbar = $evtTarget.parents('.datasets2tools-toolbar'),
 				toolId = $datasets2toolsToolbar.find('.datasets2tools-selected-tool-img').attr('id');
-				$datasets2toolsToolbar.find('.datasets2tools-selected-tool-label').hide();
+				$datasets2toolsToolbar.find('.datasets2tools-tool-info-label').hide();
 				$datasets2toolsToolbar.find('.datasets2tools-search-form').show();
 
 			// Add Interactivity
