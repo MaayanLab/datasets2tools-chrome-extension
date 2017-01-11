@@ -30,7 +30,7 @@
 			"js": [
 				"lib/jquery.js",
 				"lib/download.js",
-				"datasets2tools.js"
+				"datasets2tools_lincs.js"
 			]
 		}
 	],
