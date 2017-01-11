@@ -58,9 +58,9 @@
 /****************************************/
 
 .datasets2tools-metadata-dropdown-text {
-  width: 172px;
+  width: 150px;
   top: 3px;
-  left: -43px;
+  left: -15px;
   text-align: left;
 }
 
@@ -69,7 +69,7 @@
 /****************************************/
 
 .datasets2tools-metadata-dropdown-hover .datasets2tools-dropdown-text::after {
-  left: 57px;
+  left: 25px;
 }
 
 /************************************************************/
@@ -83,7 +83,7 @@
 .datasets2tools-share-dropdown-text {
   width: 175px;
   top: 15px;
-  left: -120px;
+  left: -20px;
   text-align: left;
 }
 
@@ -92,7 +92,7 @@
 /****************************************/
 
 .datasets2tools-share-dropdown-hover .datasets2tools-dropdown-text::after {
-  left: 130px;
+  left: 25px;
 }
 
 /************************************************************/

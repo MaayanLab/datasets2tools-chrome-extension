@@ -12,6 +12,8 @@ function main() {
 	// 1.2 Get Canned Analysis Data
 	var cannedAnalysisData = API.main($parents);
 
+	console.log(cannedAnalysisData);
+
 	// 1.3 Load Interface
 	Interface.load($parents, cannedAnalysisData);
 
@@ -86,7 +88,7 @@ var Interface = {
 			datasetAccession = self.getDatasetAccession($elem),
 			toolbarHTML = '<div class="datasets2tools-toolbar" id="' + datasetAccession + '">',
 			searchBarHTML = '<div class="datasets2tools-search-bar">',
-			logoTabHTML = '<div class="datasets2tools-logo-tab"><button class="datasets2tools-logo-button datasets2tools-button"></button><span style="font-size:xx-small">&nbsp</span><div class="datasets2tools-title-label">Datasets2Tools</div></div>',
+			logoTabHTML = '<div class="datasets2tools-logo-tab"><button class="datasets2tools-logo-button datasets2tools-button"></button><span style="font-size:xx-small">&nbsp</span><div class="datasets2tools-title-label datasets2tools-compact">Datasets2Tools</div></div>',
 			toolTabHTML = prepareToolIconTab.main(cannedAnalysisData, datasetAccession),
 			selectedToolTabHTML = '<div class="datasets2tools-selected-tool-tab datasets2tools-expand"></div>',
 			searchTabHTML = '<div class="datasets2tools-search-tab datasets2tools-expand"> <div class="datasets2tools-tool-info-label"> <i>Tool Information</i> </div> <form class="datasets2tools-search-form"> <div class="datasets2tools-search-label">Search:</div><div class="datasets2tools-search-input"><input class="datasets2tools-search-text-input" type="text" name="datasets2tools-search-query"></div></form></div>',
@@ -576,13 +578,13 @@ var browseTable = {
 
 		// Prepare Displayed Description
 		if (cannedAnalysisDescription.length > maxLength) {
-			displayedDescription = cannedAnalysisDescription.substring(0, maxLength);// + '...';
+			displayedDescription = cannedAnalysisDescription.substring(0, maxLength) + '<span class="datasets2tools-tooltip-hover datasets2tools-description-tooltip-hover">...<div class="datasets2tools-tooltip-text datasets2tools-description-tooltip-text">' + cannedAnalysisDescription + '</div></span>';
 		} else {
 			displayedDescription = cannedAnalysisDescription;
 		}
 
 		// Return
-		return '<td class="datasets2tools-canned-analysis-description">' + displayedDescription + '<span class="datasets2tools-tooltip-hover datasets2tools-description-tooltip-hover">...<div class="datasets2tools-tooltip-text datasets2tools-description-tooltip-text">' + cannedAnalysisDescription + '</div></span></td>';// + 'hoverDescription' +
+		return '<td class="datasets2tools-canned-analysis-description">' + displayedDescription + '</td>';// + 'hoverDescription' +
 	},
 
 	/////////////////////////////////
@@ -606,21 +608,30 @@ var browseTable = {
 
 		// Define variables
 		var metadataKeys = Object.keys(cannedAnalysisObj),
+			metadataKeyNumber = metadataKeys.length,
 			metadataTooltipString = '', //<b>Metadata</b><br>
 			viewMetadataHTML,
 			metadataKey;
 
 		// Loop through tags
-		for (var j = 0; j < metadataKeys.length; j++) {
+		if (metadataKeyNumber > 2) {
 
-			// Get Metadata Key
-			metadataKey = metadataKeys[j];
+			for (var j = 0; j < metadataKeyNumber; j++) {
 
-			// Get Metadata Value
-			if (!(['canned_analysis_url', 'description'].indexOf(metadataKey) >= 0)) {
-				metadataTooltipString += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
+				// Get Metadata Key
+				metadataKey = metadataKeys[j];
+
+				// Get Metadata Value
+				if (!(['canned_analysis_url', 'description'].indexOf(metadataKey) >= 0)) {
+					metadataTooltipString += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
+				}
 			}
-		};
+
+		} else {
+
+			metadataTooltipString += 'No metadata available.';
+
+		}
 
 		// Close DIV
 		viewMetadataHTML = '<div class="datasets2tools-tooltip-hover datasets2tools-metadata-tooltip-hover"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="' + chrome.extension.getURL("icons/info.png") + '"><div class="datasets2tools-tooltip-text datasets2tools-metadata-tooltip-text">'+metadataTooltipString+'</div></div>';
@@ -648,10 +659,10 @@ var browseTable = {
 		downloadMetadataHTML += '<b>Download Metadata:</b><br>';
 
 		// Add TXT Button
-		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getTXT">TXT</button>';
+		downloadMetadataHTML += '<ul style="margin:0;padding-left:20px;"><li><button class="datasets2tools-button datasets2tools-metadata-download-button" id="getTXT">TXT</button></li>';
 
 		// Add JSON Button
-		downloadMetadataHTML += '<button class="datasets2tools-metadata-download-button" id="getJSON">JSON</button>';
+		downloadMetadataHTML += '<li><button class="datasets2tools-button datasets2tools-metadata-download-button" id="getJSON">JSON</button></li></ul>';
 		
 		// Close DIV
 		downloadMetadataHTML += '</div></div>';
@@ -684,11 +695,8 @@ var browseTable = {
 		// Embed Image
 		var embedImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/embed.png") + '"><b>Embed Icon:</b>';
 
-		// Copy Image
-		var copyImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/copy.png") + '">';
-
 		// Get Copy Button HTML
-		var buttonHTML = '<button class="datasets2tools-copy-button"><img class="datasets2tools-dropdown-icons-img" src="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/editor_copy_duplicate_files-512.png">Copy</button>';
+		var buttonHTML = '<button class="datasets2tools-button datasets2tools-copy-button"><img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/copy.png") + '">Copy</button>';
 
 		// Text Area HTML
 		var textAreaHTML = function(content, nRows) {return '<textarea class="datasets2tools-textarea" rows="' + nRows + '">'+content+'</textarea>'};
@@ -699,7 +707,7 @@ var browseTable = {
 		// Embed Code
 		var embedCode = '<a href="' + cannedAnalysisUrl + '"><img src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png" style="height:50px;width:50px"></a>'
 
-		shareHTML += interactiveDivHTML + shareImageHTML + dropdownDivHTML + linkImageHTML + textAreaHTML(cannedAnalysisUrl, 3) + buttonHTML + '<br><br>' + embedImageHTML + textAreaHTML(embedCode, 3) + buttonHTML + '</div></div></td>';
+		shareHTML += interactiveDivHTML + shareImageHTML + dropdownDivHTML + linkImageHTML + textAreaHTML(cannedAnalysisUrl, 2) + buttonHTML + '<br><br>' + embedImageHTML + textAreaHTML(embedCode, 3) + buttonHTML + '</div></div></td>';
 
 		return shareHTML; 
 	},
@@ -802,7 +810,7 @@ var Interactive = {
 		$datasets2toolsToolbar.find('.datasets2tools-compact').show();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'inline-block');
-		$datasets2toolsToolbar.find('.datasets2tools-logo-img').css('filter', 'grayscale(0%)');
+		$datasets2toolsToolbar.find('.datasets2tools-logo-button').css('filter', 'grayscale(0%)');
 	},
 
 	/////////////////////////////////
@@ -813,7 +821,7 @@ var Interactive = {
 		$datasets2toolsToolbar.find('.datasets2tools-compact').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').show();
 		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'block');
-		$datasets2toolsToolbar.find('.datasets2tools-logo-img').css('filter', 'grayscale(100%)');
+		$datasets2toolsToolbar.find('.datasets2tools-logo-button').css('filter', 'grayscale(100%)');
 	},
 
 	/////////////////////////////////
