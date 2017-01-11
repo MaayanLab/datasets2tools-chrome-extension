@@ -12,8 +12,6 @@ function main() {
 	// 1.2 Get Canned Analysis Data
 	var cannedAnalysisData = API.main($parents);
 
-	console.log(cannedAnalysisData);
-
 	// 1.3 Load Interface
 	Interface.load($parents, cannedAnalysisData);
 
@@ -45,7 +43,6 @@ var Interface = {
 			$parents = $('.search-result li');
 		} else if (Page.isGEO()) {
 			$parents = $('.rsltcont');
-			// $('.rprt').css('position', 'relative');
 		} else {
 			throw 'Could not determine repository location.'
 		}
@@ -131,13 +128,12 @@ var Interface = {
 				interfaceHTML = self.prepare($elem, cannedAnalysisData);
 
 				// Add HTML
-				// $elem.append(interfaceHTML);
-
-				// Add HTML
 				if (Page.isDataMed()) {
 					$elem.append(interfaceHTML);
 				} else if (Page.isGEO()) {
 					$elem.append(interfaceHTML);
+					$('.seven_col').css('overflow', 'visible');
+					$('.rprt').css('overflow', 'visible');
 				} else {
 					throw 'Could not determine repository location.'
 				}
@@ -503,13 +499,15 @@ var prepareToolIconTab = {
 	main: function(cannedAnalysisData, datasetAccession) {
 
 		// Define variables
-		var toolIconTabHTML = '<div class="datasets2tools-tool-icon-tab datasets2tools-compact">';//'</div>',
+		var toolIconTabHTML = '<div class="datasets2tools-tool-icon-tab datasets2tools-compact">',
+			toolIds,
+			nrCannedAnalyses;//'</div>',
 
 		// Try
 		try {
 
 			// Get Tool IDs
-			var toolIds = Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession]);
+			toolIds = Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession]);
 
 			// Loop Through Tools
 			for (var i = 0; i < toolIds.length; i++) {
@@ -517,8 +515,11 @@ var prepareToolIconTab = {
 				// Get Tool ID
 				toolId = toolIds[i];
 
+				// Get number of canned analyses
+				nrCannedAnalyses = Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession][toolId]).length;
+
 				// Add Icons
-				toolIconTabHTML += '<div class="datasets2tools-tooltip-hover datasets2tools-toolicon-tooltip-hover"><button class="datasets2tools-tool-icon-button datasets2tools-button" id="' + toolId + '" type="button" style="background:url(' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + ') no-repeat;background-size:95%;background-position:center;"></button><div class="datasets2tools-tooltip-text datasets2tools-toolicon-tooltip-text"><b>' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</b><p><i>' + Object.keys(cannedAnalysisData['canned_analyses'][datasetAccession][toolId]).length + ' canned analyses</i></p><p>' + cannedAnalysisData['tools'][toolId]['tool_description'] + '</p></div></div>'
+				toolIconTabHTML += '<div class="datasets2tools-tooltip-hover datasets2tools-toolicon-tooltip-hover"><button class="datasets2tools-tool-icon-button datasets2tools-button" id="' + toolId + '" type="button" style="background:url(' + cannedAnalysisData['tools'][toolId]['tool_icon_url'] + ') no-repeat;background-size:95%;background-position:center;"></button><div class="datasets2tools-tooltip-text datasets2tools-toolicon-tooltip-text"><b>' + cannedAnalysisData['tools'][toolId]['tool_name'] + '</b><p><i>' + nrCannedAnalyses + ' canned analyses</i></p><p>' + cannedAnalysisData['tools'][toolId]['tool_description'] + '</p></div></div>'
 			}
 		}
 		catch (err) {
@@ -810,7 +811,7 @@ var Interactive = {
 		$datasets2toolsToolbar.find('.datasets2tools-compact').show();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'inline-block');
-		$datasets2toolsToolbar.find('.datasets2tools-logo-button').css('filter', 'grayscale(0%)');
+		$datasets2toolsToolbar.find('.datasets2tools-logo-button').css({'filter': 'grayscale(0%)', 'opacity': '1'});
 	},
 
 	/////////////////////////////////
@@ -821,7 +822,7 @@ var Interactive = {
 		$datasets2toolsToolbar.find('.datasets2tools-compact').hide();
 		$datasets2toolsToolbar.find('.datasets2tools-expand').show();
 		$datasets2toolsToolbar.find('.datasets2tools-search-bar').css('display', 'block');
-		$datasets2toolsToolbar.find('.datasets2tools-logo-button').css('filter', 'grayscale(100%)');
+		$datasets2toolsToolbar.find('.datasets2tools-logo-button').css({'filter': 'grayscale(100%)', 'opacity': '0.5'});
 	},
 
 	/////////////////////////////////
