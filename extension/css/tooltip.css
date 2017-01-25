@@ -137,6 +137,10 @@
   padding: 7px 11px;
 }
 
+.datasets2tools-metadata-tooltip-text b {
+  color: white;
+}
+
 /****************************************/
 /***** 1.2.3 Hover Arrow ****************/
 /****************************************/

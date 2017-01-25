@@ -99,8 +99,19 @@
   height: 20px;
   width: 20px;
   position: absolute;
-  top: -10px;
   left: 7px;
+}
+
+.datasets2tools-datamed .datasets2tools-download-metadata-button {
+  top: -10px;
+}
+
+.datasets2tools-geo .datasets2tools-download-metadata-button {
+  top: -12px;
+}
+
+.datasets2tools-lincs .datasets2tools-download-metadata-button {
+  top: -15px;
 }
 
 /****************************************/

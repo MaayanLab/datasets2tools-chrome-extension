@@ -65,6 +65,8 @@ var Interface = {
 			datasetAccession = $elem.find(".result-field em:contains('ID:'), em:contains('Accession:')").next().text().replace(/\s+/g, '');
 		} else if (Page.isGEO()) {
 			datasetAccession = $elem.find(".rprtid dt:contains('Accession: ')").next().text();
+		} else if (Page.isLDP()) {
+			datasetAccession = $elem.parents('.ng-scope').find(".col-sm-2:contains('LINCS ID')").next().text().replace(/\s+/g, '');
 		} else {
 			throw 'Could not determine repository location.'
 		}
@@ -83,7 +85,7 @@ var Interface = {
 		var self = this,
 			interfaceHTML,
 			datasetAccession = self.getDatasetAccession($elem),
-			toolbarHTML = '<div class="datasets2tools-toolbar" id="' + datasetAccession + '">',
+			toolbarHTML = '<div class="datasets2tools-toolbar datasets2tools-' + Page.getLabel() + '" id="' + datasetAccession + '">',
 			searchBarHTML = '<div class="datasets2tools-search-bar">',
 			logoTabHTML = '<div class="datasets2tools-logo-tab"><button class="datasets2tools-logo-button datasets2tools-button"></button><span style="font-size:xx-small">&nbsp</span><div class="datasets2tools-title-label datasets2tools-compact">Datasets2Tools</div></div>',
 			toolTabHTML = prepareToolIconTab.main(cannedAnalysisData, datasetAccession),
@@ -140,64 +142,6 @@ var Interface = {
 
 			}
 		})
-	}
-};
-
-////////////////////////////////////////////////////////////
-///// 2.2  //////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-var API = {
-
-	/////////////////////////////////
-	////// 2.2. getApiUrl
-	/////////////////////////////////
-
-	getApiUrl: function($parents) {
-
-		// Define Variables
-		var apiString = 'https://amp.pharm.mssm.edu/datasets2tools/data?',
-			datasetAccession;
-
-		// Loop through parents
-		$($parents).each(function(i, elem) {
-
-			// Get dataset accession
-			datasetAccession = Interface.getDatasetAccession($(elem));
-
-			// Add to API String Variable
-			apiString += '+' + datasetAccession;
-		})
-
-		// Return String
-		return apiString;
-	},
-
-	/////////////////////////////////
-	////// 2.2. main
-	/////////////////////////////////
-
-	main: function($parents) {
-
-		// Define Self
-		var self = this,
-			cannedAnalysisData;
-
-		// Get API URL
-		var apiUrl = self.getApiUrl($parents);
-
-		// Make AJAX Request
-		$.ajax({
-			type: "GET",
-			url: apiUrl,
-			async: false,
-			success: function(text) {
-				cannedAnalysisData = JSON.parse(text);
-			}
-		});
-
-		// Return Result
-		return cannedAnalysisData;
 	}
 };
 
@@ -456,7 +400,7 @@ var eventListener = {
 //////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////
-///// 3.2 prepareToolIconTab ///////////////////////////////
+///// 3.1 prepareToolIconTab ///////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var prepareToolIconTab = {
@@ -505,269 +449,7 @@ var prepareToolIconTab = {
 };
 
 ////////////////////////////////////////////////////////////
-///// 3.3 prepareBrowseTable ///////////////////////////////
-////////////////////////////////////////////////////////////
-
-var browseTable = {
-
-	/////////////////////////////////
-	////// 2.5.0 firstN
-	/////////////////////////////////
-
-	firstN: function (obj, pageNr, pageSize) {
-		if (Object.keys(obj).length > pageSize) {
-		  return Object.keys(obj) //get the keys out
-			    .sort() //this will ensure consistent ordering of what you will get back. If you want something in non-aphabetical order, you will need to supply a custom sorting function
-			    // .slice(0, 4) //get the first N
-			    .slice((pageNr-1)*pageSize, pageNr*pageSize) //get the first N
-			    .reduce(function(memo, current) { //generate a new object out of them
-			      memo[current] = obj[current]
-			      return memo;
-			    }, {});
-		} else {
-			return obj;
-		}
-	},
-
-	/////////////////////////////////
-	////// 2.5.1 linkHTML
-	/////////////////////////////////
-
-	getLinkHTML: function(cannedAnalysisObj, toolIconUrl) {
-		return '<td><a href="' + cannedAnalysisObj['canned_analysis_url'] + '"><img class="datasets2tools-cannedanalysis-link-img" src="' + toolIconUrl + '"></a></td>';
-	},
-
-	/////////////////////////////////
-	////// 2.5.2 descriptionHTML
-	/////////////////////////////////
-
-	getDescriptionHTML: function(cannedAnalysisObj, maxLength=75) {
-		// Get description
-		var cannedAnalysisDescription = cannedAnalysisObj['description'],
-			displayedDescription;
-
-		// Prepare Displayed Description
-		if (cannedAnalysisDescription.length > maxLength) {
-			displayedDescription = cannedAnalysisDescription.substring(0, maxLength) + '<span class="datasets2tools-tooltip-hover datasets2tools-description-tooltip-hover">...<div class="datasets2tools-tooltip-text datasets2tools-description-tooltip-text">' + cannedAnalysisDescription + '</div></span>';
-		} else {
-			displayedDescription = cannedAnalysisDescription;
-		}
-
-		// Return
-		return '<td class="datasets2tools-canned-analysis-description">' + displayedDescription + '</td>';// + 'hoverDescription' +
-	},
-
-	/////////////////////////////////
-	////// 2.5.3 metadataHTML
-	/////////////////////////////////
-
-	getMetadataHTML: function(cannedAnalysisObj) {
-
-		// Keys
-		var self = this;
-
-		// Return
-		return '<td>' + self.getViewMetadataHTML(cannedAnalysisObj) + self.getdownloadMetadataHTML(cannedAnalysisObj) + '</td>';
-	},
-
-	/////////////////////////////////
-	////// 2.5.4 viewMetadataHTML
-	/////////////////////////////////
-
-	getViewMetadataHTML: function(cannedAnalysisObj) {
-
-		// Define variables
-		var metadataKeys = Object.keys(cannedAnalysisObj),
-			metadataKeyNumber = metadataKeys.length,
-			metadataTooltipString = '', //<b>Metadata</b><br>
-			viewMetadataHTML,
-			metadataKey;
-
-		// Loop through tags
-		if (metadataKeyNumber > 2) {
-
-			for (var j = 0; j < metadataKeyNumber; j++) {
-
-				// Get Metadata Key
-				metadataKey = metadataKeys[j];
-
-				// Get Metadata Value
-				if (!(['canned_analysis_url', 'description'].indexOf(metadataKey) >= 0)) {
-					metadataTooltipString += '<b>' + metadataKey + '</b>: ' + cannedAnalysisObj[metadataKey] + '<br>';
-				}
-			}
-
-		} else {
-
-			metadataTooltipString += 'No metadata available.';
-
-		}
-
-		// Close DIV
-		viewMetadataHTML = '<div class="datasets2tools-tooltip-hover datasets2tools-metadata-tooltip-hover"><img class="datasets2tools-view-metadata-img datasets2tools-metadata-img" src="' + chrome.extension.getURL("icons/info.png") + '"><div class="datasets2tools-tooltip-text datasets2tools-metadata-tooltip-text">'+metadataTooltipString+'</div></div>';
-
-		// Return
-		return viewMetadataHTML;
-	},
-
-	/////////////////////////////////
-	////// 2.5.5 downloadMetadataHTML
-	/////////////////////////////////
-
-	getdownloadMetadataHTML: function(cannedAnalysisObj) {
-
-		// Define variables
-		var downloadMetadataHTML = '<div class="datasets2tools-dropdown-hover datasets2tools-metadata-dropdown-hover">';
-
-		// Add Stuff
-		downloadMetadataHTML += '<button class="datasets2tools-button datasets2tools-dropdown-button datasets2tools-download-metadata-button"></button>';
-		
-		// Add Stuff
-		downloadMetadataHTML += '<div class="datasets2tools-dropdown-text datasets2tools-metadata-dropdown-text">';
-
-		// Add functionality
-		downloadMetadataHTML += '<b>Download Metadata:</b><br>';
-
-		// Add TXT Button
-		downloadMetadataHTML += '<ul style="margin:0;padding-left:20px;"><li><button class="datasets2tools-button datasets2tools-metadata-download-button" id="getTXT">TXT</button></li>';
-
-		// Add JSON Button
-		downloadMetadataHTML += '<li><button class="datasets2tools-button datasets2tools-metadata-download-button" id="getJSON">JSON</button></li></ul>';
-		
-		// Close DIV
-		downloadMetadataHTML += '</div></div>';
-
-		// Return
-		return downloadMetadataHTML;
-	},
-
-	/////////////////////////////////
-	////// 2.5.6 shareHTML
-	/////////////////////////////////
-
-	getShareHTML: function(cannedAnalysisObj) {
-
-		// Define HTML String
-		var shareHTML = '<td>';
-
-		// Interactive DIV HTML
-		var interactiveDivHTML = '<div class="datasets2tools-dropdown-hover datasets2tools-share-dropdown-hover">';
-
-		// Dropdown DIV HTML
-		var dropdownDivHTML = '<div class="datasets2tools-dropdown-text datasets2tools-share-dropdown-text">';
-
-		// Share Image
-		var shareImageHTML = '<button class="datasets2tools-button datasets2tools-dropdown-button datasets2tools-share-button"></button>';
-
-		// Link Image
-		var linkImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/link.png") + '"><b>Canned Analysis URL:</b>';
-
-		// Embed Image
-		var embedImageHTML = '<img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/embed.png") + '"><b>Embed Icon:</b>';
-
-		// Get Copy Button HTML
-		var buttonHTML = '<button class="datasets2tools-button datasets2tools-copy-button"><img class="datasets2tools-dropdown-icons-img" src="' + chrome.extension.getURL("icons/copy.png") + '">Copy</button>';
-
-		// Text Area HTML
-		var textAreaHTML = function(content, nRows) {return '<textarea class="datasets2tools-textarea" rows="' + nRows + '">'+content+'</textarea>'};
-
-		// Canned Analysis URL
-		var cannedAnalysisUrl = cannedAnalysisObj['canned_analysis_url'];
-
-		// Embed Code
-		var embedCode = '<a href="' + cannedAnalysisUrl + '"><img src="http://amp.pharm.mssm.edu/Enrichr/images/enrichr-icon.png" style="height:50px;width:50px"></a>'
-
-		shareHTML += interactiveDivHTML + shareImageHTML + dropdownDivHTML + linkImageHTML + textAreaHTML(cannedAnalysisUrl, 2) + buttonHTML + '<br><br>' + embedImageHTML + textAreaHTML(embedCode, 3) + buttonHTML + '</div></div></td>';
-
-		return shareHTML; 
-	},
-
-	/////////////////////////////////
-	////// 2.5.7 rowHTML
-	/////////////////////////////////
-
-	getRowHTML: function(cannedAnalysisId, linkHTML, descriptionHTML, metadataHTML, shareHTML) {
-		return '<tr class="datasets2tools-canned-analysis-row" id="' + cannedAnalysisId + '">' + [linkHTML, descriptionHTML, metadataHTML, shareHTML].join('') + '</tr>';
-	},
-
-	/////////////////////////////////
-	////// 2.5.8 prepare
-	/////////////////////////////////
-
-	prepare: function(cannedAnalysisDataElement, toolIconUrl, pageNr, pageSize=5) {
-
-		// Define variables
-		var self = this,
-			browseTableHTML = '<table class="datasets2tools-browse-table"><tr><th class="datasets2tools-link-col">Link</th><th class="datasets2tools-description-col">Description</th><th class="datasets2tools-metadata-col">Metadata</th><th class="datasets2tools-share-col">Share</th></tr>',
-			numberOfCannedAnalyses = Object.keys(cannedAnalysisDataElement).length,
-			cannedAnalysisObj,
-			cannedAnalysisId;
-
-		// Get Subset
-		cannedAnalysisDataElementSubset = self.firstN(cannedAnalysisDataElement, pageNr, pageSize);
-
-		// Get Canned Analysis IDs
-		var cannedAnalysisIds = Object.keys(cannedAnalysisDataElementSubset);
-
-		// Check If More Than A Row
-		if (cannedAnalysisIds.length === 0) {
-
-			// Add No Results
-			browseTableHTML += '<tr><td class="datasets2tools-no-results-tab" colspan="4">No Results Found.</td></tr>';
-
-		} else {
-
-			// Loop Through Canned Analyses
-			for (var i = 0; i < cannedAnalysisIds.length; i++) {
-
-				// Get Canned Analysis Id
-				cannedAnalysisId = cannedAnalysisIds[i];
-
-				// Get Canned Analysis Object
-				cannedAnalysisObj = cannedAnalysisDataElementSubset[cannedAnalysisId];
-
-				// Add Row HTML
-				browseTableHTML += self.getRowHTML(cannedAnalysisId, self.getLinkHTML(cannedAnalysisObj, toolIconUrl), self.getDescriptionHTML(cannedAnalysisObj), self.getMetadataHTML(cannedAnalysisObj), self.getShareHTML(cannedAnalysisObj));
-			}
-		}
-
-		// Close table
-		browseTableHTML += '</table>';
-
-		// Get Left Arrow Activity Class
-		function leftArrowClass(pageNr) {
-			if (pageNr > 1) {
-				return '" id="' + (pageNr-1) + '"';
-			} else {
-				return ' datasets2tools-disabled-arrow';
-			}
-		};
-
-		// Get Right Arrow Activity Class
-		function rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) {
-			// Get Number of Canned Analyses
-			var followingPageNr = parseInt(pageNr) + 1;
-			if (numberOfCannedAnalyses > pageNr*(pageSize)) {
-				return '" id="' + followingPageNr + '"';
-			} else {
-				return ' datasets2tools-disabled-arrow';
-			}
-		};
-
-		// Add Browse Arrows, If Necessary
-		browseTableHTML += '<div class="datasets2tools-browse-table-arrow-tab">'
-		browseTableHTML += 'Showing results ' + Math.min(((pageNr-1)*pageSize+1), numberOfCannedAnalyses) + '-' + Math.min((pageNr*(pageSize)), numberOfCannedAnalyses) + ' of ' + numberOfCannedAnalyses + '.&nbsp&nbsp&nbsp'
-		browseTableHTML += '<button class="datasets2tools-button datasets2tools-browse-arrow datasets2tools-browse-arrow-left' + leftArrowClass(pageNr) + '"></button>';
-		browseTableHTML += '<button class="datasets2tools-button datasets2tools-browse-arrow datasets2tools-browse-arrow-right' + rightArrowClass(pageNr, pageSize, cannedAnalysisDataElement) + '"></button>';
-		browseTableHTML += '</div>';
-
-		// Return Table HTML
-		return browseTableHTML;
-	}
-};
-
-////////////////////////////////////////////////////////////
-///// 3.4 Interactive //////////////////////////////////////
+///// 3.2 Interactive //////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 var Interactive = {
@@ -827,13 +509,13 @@ var Interactive = {
 		var toolIconUrl = cannedAnalysisData['tools'][toolId]['tool_icon_url'];
 
 		// Get Canned Analyses
-		var cannedAnalysisDataElement = jQuery.extend({}, cannedAnalysisData['canned_analyses'][datasetAccession][toolId]);
+		var pairCannedAnalyses = jQuery.extend({}, cannedAnalysisData['canned_analyses'][datasetAccession][toolId]);
 
 		// Get Search Filter
 		var searchFilter = $datasets2toolsToolbar.find('.datasets2tools-search-text-input').val();
 
 		// Get Canned Analysis Ids
-		var cannedAnalysisIds = Object.keys(cannedAnalysisDataElement),
+		var cannedAnalysisIds = Object.keys(pairCannedAnalyses),
 			cannedAnalysisId;
 
 		// Filter, If Specified
@@ -846,18 +528,19 @@ var Interactive = {
 				cannedAnalysisId = cannedAnalysisIds[i];
 
 				// Get description
-				cannedAnalysisDescription = cannedAnalysisDataElement[cannedAnalysisId]['description'];
+				cannedAnalysisDescription = pairCannedAnalyses[cannedAnalysisId]['description'];
 
 				// Remove, If Specified
 				if (!(cannedAnalysisDescription.toLowerCase().includes(searchFilter.toLowerCase()))) {
-					delete cannedAnalysisDataElement[cannedAnalysisId];
+					delete pairCannedAnalyses[cannedAnalysisId];
 				};
 
 			};
 		};
 				
 		// Prepare Table HTML
-		var browseTableHTML = browseTable.prepare(cannedAnalysisDataElement, toolIconUrl, pageNr);
+		// var browseTableHTML = browseTable.prepare(pairCannedAnalyses, toolIconUrl, pageNr);
+		var browseTableHTML = prepareBrowseTable(pairCannedAnalyses, toolIconUrl, pageNr, 75);
 
 		// Add To Webpage
 		$datasets2toolsToolbar.find('.datasets2tools-browse-bar').html(browseTableHTML);
@@ -1000,9 +683,3 @@ var downloadMetadata = {
 		}
 	}
 };
-
-//////////////////////////////////////////////////////////////////////
-///////// 4. Run Main Function ///////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-// main();

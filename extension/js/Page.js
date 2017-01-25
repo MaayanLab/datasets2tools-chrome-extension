@@ -28,5 +28,19 @@ var Page = {
 
 	isLDP: function() {
 		return Boolean(window.location.hostname === 'lincsportal.ccs.miami.edu');
+	},
+	
+	/////////////////////////////////
+	////// 3.1.4 getLabel
+	/////////////////////////////////
+
+	getLabel: function() {
+		var self = this;
+
+		if (self.isGEO()) {
+			return 'geo';
+		} else if (self.isDataMed()) {
+			return 'datamed';
+		}
 	}
 };

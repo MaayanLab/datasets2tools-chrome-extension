@@ -32,6 +32,7 @@
 				"js/lib/jquery.js",
 				"js/lib/download.js",
 				"js/Page.js",
+				"js/browseTable.js",
 				"js/API.js",
 				"js/datasets2tools.js",
 				"js/datasets2tools_lincs.js",
@@ -53,6 +54,13 @@
 		"icons/copy.png",
 		"icons/plus.png"
 	],
+
+  "permissions": [
+    "webNavigation",
+    "tabs",
+    "background",
+    "https://amp.pharm.mssm.edu/datasets2tools/data?*"
+  ],
 
 	"manifest_version": 2
 }
