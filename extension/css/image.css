@@ -42,15 +42,19 @@
   left: -30px;
 }
 
-.datasets2tools-datamed .datasets2tools-view-metadata-img {
+.datamed .datasets2tools-view-metadata-img {
   top: -10px;
 }
 
-.datasets2tools-geo .datasets2tools-view-metadata-img {
+.datamed-landing .datasets2tools-view-metadata-img {
+  top: -13px;
+}
+
+.geo .datasets2tools-view-metadata-img {
   top: -10px;
 }
 
-.datasets2tools-lincs .datasets2tools-view-metadata-img {
+.lincs .datasets2tools-view-metadata-img {
   top: -15px;
 }
 

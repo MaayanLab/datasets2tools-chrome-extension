@@ -102,17 +102,30 @@
   left: 7px;
 }
 
-.datasets2tools-datamed .datasets2tools-download-metadata-button {
+.datamed-search .datasets2tools-download-metadata-button {
   top: -10px;
 }
 
-.datasets2tools-geo .datasets2tools-download-metadata-button {
+.datamed-landing .datasets2tools-download-metadata-button {
+  top: -13px;
+}
+
+.geo-search .datasets2tools-download-metadata-button {
   top: -12px;
 }
 
-.datasets2tools-lincs .datasets2tools-download-metadata-button {
+.geo-landing .datasets2tools-download-metadata-button {
+  top: -10px;
+}
+
+.lincs .datasets2tools-download-metadata-button {
   top: -15px;
 }
+
+.geo-landing ul {
+  list-style-type: circle;
+}
+
 
 /****************************************/
 /***** 1.3.2 Share Button ***************/
