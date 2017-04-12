@@ -26,7 +26,7 @@ function main() {
 		// Add event listeners
 		eventListener.main(cannedAnalysisData);
 
-		console.log(cannedAnalysisData);
+		console.log(JSON.stringify(cannedAnalysisData));
 		
 	} else if (Page.isDatasetLanding()) {
 		// Get parent

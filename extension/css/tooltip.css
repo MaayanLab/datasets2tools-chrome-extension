@@ -100,12 +100,20 @@
 /***** 1.2.2 Tooltip Content ************/
 /****************************************/
 
-.datamed-search .datasets2tools-description-tooltip-text,
+
 .geo-search .datasets2tools-description-tooltip-text,
 .geo-landing .datasets2tools-description-tooltip-text {
   width: 300px;
   top: 5px;
   left: -255px;
+  margin-top: 15px;
+  padding: 7px 11px;
+}
+
+.datamed-search .datasets2tools-description-tooltip-text {
+  width: 300px;
+  top: 5px;
+  left: -205px;
   margin-top: 15px;
   padding: 7px 11px;
 }
