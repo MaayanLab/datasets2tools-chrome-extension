@@ -1,10 +1,9 @@
 {
 	"name": "Datasets2Tools",
-	"version": "0.1",
+	"version": "1.0",
 	"description": "Ma'ayan Lab",
 	
 	"icons":{
-		"128": "icons/icon_128.png",
 		"720": "icons/icon_720.png"
 	},
 	
@@ -16,39 +15,23 @@
 		{
 			"matches": [
 				"https://datamed.org/*",
-				"https://www.ncbi.nlm.nih.gov/*",
-				"http://lincsportal.ccs.miami.edu/datasets/*"
+				"https://www.ncbi.nlm.nih.gov/*"
 			],
+
 			"css": [
-				"css/style.css",
-				"css/cannedanalysisTable.css",
-				"css/image.css",
-				"css/button.css",
-				"css/tooltip.css",
-				"css/dropdown.css",
-				"css/table.css"
+				"datasets2tools.css"
 			],
+
 			"js": [
-				"js/lib/jquery.js",
-				"js/lib/download.js",
-				"js/Scripts.js",
-				"js/main.js"
+				"jquery.js",
+				"download.js",
+				"datasets2tools.js"
 			]
 		}
 	],
 
 	"web_accessible_resources": [
-		"icons/icon_128.png",
-		"icons/icon_720.png",
-		"icons/info.png",
-		"icons/download.png",
-		"icons/share.png",
-		"icons/arrow-left.png",
-		"icons/arrow-right.png",
-		"icons/link.png",
-		"icons/embed.png",
-		"icons/copy.png",
-		"icons/plus.png"
+		"icons/icon_720.png"
 	],
 
   "permissions": [
