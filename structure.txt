@@ -16,20 +16,33 @@
 	.d2t-tool-table
 		.tool-header, .description-header, .canned-analyses-header
 		.tool-cell
-			.tool-icon
-			.tool-name
+			a
+				.tool-icon
+				.tool-name
 		.description-cell
 		.canned-analyses-cell
 
-# Canned Analysis Table
-.d2t-wrapper
-	.tool-annotation
-		.go-back
-			.fa
+# Tool annotation
+.search-tool-annotation .landing-tool-annotation
+	.go-back
+		.fa
+	.tool-icon
+	.tool-text
+		.tool-name
+		.tool-description
+
+.landing-tool-annotation
+	.go-back
+		.fa
+	.tool-info
 		.tool-icon
 		.tool-text
 			.tool-name
 			.tool-description
+
+# Canned Analysis Table
+.d2t-wrapper
+	.tool-annotation | landing-tool-annotation.
 	.canned-analysis-table
 		.link-header, .title-header, .metadata-header, .share-header
 		.link-cell

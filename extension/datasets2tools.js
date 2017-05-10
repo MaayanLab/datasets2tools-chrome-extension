@@ -18,6 +18,7 @@ function main() {
 
 	// Add event listeners for interactivity
 	eventListener.main(cannedAnalysisInterfaces);
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -182,7 +183,11 @@ var Page = {
 	addInterfaces: function(parents, cannedAnalysisInterfaces) {
 
 		$.each(cannedAnalysisInterfaces, function(datasetAccession, datasetInterfaces) {
-			parents[datasetAccession].append(datasetInterfaces['toolbar']);
+			if (Page.isDataMedSearchResults() || Page.isGeoSearchResults()) {
+				parents[datasetAccession].append(datasetInterfaces['toolbar']);
+			} else if (Page.isDataMedLanding()) {
+				parents[datasetAccession].after('<div class="panel-group" id="accordion-cannedAnalyses" role="tablist" aria-multiselectable="true"><div class="panel panel-info"><div class="panel-heading" role="tab" id="heading-dataset-cannedAnalyses"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion-cannedAnalyses" data-target="#collapse-dataset-cannedAnalyses" href="#collapse-dataset-cannedAnalyses" aria-expanded="true" aria-controls="collapse-dataset-cannedAnalyses"><i class="fa fa-chevron-up"></i>&nbspCanned Analyses</a></h4></div><div id="collapse-dataset-cannedAnalyses" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-dataset-cannedAnalyses"><div class="panel-body">' + datasetInterfaces['tool_table'] + '</div></div></div></div>');
+			}
 		})
 
 		this.loadTooltips();
@@ -269,7 +274,6 @@ var eventListener = {
 			copyTextArea.select();
 			var successful = document.execCommand('copy');
 
-			console.log($button);
 			$button.tooltip({
 				content: 'Copied!',
 			    disabled: true,
@@ -277,16 +281,13 @@ var eventListener = {
 			    close: function( event, ui ) { $(this).tooltip('disable'); },
 				position:{my: 'left center-5', at: 'left+35 center'},
 				show:{duration: 0},
-				hide:{duration: 999999999}
+				hide:{duration: 0}
 			});
-			console.log($button);
 			$button.tooltip('enable').tooltip('open');
-			console.log($button);
 		})
 	},
 
 	download: function() {
-
 		$(document).on('click', '.download-metadata-tooltip button', function(evt) {
 			var content = $(evt.target).attr('data-download'),
 				filename = $(evt.target).attr('data-accession')+'.'+$(evt.target).text().toLowerCase(),
@@ -296,7 +297,18 @@ var eventListener = {
 	        a.download = filename;
 	        a.click();
 		})
+	},
 
+	clickPlus: function(cannedAnalysisInterfaces) {
+		$(document).on('click', '.canned-analyses-cell .fa', function(evt) {
+			var toolName = $(evt.target).parents('tr').find('.tool-name').text(),
+				$wrapper = $(evt.target).parents('.d2t-wrapper')
+				datasetAccession = $wrapper.attr('id');
+			console.log(cannedAnalysisInterfaces);
+			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['canned_analysis_tables'][toolName][0]);
+			console.log(toolName);
+			console.log(datasetAccession);
+		})
 	},
 
 	//////////////////////////////
@@ -312,6 +324,7 @@ var eventListener = {
 		this.clickArrow(cannedAnalysisInterfaces);
 		this.copy();
 		this.download();
+		this.clickPlus(cannedAnalysisInterfaces);
 	}
 
 };
