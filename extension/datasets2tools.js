@@ -100,7 +100,7 @@ var Page = {
 		} else if (Page.isDataMedLanding()) {
 			$('#accordion-dataset').each(function(i, elem) { parents[$(elem).find('strong:contains(ID:)').parent().next().children(0).text().trim()] = $(elem) });
 		} else if (Page.isGeoSearchResults()) {
-			$('.rslt').each(function(i, elem) { parents[$(elem).find('.rprtid').first().find('dd').text().trim()] = $(elem) });
+			$('.rslt').each(function(i, elem) { parents[$(elem).find('.details').find('.lng_ln').last().find('a').text().trim()] = $(elem) });
 		} else if (Page.isGeoDatasetLanding()) {
 			$('#gds_details').each(function(i, elem) { parents[$(elem).find('th').first().text().split(':')[0].split(' ').pop()] = $(elem) });
 		} else if (Page.isGeoSeriesLanding()) {
@@ -269,22 +269,19 @@ var eventListener = {
 			copyTextArea.select();
 			var successful = document.execCommand('copy');
 
+			console.log($button);
 			$button.tooltip({
-				content: 'askjdnsakjdnkjsdngjidfgcidhfcosdhfisuduh ',
-			    close: function( event, ui ) { $(this).tooltip('disable'); }
+				content: 'Copied!',
+			    disabled: true,
+				classes:{'ui-tooltip':'tooltip-wrapper', 'ui-tooltip-content':'tooltip-black tooltip-right copied-tooltip'},
+			    close: function( event, ui ) { $(this).tooltip('disable'); },
+				position:{my: 'left center-5', at: 'left+35 center'},
+				show:{duration: 0},
+				hide:{duration: 999999999}
 			});
-
-			// $button.tooltip({
-			// 	content: 'Copied!',
-			//     disabled: true,
-			// 	// classes:{'ui-tooltip':'tooltip-wrapper', 'ui-tooltip-content':'tooltip-black tooltip-right copied-tooltip'},
-			//     close: function( event, ui ) { $(this).tooltip('disable'); },
-			// 	// position:{my: 'left center-5', at: 'left+35 center'},
-			// 	// show:{duration: 0},
-			// 	// hide:{duration: 999999999}
-			// });
-
-			// $button.tooltip('enable').tooltip('open');
+			console.log($button);
+			$button.tooltip('enable').tooltip('open');
+			console.log($button);
 		})
 	},
 
