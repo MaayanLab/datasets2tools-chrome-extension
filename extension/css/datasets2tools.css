@@ -304,6 +304,11 @@
                 font-weight: 100;
             }
 
+        .canned-analysis-title-tooltip {
+            font-size: 9pt;
+        }
+
+
     .tooltip-black.tooltip-right::after {
             content: " ";
             position: absolute;
@@ -631,13 +636,14 @@
     text-align: center;
     padding: 2px 0px;
     margin-bottom: 5px;
+    margin-top: 15px;
     color: #555;
 }
 
     .gds-landing-wrapper {
         border: 1px solid #C0C8Cf;
         border-top: none;
-        padding: 5px 150px;
+        padding: 5px 300px 5px 10px;
         font-size: 9pt;
     }
 

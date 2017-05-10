@@ -267,9 +267,8 @@ var eventListener = {
 			var $arrow = $(evt.target),
 				$wrapper = $arrow.parents('.d2t-wrapper'),
 				datasetAccession = $wrapper.attr('id'),
-				toolName = $wrapper.find('.tool-info').find('.tool-icon').attr('data-tool-name'),
+				toolName = $wrapper.find('.tool-icon').first().attr('data-tool-name'),
 				targetPage = $arrow.attr('data-target-page');
-
 			console.log(datasetAccession);
 			console.log(toolName);
 			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['canned_analysis_tables'][toolName][targetPage])
@@ -314,9 +313,6 @@ var eventListener = {
 			var toolName = $(evt.target).parents('tr').first().find('.tool-name').text(),
 				$wrapper = $(evt.target).parents('.d2t-wrapper')
 				datasetAccession = $wrapper.attr('id');
-			console.log(toolName);
-			console.log($wrapper);
-			console.log(datasetAccession);
 			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['canned_analysis_tables'][toolName][0]);
 			Page.loadTooltips();
 		})

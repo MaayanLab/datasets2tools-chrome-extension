@@ -26,7 +26,6 @@
 			"js": [
 				"jquery.js",
 				"jquery-ui.js",
-				"download.js",
 				"datasets2tools.js"
 			]
 		}
@@ -38,7 +37,7 @@
 	],
 
 	"permissions": [
-	"https://amp.pharm.mssm.edu/datasets2tools/data?*"
+		"https://amp.pharm.mssm.edu/datasets2tools/data?*"
 	],
 
 	"manifest_version": 2
