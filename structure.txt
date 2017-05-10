@@ -1,0 +1,63 @@
+### Search Page
+# Toolbar
+.d2t-wrapper
+	.d2t-toolbar
+		.d2t-logo
+			.d2t-icon
+		.tool-icon-wrapper
+			.tool-icon
+			.d2t-tooltip
+				.tool-name
+				.tool-count
+				.tool-description
+
+# Tool table
+.d2t-wrapper
+	.d2t-tool-table
+		.tool-header, .description-header, .canned-analyses-header
+		.tool-cell
+			.tool-icon
+			.tool-name
+		.description-cell
+		.canned-analyses-cell
+
+# Canned Analysis Table
+.d2t-wrapper
+	.tool-annotation
+		.go-back
+			.fa
+		.tool-icon
+		.tool-text
+			.tool-name
+			.tool-description
+	.canned-analysis-table
+		.link-header, .title-header, .metadata-header, .share-header
+		.link-cell
+			a
+				.tool-icon
+		.title-cell
+			.canned-analysis-title
+			.d2t-tooltip
+		.metadata-cell
+			.view-metadata.fa
+			.d2t-tooltip
+			.download-metadata.fa
+			.d2t-tooltip
+				.button-wrapper
+					.button
+					.button
+		.share-cell
+			.share
+			.d2t-tooltip
+				.copy-wrapper
+					input
+					button
+				.copy-wrapper
+					input
+					button
+	.arrow-wrapper
+		.arrow-left
+		.arrow-right
+
+
+

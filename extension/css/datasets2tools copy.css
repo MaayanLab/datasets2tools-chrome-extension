@@ -1,0 +1,290 @@
+/* Toolbar */
+
+.d2t-toolbar {
+    display: table;
+    border: 1px solid lightgrey;
+    padding-right: 7px;
+    height: 50px;
+}
+
+.d2t-logo {
+    display: table-cell;
+    vertical-align: middle;
+    border-right: 1px solid lightgrey;
+    height: 100%;
+    padding: 0px 10px;
+}
+
+.d2t-logo-img {
+    max-height: 35px;
+}
+
+.tool-icon-img {
+    max-height: 35px;
+    padding: 1px;
+    border: 1px solid lightgrey;
+    margin-left: 7px;
+    cursor: pointer;
+}
+
+.tool-icon-wrapper {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+/* Tool annotation */
+
+.reset-toolbar {
+    border-right: 1px solid lightgrey;
+}
+
+.reset-toolbar .fa {
+    font-size: 17pt;
+    padding: 0px 9px;
+}
+
+.search-tool-annotation-name {
+    font-weight: 800;
+    font-size: 10pt;
+}
+
+.search-tool-annotation-description {
+    font-size: 100;
+    font-size: 9pt;
+}
+
+
+/* Canned Analysis Table */
+
+.canned-analysis-icon-img {
+    max-height: 25px;
+    border: 1px solid lightgrey;
+    padding: 1px;
+    margin: 7px auto 7px auto;
+}
+
+.d2t-canned-analysis-table {
+    text-align: center;
+    width: 100%;
+    border: 1px solid lightgrey;
+    border-top: none;
+}
+
+.d2t-canned-analysis-table th {
+    text-align: center;
+    background-color: #EFEFEF;
+    height: 30px;
+    font-size: 11pt;
+}
+
+.d2t-canned-analysis-table tr {
+    border-top: 1px dotted lightgrey;
+}
+
+[data-active="false"] {
+    display: none !important; 
+}
+
+.link-header {
+    width: 50px;
+}
+
+.metadata-header {
+    width: 95px;
+}
+
+.share-header {
+    width: 75px;
+}
+
+.title-cell {
+    font-size: 9pt;
+}
+
+.metadata-tag {
+    font-weight: 600;
+}
+
+.reset-toolbar {
+    border-right: 1px solid lightgrey;
+}
+
+.search-tool-annotation-name {
+    font-weight: 900;
+    font-size: 10pt;
+}
+
+.search-tool-annotation-description {
+    font-size: 9pt;
+}
+
+/* Icons */
+
+.search-tool-annotation .fa {
+    font-size: 17pt;
+    margin: auto;
+    padding: 0px 7px;
+}
+
+.title-cell .fa {
+    margin-left: 3px; 
+}
+
+.metadata-cell .fa {
+    margin: auto 7px;
+    font-size: 15pt;
+}
+
+.share-cell .fa {
+    font-size: 15pt;
+}
+
+/* Search Tool Annotation */
+
+.search-tool-annotation-img {
+    max-height: 35px;
+    display: table-cell;
+    vertical-align: middle;
+    border: 1px solid lightgrey;
+    margin: 5px;
+}
+
+.search-tool-annotation {
+    border: 1px solid lightgrey;
+    display: table;
+    width: 100%;
+}
+
+.search-tool-annotation-text {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.reset-toolbar {
+    display: table-cell;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+/* Tooltips General */
+
+.d2t-tooltip-text {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: smaller;
+}
+
+.d2t-tooltip-text::after {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 5px;
+}
+
+.d2t-tooltip:hover .d2t-tooltip-text {
+    visibility: visible;
+}
+
+.tooltip-black {
+    background-color: black;
+    color: white;
+}
+
+.tooltip-white {
+    background-color: white;
+    color: black;
+}
+
+.tooltip-right {
+    margin-left: 330px;
+    margin-top: -40px;
+    min-height: 70px;
+    min-width: 300px;
+    max-width: 700px;
+}
+
+.tooltip-right::after {
+    border-color: transparent black transparent transparent;
+    bottom: 45%;
+    left: -10px;
+}
+
+.tooltip-bottom::after {
+    border-color: transparent transparent black transparent;
+    bottom: 100%;
+    left: 45%;
+}
+
+/* Specific Tooltip */
+
+
+.tool-info-tooltip {
+    width: 250px;
+    margin-top: 7px;
+    margin-left: -8em;
+}
+
+.tool-icon-tooltip-name {
+    font-size: 10pt;
+    font-weight: 800;
+}
+
+.tool-icon-tooltip-count {
+    font-size: 9pt;
+    font-style: italic;
+    font-weight: 100;
+    margin: 3px 0px;    
+}
+
+.tool-icon-tooltip-description {
+    font-size: 9pt;
+    font-weight: 100l
+}
+
+/*
+
+.tool-info-tooltip::after {
+    margin-top: -109px;
+    margin-left: 102px;
+}
+
+.description-tooltip {
+    height: 125px;
+    width: 300px;
+    margin-left: 330px;
+    margin-top: -70px;
+}
+
+.view-metadata-tooltip {
+    background-color: black;
+    color: white;
+    font-size: 10pt;
+    padding: 10px 5px;
+    border-radius: 5px;
+    max-width: 250px;
+}
+
+.view-metadata-tooltip ul {
+    list-style-type: square;
+    text-align: left;
+    padding-left: 25px;
+}
+
+.download-metadata-tooltip {
+    background-color: white;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    padding: 10px;
+    width: 125px;
+    margin-left: -55px;
+}
+
+.share-tooltip {
+    width: 125px;
+    margin-left: -55px;
+}
+
+*/

@@ -19,11 +19,13 @@
 			],
 
 			"css": [
-				"datasets2tools.css"
+				"css/datasets2tools.css",
+				"css/font-awesome.css"
 			],
 
 			"js": [
 				"jquery.js",
+				"jquery-ui.js",
 				"download.js",
 				"datasets2tools.js"
 			]
