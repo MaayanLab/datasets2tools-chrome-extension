@@ -33,15 +33,13 @@
 	],
 
 	"web_accessible_resources": [
-		"icons/icon_720.png"
+		"icons/icon_720.png",
+		"fonts/*"
 	],
 
-  "permissions": [
-    "webNavigation",
-    "tabs",
-    "background",
-    "https://amp.pharm.mssm.edu/datasets2tools/data?*"
-  ],
+	"permissions": [
+	"https://amp.pharm.mssm.edu/datasets2tools/data?*"
+	],
 
 	"manifest_version": 2
 }

@@ -187,6 +187,8 @@ var Page = {
 				parents[datasetAccession].append(datasetInterfaces['toolbar']);
 			} else if (Page.isDataMedLanding()) {
 				parents[datasetAccession].after('<div class="panel-group" id="accordion-cannedAnalyses" role="tablist" aria-multiselectable="true"><div class="panel panel-info"><div class="panel-heading" role="tab" id="heading-dataset-cannedAnalyses"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion-cannedAnalyses" data-target="#collapse-dataset-cannedAnalyses" href="#collapse-dataset-cannedAnalyses" aria-expanded="true" aria-controls="collapse-dataset-cannedAnalyses"><i class="fa fa-chevron-up"></i>&nbspCanned Analyses</a></h4></div><div id="collapse-dataset-cannedAnalyses" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-dataset-cannedAnalyses"><div class="panel-body">' + datasetInterfaces['tool_table'] + '</div></div></div></div>');
+			} else if (Page.isGeoSeriesLanding()) {
+				parents[datasetAccession].after('<div class="gse-landing-wrapper"><div class="gse-header">Canned Analyses</div>'+datasetInterfaces['tool_table']+'</div>');
 			}
 		})
 
@@ -262,9 +264,13 @@ var eventListener = {
 			var $arrow = $(evt.target),
 				$wrapper = $arrow.parents('.d2t-wrapper'),
 				datasetAccession = $wrapper.attr('id'),
-				toolName = $wrapper.find('.tool-annotation').find('.tool-icon').attr('data-tool-name'),
+				toolName = $wrapper.find('.tool-info').find('.tool-icon').attr('data-tool-name'),
 				targetPage = $arrow.attr('data-target-page');
+
+			console.log(datasetAccession);
+			console.log(toolName);
 			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['canned_analysis_tables'][toolName][targetPage])
+			Page.loadTooltips();
 		})
 	},
 
@@ -302,12 +308,16 @@ var eventListener = {
 
 	clickPlus: function(cannedAnalysisInterfaces) {
 		$(document).on('click', '.canned-analyses-cell .fa', function(evt) {
-			var toolName = $(evt.target).parents('tr').find('.tool-name').text(),
+			var toolName = $(evt.target).parents('tr').first().find('.tool-name').text(),
 				$wrapper = $(evt.target).parents('.d2t-wrapper')
 				datasetAccession = $wrapper.attr('id');
+			console.log(toolName);
+			console.log($wrapper);
+			console.log(datasetAccession);
 			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['canned_analysis_tables'][toolName][0]);
 			Page.loadTooltips();
 		})
+
 	},
 
 	//////////////////////////////
