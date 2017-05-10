@@ -262,7 +262,7 @@ var eventListener = {
 			var $arrow = $(evt.target),
 				$wrapper = $arrow.parents('.d2t-wrapper'),
 				datasetAccession = $wrapper.attr('id'),
-				toolName = $wrapper.find('.tool-annotation').find('.tool-icon').attr('data-tool-name'),
+				toolName = $wrapper.find('.search-tool-annotation').find('.tool-icon').attr('data-tool-name'),
 				targetPage = $arrow.attr('data-target-page');
 			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['canned_analysis_tables'][toolName][targetPage])
 		})

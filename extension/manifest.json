@@ -26,7 +26,6 @@
 			"js": [
 				"jquery.js",
 				"jquery-ui.js",
-				"download.js",
 				"datasets2tools.js"
 			]
 		}
