@@ -163,7 +163,7 @@ var Page = {
 		    open:function(event, ui) { if (typeof(event.originalEvent) === 'undefined') { return false; }; var $id = $(ui.tooltip).attr('id'); $('div.ui-tooltip').not('#' + $id).remove(); },
 		    close:function(event, ui) { ui.tooltip.hover(function() { $(this).stop(true).fadeTo(400, 1); }, function() { $(this).fadeOut('400', function() { $(this).remove(); }); }); },
 			show:{duration: 0},
-			hide:{duration: 500}
+			hide:{duration: 5999999900}
 		});
 
 		// $('.share').tooltip({
@@ -262,6 +262,46 @@ var eventListener = {
 		})
 	},
 
+	copy: function() {
+		$(document).on('click', '.copy-wrapper button', function(evt) {
+			var $button = $(evt.target).parents('.copy-wrapper').find('button');
+				copyTextArea = $button.prev()[0];
+			copyTextArea.select();
+			var successful = document.execCommand('copy');
+
+			$button.tooltip({
+				content: 'askjdnsakjdnkjsdngjidfgcidhfcosdhfisuduh ',
+			    close: function( event, ui ) { $(this).tooltip('disable'); }
+			});
+
+			// $button.tooltip({
+			// 	content: 'Copied!',
+			//     disabled: true,
+			// 	// classes:{'ui-tooltip':'tooltip-wrapper', 'ui-tooltip-content':'tooltip-black tooltip-right copied-tooltip'},
+			//     close: function( event, ui ) { $(this).tooltip('disable'); },
+			// 	// position:{my: 'left center-5', at: 'left+35 center'},
+			// 	// show:{duration: 0},
+			// 	// hide:{duration: 999999999}
+			// });
+
+			// $button.tooltip('enable').tooltip('open');
+		})
+	},
+
+	download: function() {
+
+		$(document).on('click', '.download-metadata-tooltip button', function(evt) {
+			var content = $(evt.target).attr('data-download'),
+				filename = $(evt.target).attr('data-accession')+'.'+$(evt.target).text().toLowerCase(),
+	        	a = document.createElement('a'),
+	        	blob = new Blob([content], {'type':'application/octet-stream'});
+	        a.href = window.URL.createObjectURL(blob);
+	        a.download = filename;
+	        a.click();
+		})
+
+	},
+
 	//////////////////////////////
 	///// . main
 	//////////////////////////////
@@ -273,6 +313,8 @@ var eventListener = {
 		this.clickToolbarIcon(cannedAnalysisInterfaces);
 		this.goBack(cannedAnalysisInterfaces);
 		this.clickArrow(cannedAnalysisInterfaces);
+		this.copy();
+		this.download();
 	}
 
 };
