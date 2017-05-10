@@ -12,6 +12,7 @@ function main() {
 
 	// Get Canned Analyses of corresponding datasets
 	var cannedAnalysisInterfaces = API.main(Object.keys(parents));
+	console.log(cannedAnalysisInterfaces);
 
 	// Add Canned Analyses to the webpage
 	Page.addInterfaces(parents, cannedAnalysisInterfaces);
@@ -103,7 +104,7 @@ var Page = {
 		} else if (Page.isGeoSearchResults()) {
 			$('.rslt').each(function(i, elem) { parents[$(elem).find('.details').find('.lng_ln').last().find('a').text().trim()] = $(elem) });
 		} else if (Page.isGeoDatasetLanding()) {
-			$('#gds_details').each(function(i, elem) { parents[$(elem).find('th').first().text().split(':')[0].split(' ').pop()] = $(elem) });
+			$('#gds_details').each(function(i, elem) { parents[$(elem).find('th:contains(Reference Series:)').next().text().trim()] = $(elem) });
 		} else if (Page.isGeoSeriesLanding()) {
 			$('.acc').each(function(i, elem) { parents[$(elem).attr('id')] = $(elem).parents().eq(7) });
 		}
@@ -164,7 +165,7 @@ var Page = {
 		    open:function(event, ui) { if (typeof(event.originalEvent) === 'undefined') { return false; }; var $id = $(ui.tooltip).attr('id'); $('div.ui-tooltip').not('#' + $id).remove(); },
 		    close:function(event, ui) { ui.tooltip.hover(function() { $(this).stop(true).fadeTo(400, 1); }, function() { $(this).fadeOut('400', function() { $(this).remove(); }); }); },
 			show:{duration: 0},
-			hide:{duration: 5999999900}
+			hide:{duration: 500}
 		});
 
 		// $('.share').tooltip({
@@ -189,6 +190,8 @@ var Page = {
 				parents[datasetAccession].after('<div class="panel-group" id="accordion-cannedAnalyses" role="tablist" aria-multiselectable="true"><div class="panel panel-info"><div class="panel-heading" role="tab" id="heading-dataset-cannedAnalyses"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion-cannedAnalyses" data-target="#collapse-dataset-cannedAnalyses" href="#collapse-dataset-cannedAnalyses" aria-expanded="true" aria-controls="collapse-dataset-cannedAnalyses"><i class="fa fa-chevron-up"></i>&nbspCanned Analyses</a></h4></div><div id="collapse-dataset-cannedAnalyses" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading-dataset-cannedAnalyses"><div class="panel-body">' + datasetInterfaces['tool_table'] + '</div></div></div></div>');
 			} else if (Page.isGeoSeriesLanding()) {
 				parents[datasetAccession].after('<div class="gse-landing-wrapper"><div class="gse-header">Canned Analyses</div>'+datasetInterfaces['tool_table']+'</div>');
+			} else if (Page.isGeoDatasetLanding()) {
+				// parents[datasetAccession].after('<div class="gds-header">Canned Analyses</div><div class="gds-landing-wrapper">'+datasetInterfaces['tool_table']+'</div>');
 			}
 		})
 
