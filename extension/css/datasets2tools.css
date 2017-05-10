@@ -57,7 +57,7 @@
 }
 
     .panel-group .d2t-wrapper {
-        padding: 5px 20px;
+        padding: 10px 15px;
     }
 
 /* # Toolbar */
@@ -140,12 +140,12 @@
         vertical-align: middle;
     }
 
-        .search-tool-annotation .tool-annotation .tool-name {
+        .search-tool-annotation .tool-text .tool-name {
             font-size: 10pt;
             font-weight: 800;
         }
 
-        .search-tool-annotation .tool-annotation .tool-description {
+        .search-tool-annotation .tool-text .tool-description {
             font-size: 9pt;
             font-weight: 100;
         }
@@ -420,9 +420,9 @@
 /* Tool Table */
 
 .d2t-tool-table {
-    width: 90%;
+    width: 100%;
     text-align: center;
-    margin: 5px auto 10px auto;
+    margin: 10px auto 10px auto;
 }
     
     .d2t-tool-table td {
@@ -439,7 +439,6 @@
     .d2t-tool-table tr:not(:first-child):not(:last-child) {border-bottom: 1px solid #f7f7f7;}
     .d2t-tool-table tr:nth-child(even) {background-color: white}
     .d2t-tool-table tr:nth-child(odd) {background-color: #FCFCFC}
-
 
     .tool-header {
         width: 155px;
@@ -486,7 +485,6 @@
                 cursor: pointer;
             }
 
-
 /* Landing Tool Annotation */
 
 .landing-tool-annotation {
@@ -498,6 +496,7 @@
     .landing-tool-annotation .go-back {
         font-size: 11pt;
         padding-top: 5px;
+        cursor: pointer;
     }
 
     .landing-tool-annotation .tool-info {

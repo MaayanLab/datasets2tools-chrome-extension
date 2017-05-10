@@ -250,8 +250,9 @@ var eventListener = {
 	goBack: function(cannedAnalysisInterfaces) {
 		$(document).on('click', '.go-back', function(evt) {
 			var $wrapper = $(evt.target).parents('.d2t-wrapper'),
-				datasetAccession = $wrapper.attr('id');
-			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['toolbar']);
+				datasetAccession = $wrapper.attr('id'),
+				key = Object.keys(cannedAnalysisInterfaces[datasetAccession]).indexOf('toolbar') === -1 ? 'tool_table' : 'toolbar';
+			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession][key]);
 			Page.loadTooltips();
 		})
 	},
@@ -304,10 +305,8 @@ var eventListener = {
 			var toolName = $(evt.target).parents('tr').find('.tool-name').text(),
 				$wrapper = $(evt.target).parents('.d2t-wrapper')
 				datasetAccession = $wrapper.attr('id');
-			console.log(cannedAnalysisInterfaces);
 			$wrapper.replaceWith(cannedAnalysisInterfaces[datasetAccession]['canned_analysis_tables'][toolName][0]);
-			console.log(toolName);
-			console.log(datasetAccession);
+			Page.loadTooltips();
 		})
 	},
 
