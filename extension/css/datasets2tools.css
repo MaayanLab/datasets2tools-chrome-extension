@@ -194,7 +194,7 @@
             text-align: center;
             background-color: #EFEFEF;
             height: 30px;
-            font-size: 11pt;
+            font-size: 9pt;
         }
 
     .canned-analysis-table tr:not(:first-child):not(:last-child) {border-bottom: 1px solid #f7f7f7;}
