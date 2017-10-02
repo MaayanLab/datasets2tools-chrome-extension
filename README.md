@@ -1,4 +1,4 @@
-# Datasets2Tools Chrome Extension
+# Datasets2Tools Chrome Extension is outdated, please see https://github.com/MaayanLab/datasets2tools
 ### What is the Datasets2Tools Chrome Extension?
 The Datasets2Tools Extension is a Chrome Browser extension which enriches the website of biomedical data repositories by adding links to canned analyses to dataset landing pages and search pages.
 
